@@ -1,0 +1,22 @@
+{
+  "name": "resultats-elections-fpt",
+  "version": "1.0.0",
+  "description": "Saisir et centraliser les résultats des élections professionnelles dans la fonction publique territoriale",
+  "main": "index.js",
+  "scripts": {
+    "serve": "http-server"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/betagouv/Resultats-Elections-FPT.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/betagouv/Resultats-Elections-FPT/issues"
+  },
+  "homepage": "https://github.com/betagouv/Resultats-Elections-FPT#readme",
+  "dependencies": {
+    "http-server": "^14.1.1"
+  }
+}
