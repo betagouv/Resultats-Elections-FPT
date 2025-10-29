@@ -1,6 +1,7 @@
 /* UTILS */
 import searchUtils from '../scripts/search.js'
 import Configuration from '../scripts/configuration.js'
+import Modal from '../scripts/modal.js'
 
 /* VAR */
 const inputElement = document.querySelector('#search-input')
@@ -8,6 +9,9 @@ const submitElement = document.querySelector('#submit')
 const listElement = document.querySelector('#list')
 const errorElement = document.querySelector('#error')
 const iframeElement = document.querySelector('#iframe')
+new Modal({
+  container: document.querySelector('section'),
+})
 
 let allRecords = []
 let columnSearchMapped = null
