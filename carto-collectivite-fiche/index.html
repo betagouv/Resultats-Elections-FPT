@@ -6,26 +6,18 @@
       rel="stylesheet"
     />
     <script src=" https://cdn.jsdelivr.net/npm/@gouvfr/dsfr@1.14.2/dist/dsfr.module.min.js "></script>
+    <link rel="stylesheet" href="../styles/app.css" />
   </head>
   <body>
-    <style>
-      .dgcl--tile {
-        pointer-events: none;
-      }
-
-      .dgcl--list-style-none {
-        list-style: none;
-      }
-    </style>
     <main class="fr-container fr-p-3w">
       <section id="filled" class="fr-hidden">
         <h1 class="fr-h6 fr-mb-1w" id="title">Nom de mon scrutin</h1>
         <p class="fr-badge fr-mb-1w" id="badge"></p>
-        <ul id="errors" class="fr-pl-0 fr-mb-3w dgcl--list-style-none"></ul>
-        <ul id="data" class="fr-pl-0 dgcl--list-style-none"></ul>
+        <ul id="errors" class="fr-pl-0 fr-mb-3w app-list--unstyled"></ul>
+        <ul id="data" class="fr-pl-0 app-list--unstyled"></ul>
       </section>
       <section id="empty" class="fr-hidden">
-        <div class="fr-tile fr-enlarge-link dgcl--tile">
+        <div class="fr-tile fr-enlarge-link app-tile--no-cursor">
           <div class="fr-tile__body">
             <div class="fr-tile__content">
               <h3 class="fr-tile__title">

@@ -1,3 +1,7 @@
-.app-list-unstyled {
-    list-style: none
+.app-list--unstyled {
+	list-style: none
+}
+
+.app-tile--no-cursor {
+	pointer-events: none;
 }
