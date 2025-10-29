@@ -1,5 +1,6 @@
 /* UTILS */
 import searchUtils from "../scripts/search.js"
+import Configuration from "../scripts/configuration.js"
 
 /* VAR */
 const inputElement = document.querySelector('#search-input')
@@ -11,11 +12,16 @@ let allRecords = []
 let columnSearchMapped = null
 let columnBadgeMapped = null
 let currentRecord = null
+let configuration = null
 
 /* GRIST */
 grist.ready({ requiredAccess: 'full', allowSelectBy: true, columns: ['ColumnSearch', {
   name: 'ColumnBadge',
   optional: true,
+  onEditOptions: () => {
+    // On clic sur "Ouvrir la configuration"
+    if (configuration) configuration.open();
+  },
 }]});
 
 grist.onRecords((table, mapping) => {
@@ -106,3 +112,22 @@ const displayRows = (rows) => {
 
 /* EVENTS */
 submitElement.addEventListener('click', search)
+
+/* CONFIGURATION */
+const setupConfiguration = () => {
+  configuration = new Configuration({
+    name: 'iframe-url-create-collectivite',
+    label: 'Url du formulaire de création collectivité',
+    onClose: () => {
+      updateIframeSrc()
+    },
+  })
+  updateIframeSrc()
+}
+
+const updateIframeSrc = async () => {
+  const url = await configuration.getValue()
+  iframeElement.src = url
+}
+
+setupConfiguration()
