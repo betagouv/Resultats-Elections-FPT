@@ -61,7 +61,6 @@ const noResults = () => {
   errorElement.innerHTML = `Aucun résultat pour la recherche : "${inputElement.value}"`
 }
 
-inputElement.addEventListener('input', search)
 submitElement.addEventListener('click', search)
 
 /* DYNAMIC VIEW */
