@@ -5,14 +5,12 @@ import searchUtils from "../scripts/search.js"
 const inputElement = document.querySelector('#search-input')
 const submitElement = document.querySelector('#submit')
 const listElement = document.querySelector('#list')
-const listResultElement = document.querySelector('#list-result')
 const errorElement = document.querySelector('#error')
 
 let allRecords = []
 let columnSearchMapped = null
 let columnBadgeMapped = null
 let currentRecord = null
-let viewIsInitiated = false
 
 /* GRIST */
 grist.ready({ requiredAccess: 'full', allowSelectBy: true, columns: ['ColumnSearch', {
@@ -25,7 +23,7 @@ grist.onRecords((table, mapping) => {
   columnSearchMapped = mapping['ColumnSearch']
   columnBadgeMapped = mapping['ColumnBadge']
   allRecords = table
-  if (!viewIsInitiated && table.length > 0) initView()
+  search()
 });
 
 grist.onRecord((record) => {
@@ -44,17 +42,16 @@ const selectRow = (id) => {
 
 /* SEARCH */
 const search = () => {
-  listResultElement.innerHTML = ''
+  listElement.innerHTML = ''
   errorElement.innerHTML = ''
   const value = inputElement.value.trim()
   if (value === '') {
-    listElement.classList.remove('fr-hidden')
+    displayRows(allRecords)
     selectRow(currentRecord.id)
   }
   else {
-    listElement.classList.add('fr-hidden')
     const recordsFound = allRecords.filter(record => searchUtils.containsValue(record[columnSearchMapped], inputElement.value))
-    if (recordsFound.length > 0) displayRows(recordsFound, listResultElement)
+    if (recordsFound.length > 0) displayRows(recordsFound)
     else noResults()
   }
 }
@@ -64,7 +61,7 @@ const noResults = () => {
 }
 
 /* DOM */
-const displayRows = (rows, list) => {
+const displayRows = (rows) => {
   for(let i = 0; i<rows.length; i++) {
     const divRow = document.createElement('button')
     divRow.classList.add('fr-grid-row', 'fr-grid-row--gutters')
@@ -103,15 +100,9 @@ const displayRows = (rows, list) => {
     li.setAttribute('data-row-id', id)
     li.addEventListener('click', () => {grist.setCursorPos({rowId: id})})
     
-    list.appendChild(li)
+    listElement.appendChild(li)
   }
 }
 
 /* EVENTS */
 submitElement.addEventListener('click', search)
-
-/* INIT */
-const initView = () => {
-  displayRows(allRecords, listElement)
-  viewIsInitiated = true
-}
