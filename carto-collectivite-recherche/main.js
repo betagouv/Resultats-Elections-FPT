@@ -32,31 +32,6 @@ grist.onRecord((record) => {
   selectRow(currentRecord.id)
 });
 
-/* COLUMNS */
-const getTableColumnsInfos = async () => {
-  const tableName = await grist.getSelectedTableId()
-  const allTables = await grist.docApi.fetchTable('_grist_Tables')
-  const tableId = allTables.id[allTables.tableId.indexOf(tableName)]
-  const allGristColumns = await grist.docApi.fetchTable('_grist_Tables_column')
-  let index = 0
-  const onlyCurrentTableColumnsInfos = allGristColumns.parentId.reduce(function (filtered, currentValue){
-    if (currentValue === tableId ) filtered.push({
-      label: allGristColumns.label[index],
-      description: allGristColumns.description[index],
-      colId: allGristColumns.colId[index],
-      type: allGristColumns.type[index],
-    })
-    index++
-    return filtered
-  }, [])
-  return onlyCurrentTableColumnsInfos;
-}
-
-const getColumnInfos = (column) => {
-  return tableColumnsInfos.filter(col => col.colId === column)[0]
-}
-
-
 /* SELECT ROW */
 const selectRow = (id) => {
   const previousSelected = document.querySelector('.selected')
