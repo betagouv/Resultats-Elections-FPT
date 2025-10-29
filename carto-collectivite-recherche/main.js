@@ -1,3 +1,5 @@
+import searchUtils from "../utils/search.js"
+
 /* SETUP */
 grist.ready({ requiredAccess: 'full', allowSelectBy: true, columns: ['ColumnSearch', {
   name: 'ColumnBadge',
@@ -44,16 +46,13 @@ const selectRow = (id) => {
 const search = () => {
   listElement.innerHTML = ''
   errorElement.innerHTML = ''
-  if (inputElement.value === '') {
+  const value = inputElement.value.trim()
+  if (value === '') {
     displayRows(allRecords)
     selectRow(currentRecord.id)
   }
   else {
-    const recordsFound = allRecords.filter(record => {
-      const valueClean = inputElement.value.toLowerCase()
-      const name = record[columnSearchMapped].toLowerCase()
-      return name.indexOf(valueClean) >= 0
-    })
+    const recordsFound = allRecords.filter(record => searchUtils.containsValue(record[columnSearchMapped], inputElement.value))
     if (recordsFound.length > 0) displayRows(recordsFound)
     else noResults()
   }
