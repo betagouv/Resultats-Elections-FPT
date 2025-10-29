@@ -1,10 +1,5 @@
+/* UTILS */
 import searchUtils from "../scripts/search.js"
-
-/* SETUP */
-grist.ready({ requiredAccess: 'full', allowSelectBy: true, columns: ['ColumnSearch', {
-  name: 'ColumnBadge',
-  optional: true,
-}]});
 
 /* VAR */
 const inputElement = document.querySelector('#search-input')
@@ -19,8 +14,12 @@ let columnBadgeMapped = null
 let currentRecord = null
 let viewIsInitiated = false
 
-
 /* GRIST */
+grist.ready({ requiredAccess: 'full', allowSelectBy: true, columns: ['ColumnSearch', {
+  name: 'ColumnBadge',
+  optional: true,
+}]});
+
 grist.onRecords((table, mapping) => {
   // Les données dans la table ont changé.
   columnSearchMapped = mapping['ColumnSearch']
@@ -111,7 +110,7 @@ const displayRows = (rows, list) => {
 /* EVENTS */
 submitElement.addEventListener('click', search)
 
-/* VIEW */
+/* INIT */
 const initView = () => {
   displayRows(allRecords, listElement)
   viewIsInitiated = true
