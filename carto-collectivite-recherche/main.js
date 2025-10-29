@@ -10,12 +10,14 @@ grist.ready({ requiredAccess: 'full', allowSelectBy: true, columns: ['ColumnSear
 const inputElement = document.querySelector('#search-input')
 const submitElement = document.querySelector('#submit')
 const listElement = document.querySelector('#list')
+const listResultElement = document.querySelector('#list-result')
 const errorElement = document.querySelector('#error')
 
 let allRecords = []
 let columnSearchMapped = null
 let columnBadgeMapped = null
 let currentRecord = null
+let viewIsInitiated = false
 
 
 /* GRIST */
@@ -24,7 +26,7 @@ grist.onRecords((table, mapping) => {
   columnSearchMapped = mapping['ColumnSearch']
   columnBadgeMapped = mapping['ColumnBadge']
   allRecords = table
-  search()
+  if (!viewIsInitiated && table.length > 0) initView()
 });
 
 grist.onRecord((record) => {
@@ -43,16 +45,17 @@ const selectRow = (id) => {
 
 /* SEARCH */
 const search = () => {
-  listElement.innerHTML = ''
+  listResultElement.innerHTML = ''
   errorElement.innerHTML = ''
   const value = inputElement.value.trim()
   if (value === '') {
-    displayRows(allRecords)
+    listElement.classList.remove('fr-hidden')
     selectRow(currentRecord.id)
   }
   else {
+    listElement.classList.add('fr-hidden')
     const recordsFound = allRecords.filter(record => searchUtils.containsValue(record[columnSearchMapped], inputElement.value))
-    if (recordsFound.length > 0) displayRows(recordsFound)
+    if (recordsFound.length > 0) displayRows(recordsFound, listResultElement)
     else noResults()
   }
 }
@@ -61,10 +64,8 @@ const noResults = () => {
   errorElement.innerHTML = `Aucun résultat pour la recherche : "${inputElement.value}"`
 }
 
-submitElement.addEventListener('click', search)
-
-/* DYNAMIC VIEW */
-const displayRows = (rows) => {
+/* DOM */
+const displayRows = (rows, list) => {
   for(let i = 0; i<rows.length; i++) {
     const divRow = document.createElement('button')
     divRow.classList.add('fr-grid-row', 'fr-grid-row--gutters')
@@ -93,16 +94,25 @@ const displayRows = (rows) => {
       divBadge.appendChild(badge)
       divRow.appendChild(divBadge)
     } else {
-     divName.classList.remove('fr-col-6') 
-     divName.classList.add('fr-col-12') 
+      divName.classList.remove('fr-col-6') 
+      divName.classList.add('fr-col-12') 
     }
 
     const li = document.createElement('li')
     li.classList.add('fr-card', 'fr-p-1w', 'fr-my-1w')
     li.appendChild(divRow)
     li.setAttribute('data-row-id', id)
-
-    listElement.appendChild(li)
     li.addEventListener('click', () => {grist.setCursorPos({rowId: id})})
+    
+    list.appendChild(li)
   }
+}
+
+/* EVENTS */
+submitElement.addEventListener('click', search)
+
+/* VIEW */
+const initView = () => {
+  displayRows(allRecords, listElement)
+  viewIsInitiated = true
 }
