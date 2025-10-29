@@ -175,6 +175,6 @@ deleteElement.addEventListener('click', async () => {
     deleteElement.removeAttribute('disabled')
     deleteElement.textContent = deleteElementContent
   } catch (e) {
-    console.warn('error', e)
+    console.error('error', e)
   }
 })
