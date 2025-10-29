@@ -37,7 +37,7 @@ const dataElement = document.querySelector('#data')
 const errorsElement = document.querySelector('#errors')
 const deleteElement = document.querySelector('#delete')
 const modal = new Modal({
-  container: document.querySelector('section'),
+  container: document.querySelector('#section-modal'),
 })
 
 let titleMapped = null
