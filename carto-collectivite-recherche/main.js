@@ -1,4 +1,4 @@
-import searchUtils from "../utils/search.js"
+import searchUtils from "../scripts/search.js"
 
 /* SETUP */
 grist.ready({ requiredAccess: 'full', allowSelectBy: true, columns: ['ColumnSearch', {
