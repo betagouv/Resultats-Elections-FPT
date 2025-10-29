@@ -1,0 +1,58 @@
+<html>
+  <head>
+    <script src="https://docs.getgrist.com/grist-plugin-api.js"></script>
+    <link
+      href="https://cdn.jsdelivr.net/npm/@gouvfr/dsfr@1.14.0/dist/dsfr.min.css "
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <main class="fr-container fr-p-3w">
+      <form id="form">
+        <fieldset class="fr-fieldset fr-mb-2w">
+          <legend class="fr-fieldset__legend">
+            Modifier la collectivité <span data-name="collectivite"></span> :
+          </legend>
+        </fieldset>
+
+        <fieldset class="fr-fieldset fr-mb-2w">
+          <div class="fr-fieldset__element">
+            <div
+              class="fr-grid-row fr-grid-row--gutters"
+              id="data-inputs"
+            ></div>
+          </div>
+        </fieldset>
+
+        <button class="fr-btn fr-mt-2w" type="submit">
+          Enregistrer les modifications
+        </button>
+      </form>
+
+      <section id="message" class="fr-hidden">
+        <div class="fr-hidden fr-alert fr-alert--success fr-mb-3w" id="success">
+          <h3 class="fr-alert__title">Modifications enregistrées</h3>
+          <p>
+            Retrouver les informations de la collectivité dans le résumé à
+            gauche.
+          </p>
+        </div>
+
+        <div class="fr-hidden fr-alert fr-alert--error fr-mb-3w" id="error">
+          <h3 class="fr-alert__title">Une erreur technique est survenue</h3>
+          <p>
+            Merci de recommencer votre saisie, nous nous excusons pour la gène
+            occasionnée.
+          </p>
+        </div>
+
+        <div class="fr-grid-row fr-grid-row--center">
+          <button class="fr-btn fr-btn--secondary" id="backToForm">
+            Revenir au formulaire
+          </button>
+        </div>
+      </section>
+    </main>
+    <script src="main.js"></script>
+  </body>
+</html>
