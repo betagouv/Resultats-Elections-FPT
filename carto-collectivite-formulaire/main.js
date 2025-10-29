@@ -1,16 +1,18 @@
 /* SETUP */
-grist.ready({ requiredAccess: 'full', columns: [
-   {
-    name: "Nom",
-    description: "Nom de la collectivite",
-  },
-  {
-    name: "Data",
-    description: "Colonnes des champs à remplir",
-    allowMultiple: true 
-  }, 
-]});
-
+grist.ready({
+  requiredAccess: 'full',
+  columns: [
+    {
+      name: 'Nom',
+      description: 'Nom de la collectivite',
+    },
+    {
+      name: 'Data',
+      description: 'Colonnes des champs à remplir',
+      allowMultiple: true,
+    },
+  ],
+})
 
 /* VAR */
 const namesElement = document.querySelectorAll('[data-name="collectivite"]')
@@ -28,38 +30,42 @@ let tableColumnsInfos = []
 let currentRecord = null
 let isSaving = false
 
-
 /* FUNCTIONS */
 const getHtmlType = (gristName) => {
-  if (gristName.indexOf('Ref:')>=0) return "select"
-  if (gristName === "Int" || gristName === "Numeric") return "number"
-  if (gristName === "Bool") return "checkbox"
-  if (gristName === "Attachments") return "file"
-  return "text"
+  if (gristName.indexOf('Ref:') >= 0) return 'select'
+  if (gristName === 'Int' || gristName === 'Numeric') return 'number'
+  if (gristName === 'Bool') return 'checkbox'
+  if (gristName === 'Attachments') return 'file'
+  return 'text'
 }
 
 /* COLUMNS */
 const getTableColumnsInfos = async () => {
-  if (tableColumnsInfos.length > 0 ) return
+  if (tableColumnsInfos.length > 0) return
   const tableName = await grist.getSelectedTableId()
   const allTables = await grist.docApi.fetchTable('_grist_Tables')
   const tableId = allTables.id[allTables.tableId.indexOf(tableName)]
   const allGristColumns = await grist.docApi.fetchTable('_grist_Tables_column')
   let index = 0
-  tableColumnsInfos = allGristColumns.parentId.reduce(function (filtered, currentValue){
-    if (currentValue === tableId ) filtered.push({
-      label: allGristColumns.label[index],
-      description: allGristColumns.description[index],
-      colId: allGristColumns.colId[index],
-      type: allGristColumns.type[index],
-    })
+  tableColumnsInfos = allGristColumns.parentId.reduce(function (
+    filtered,
+    currentValue
+  ) {
+    if (currentValue === tableId)
+      filtered.push({
+        label: allGristColumns.label[index],
+        description: allGristColumns.description[index],
+        colId: allGristColumns.colId[index],
+        type: allGristColumns.type[index],
+      })
     index++
     return filtered
-  }, [])
+  },
+  [])
 }
 
 const getColumnsInfos = (column) => {
-  return tableColumnsInfos.filter(col => column.includes(col.colId))
+  return tableColumnsInfos.filter((col) => column.includes(col.colId))
 }
 
 const getColumnInfo = (column) => {
@@ -67,15 +73,18 @@ const getColumnInfo = (column) => {
   return index >= 0 ? tableColumnsInfos[index] : null
 }
 
-const generateForm =  async () => {
-  dataInputs.innerHTML = ""
+const generateForm = async () => {
+  dataInputs.innerHTML = ''
   const data = getColumnsInfos(dataMapped)
-  for (let i = 0; i < data.length; i++){
+  for (let i = 0; i < data.length; i++) {
     const type = getHtmlType(data[i].type)
     let input = null
-    if (type === 'number' || type === 'text') input = generateInputText(data[i], type, 'fr-col-12')
-    else if (type === "checkbox") input = generateInputCheckbox(data[i], 'fr-col-12')
-    else if (type === "select") input = await generateSelectDropdown(data[i], 'fr-col-12')
+    if (type === 'number' || type === 'text')
+      input = generateInputText(data[i], type, 'fr-col-12')
+    else if (type === 'checkbox')
+      input = generateInputCheckbox(data[i], 'fr-col-12')
+    else if (type === 'select')
+      input = await generateSelectDropdown(data[i], 'fr-col-12')
     dataInputs.appendChild(input)
   }
 }
@@ -89,24 +98,23 @@ const generateSelectDropdown = async (column, classToAdd) => {
   const div = document.createElement('div')
   div.classList.add('fr-select-group')
   if (classToAdd) div.classList.add(classToAdd)
-  
+
   const label = document.createElement('label')
   label.classList.add('fr-label')
   label.setAttribute('for', column.colId)
   label.textContent = column.label
-  
+
   const select = document.createElement('select')
-  select.classList.add("fr-select")
+  select.classList.add('fr-select')
   select.setAttribute('name', column.colId)
   select.setAttribute('tableId', tableId)
 
-
   const disabledOption = document.createElement('option')
-  disabledOption.text = "Sélectionner une option"
+  disabledOption.text = 'Sélectionner une option'
   disabledOption.setAttribute('disabled', true)
   disabledOption.setAttribute('selected', true)
   select.appendChild(disabledOption)
-  
+
   for (let i = 0; i < refRecords.id.length; i++) {
     const option = document.createElement('option')
     const valueText = refRecords[columnToDisplay][i]
@@ -129,7 +137,7 @@ const generateInputText = (column, type, classToAdd) => {
   label.textContent = column.label
   label.classList.add('fr-label')
   label.setAttribute('for', column.colId)
-  
+
   const description = document.createElement('span')
   description.classList.add('fr-hint-text')
   description.textContent = column.description
@@ -160,7 +168,7 @@ const generateInputCheckbox = (column, classToAdd) => {
   input.setAttribute('type', 'checkbox')
   input.setAttribute('id', column.colId)
   input.setAttribute('name', column.colId)
-  
+
   const label = document.createElement('label')
   label.setAttribute('for', column.colId)
   label.textContent = column.label
@@ -180,14 +188,14 @@ const generateInputCheckbox = (column, classToAdd) => {
 const getFormValues = () => {
   let values = {}
   const allInputs = formElement.querySelectorAll('input')
-  for(let i = 0; i< allInputs.length; i++) {
+  for (let i = 0; i < allInputs.length; i++) {
     const input = allInputs[i]
     const name = input.getAttribute('name')
-    const isCheckboxe = input.getAttribute('type') === "checkbox"
+    const isCheckboxe = input.getAttribute('type') === 'checkbox'
     values[name] = isCheckboxe ? input.checked : input.value
   }
   const allSelects = formElement.querySelectorAll('select')
-  for(let i = 0; i< allSelects.length; i++) {
+  for (let i = 0; i < allSelects.length; i++) {
     const select = allSelects[i]
     const name = select.getAttribute('name')
     values[name] = Number(select.value)
@@ -196,35 +204,35 @@ const getFormValues = () => {
 }
 
 const formatValue = (value) => {
-  const isCheckboxe = value === "on" || value === "off"
-  if (isCheckboxe) return value === "on"
+  const isCheckboxe = value === 'on' || value === 'off'
+  if (isCheckboxe) return value === 'on'
   return value
 }
 
 const prefillForm = () => {
   const inputs = formElement.querySelectorAll('input')
-  for (let i = 0; i < inputs.length; i++ ){
+  for (let i = 0; i < inputs.length; i++) {
     const input = inputs[i]
     const name = input.getAttribute('name')
     const value = currentRecord[name]
-    if (typeof value === "boolean") input.checked = value
+    if (typeof value === 'boolean') input.checked = value
     else input.setAttribute('value', value)
   }
 
   const selects = formElement.querySelectorAll('select')
-  for (let i = 0; i < selects.length; i++ ){
+  for (let i = 0; i < selects.length; i++) {
     const select = selects[i]
     const name = select.getAttribute('name')
     const value = currentRecord[name]
     if (value) {
-      const optionSelected = select.querySelector(`option[data-text="${value}"]`)
+      const optionSelected = select.querySelector(
+        `option[data-text="${value}"]`
+      )
       const optionValue = optionSelected.getAttribute('value')
       select.value = optionValue
     }
   }
-
 }
-
 
 const resetView = () => {
   formElement.classList.remove('fr-hidden')
@@ -245,7 +253,6 @@ const displayMessage = (type) => {
   formElement.classList.add('fr-hidden')
 }
 
-
 /* SUBMIT */
 formElement.addEventListener('submit', async (event) => {
   event.preventDefault()
@@ -254,10 +261,10 @@ formElement.addEventListener('submit', async (event) => {
   try {
     grist.selectedTable.update({
       id: rowIdSelected,
-      fields: formValues
+      fields: formValues,
     })
     displayMessage('success')
-  } catch(e) {
+  } catch (e) {
     displayMessage('error')
   }
 })
@@ -267,22 +274,21 @@ grist.onRecords((table, mapping) => {
   // Les données dans la table ont changé.
   columnNameMapped = mapping['Nom']
   dataMapped = mapping['Data']
-});
+})
 
 grist.onRecord((record) => {
   // Le curseur a été déplacé.
   currentRecord = record
   rowIdSelected = record.id
-  namesElement.forEach(name => {
+  namesElement.forEach((name) => {
     name.textContent = record[columnNameMapped]
   })
   if (!isSaving) resetView()
   isSaving = false
   window.scrollTo(0, 0)
-});
+})
 
-
-const initView = async() => {
+const initView = async () => {
   await getTableColumnsInfos()
   await generateForm()
 }

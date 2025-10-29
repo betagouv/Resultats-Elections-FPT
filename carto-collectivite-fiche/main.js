@@ -1,26 +1,29 @@
 /* SETUP */
-grist.ready({ requiredAccess: 'full', columns: [
-  {
-    name: "title",
-    description: "Titre de ma carte",
-  },
-  {
-    name: "badge",
-    description: "Badge",
-    optional: true
-  },
-  {
-    name: "data",
-    description: "Données saisies",
-    allowMultiple: true
-  },
-  {
-    name: "errors",
-    description: "Contrôles de cohérences",
-    allowMultiple: true,
-    optional: true
-  }
-]});
+grist.ready({
+  requiredAccess: 'full',
+  columns: [
+    {
+      name: 'title',
+      description: 'Titre de ma carte',
+    },
+    {
+      name: 'badge',
+      description: 'Badge',
+      optional: true,
+    },
+    {
+      name: 'data',
+      description: 'Données saisies',
+      allowMultiple: true,
+    },
+    {
+      name: 'errors',
+      description: 'Contrôles de cohérences',
+      allowMultiple: true,
+      optional: true,
+    },
+  ],
+})
 
 /* VAR */
 const emptyElement = document.querySelector('#empty')
@@ -29,8 +32,8 @@ const titleElement = document.querySelector('#title')
 const badgeElement = document.querySelector('#badge')
 const dataElement = document.querySelector('#data')
 const errorsElement = document.querySelector('#errors')
-const deleteElement = document.querySelector("#delete")
-const modalElement = document.getElementById('modal');
+const deleteElement = document.querySelector('#delete')
+const modalElement = document.getElementById('modal')
 
 let titleMapped = null
 let badgeMapped = null
@@ -39,59 +42,60 @@ let errorsMapped = null
 let currentRecord = null
 let tableColumnsInfos = []
 
-
-
 /* GRIST */
 grist.onRecord((record) => {
   // Le curseur s'est déplacé
   currentRecord = record
   displayContent()
   window.scrollTo(0, 0)
-});
+})
 
-
-grist.onRecords(async(table, mapping) => {
+grist.onRecords(async (table, mapping) => {
   // Les données dans la table ont changé.
   titleMapped = mapping['title']
   badgeMapped = mapping['badge']
   dataMapped = mapping['data']
   errorsMapped = mapping['errors']
   if (tableColumnsInfos.length === 0) await getTableColumnsInfos()
-});
+})
 
 /* COLUMNS */
 const getTableColumnsInfos = async () => {
-  if (tableColumnsInfos.length > 0) return 
+  if (tableColumnsInfos.length > 0) return
   const tableName = await grist.getSelectedTableId()
   const allTables = await grist.docApi.fetchTable('_grist_Tables')
   const tableId = allTables.id[allTables.tableId.indexOf(tableName)]
   const allGristColumns = await grist.docApi.fetchTable('_grist_Tables_column')
   let index = 0
-  tableColumnsInfos = allGristColumns.parentId.reduce(function (filtered, currentValue){
-    if (currentValue === tableId ) filtered.push({
-      label: allGristColumns.label[index],
-      description: allGristColumns.description[index],
-      colId: allGristColumns.colId[index],
-      type: allGristColumns.type[index],
-    })
+  tableColumnsInfos = allGristColumns.parentId.reduce(function (
+    filtered,
+    currentValue
+  ) {
+    if (currentValue === tableId)
+      filtered.push({
+        label: allGristColumns.label[index],
+        description: allGristColumns.description[index],
+        colId: allGristColumns.colId[index],
+        type: allGristColumns.type[index],
+      })
     index++
     return filtered
-  }, [])
+  },
+  [])
 }
 
 const getColumnInfos = (column) => {
-  return tableColumnsInfos.filter(col => col.colId === column)[0]
+  return tableColumnsInfos.filter((col) => col.colId === column)[0]
 }
 
 /* CONTENT */
 const displayContent = () => {
   resetCard()
   const status = currentRecord[badgeMapped]
-  if (status === "À renseigner") {
+  if (status === 'À renseigner') {
     filledElement.classList.add('fr-hidden')
     emptyElement.classList.remove('fr-hidden')
   } else {
-    
     fillCard()
     filledElement.classList.remove('fr-hidden')
     emptyElement.classList.add('fr-hidden')
@@ -109,8 +113,8 @@ const fillCard = () => {
   badgeElement.classList.remove('fr-badge--error')
   badgeElement.classList.remove('fr-badge--success')
   badgeElement.textContent = currentRecord[badgeMapped]
-  if (status === "Complet") badgeElement.classList.add('fr-badge--success')
-  else if (status === "Incomplet") badgeElement.classList.add('fr-badge--error')
+  if (status === 'Complet') badgeElement.classList.add('fr-badge--success')
+  else if (status === 'Incomplet') badgeElement.classList.add('fr-badge--error')
 
   // Titre
   if (titleElement) {
@@ -139,7 +143,7 @@ const fillCard = () => {
 }
 
 const prettifyValue = (value) => {
-  if (value === true ) return 'oui'
+  if (value === true) return 'oui'
   if (value === false) return 'non'
   if (value === null) return 'non renseigné'
   return value
@@ -147,7 +151,7 @@ const prettifyValue = (value) => {
 
 const generateAlertError = (content) => {
   const li = document.createElement('li')
-  li.classList.add("fr-alert", "fr-alert--error")
+  li.classList.add('fr-alert', 'fr-alert--error')
   const p = document.createElement('p')
   p.classList.add('fr-alert__title')
   p.textContent = content
@@ -159,13 +163,13 @@ const generateAlertError = (content) => {
 deleteElement.addEventListener('click', async () => {
   deleteElement.setAttribute('disabled', true)
   const deleteElementContent = deleteElement.textContent
-  deleteElement.textContent = "Suppression en cours"
+  deleteElement.textContent = 'Suppression en cours'
   try {
     await grist.selectedTable.destroy(currentRecord.id)
     dsfr(modalElement).modal.conceal()
     deleteElement.removeAttribute('disabled')
     deleteElement.textContent = deleteElementContent
-  } catch(e) {
+  } catch (e) {
     console.warn('error', e)
   }
 })
