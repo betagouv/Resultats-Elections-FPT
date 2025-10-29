@@ -7,6 +7,7 @@ const inputElement = document.querySelector('#search-input')
 const submitElement = document.querySelector('#submit')
 const listElement = document.querySelector('#list')
 const errorElement = document.querySelector('#error')
+const iframeElement = document.querySelector('#iframe')
 
 let allRecords = []
 let columnSearchMapped = null
@@ -23,12 +24,12 @@ grist.ready({
     {
       name: 'ColumnBadge',
       optional: true,
-      onEditOptions: () => {
-        // On clic sur "Ouvrir la configuration"
-        if (configuration) configuration.open()
-      },
     },
   ],
+  onEditOptions: () => {
+    // On clic sur "Ouvrir la configuration"
+    if (configuration) configuration.open()
+  },
 })
 
 grist.onRecords((table, mapping) => {
