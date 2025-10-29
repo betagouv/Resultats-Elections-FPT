@@ -42,8 +42,8 @@ const selectRow = (id) => {
 
 /* SEARCH */
 const search = () => {
-  listElement.innerHTML = ''
-  errorElement.innerHTML = ''
+  listElement.replaceChildren()
+  errorElement.textContent = ''
   const value = inputElement.value.trim()
   if (value === '') {
     displayRows(allRecords)
@@ -57,7 +57,7 @@ const search = () => {
 }
 
 const noResults = () => {
-  errorElement.innerHTML = `Aucun résultat pour la recherche : "${inputElement.value}"`
+  errorElement.textContent = `Aucun résultat pour la recherche : "${inputElement.value}"`
 }
 
 /* DOM */
