@@ -48,9 +48,10 @@ grist.ready({
   ],
 })
 
-grist.onRecord((record) => {
+grist.onRecord(async (record) => {
   // Le curseur s'est déplacé
   currentRecord = record
+  await needsColumnInfos()
   displayContent()
   window.scrollTo(0, 0)
 })
@@ -61,9 +62,7 @@ grist.onRecords(async (table, mapping) => {
   badgeMapped = mapping['badge']
   dataMapped = mapping['data']
   errorsMapped = mapping['errors']
-  if (tableColumnsInfos.length === 0) {
-    tableColumnsInfos = await gristUtils.getTableColumnsInfos()
-  }
+  await needsColumnInfos()
 })
 
 /* CONTENT */
@@ -156,3 +155,10 @@ deleteElement.addEventListener('click', async () => {
     console.error('error', e)
   }
 })
+
+/* COLUMNS INFOS */
+const needsColumnInfos = async () => {
+  if (tableColumnsInfos.length === 0) {
+    tableColumnsInfos = await gristUtils.getTableColumnsInfos()
+  }
+}
