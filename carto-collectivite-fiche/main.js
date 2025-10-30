@@ -1,5 +1,6 @@
 /* IMPORTS */
 import Modal from '../scripts/classes/Modal.js'
+import gristUtils from '../scripts/utils/grist.js'
 
 /* VAR */
 const emptyElement = document.querySelector('#empty')
@@ -60,37 +61,10 @@ grist.onRecords(async (table, mapping) => {
   badgeMapped = mapping['badge']
   dataMapped = mapping['data']
   errorsMapped = mapping['errors']
-  if (tableColumnsInfos.length === 0) await getTableColumnsInfos()
+  if (tableColumnsInfos.length === 0) {
+    tableColumnsInfos = await gristUtils.getTableColumnsInfos()
+  }
 })
-
-/* COLUMNS */
-const getTableColumnsInfos = async () => {
-  if (tableColumnsInfos.length > 0) return
-  const tableName = await grist.getSelectedTableId()
-  const allTables = await grist.docApi.fetchTable('_grist_Tables')
-  const tableId = allTables.id[allTables.tableId.indexOf(tableName)]
-  const allGristColumns = await grist.docApi.fetchTable('_grist_Tables_column')
-  let index = 0
-  tableColumnsInfos = allGristColumns.parentId.reduce(function (
-    filtered,
-    currentValue
-  ) {
-    if (currentValue === tableId)
-      filtered.push({
-        label: allGristColumns.label[index],
-        description: allGristColumns.description[index],
-        colId: allGristColumns.colId[index],
-        type: allGristColumns.type[index],
-      })
-    index++
-    return filtered
-  },
-  [])
-}
-
-const getColumnInfos = (column) => {
-  return tableColumnsInfos.filter((col) => col.colId === column)[0]
-}
 
 /* CONTENT */
 const displayContent = () => {
@@ -130,8 +104,12 @@ const fillCard = () => {
     const li = document.createElement('li')
     const p = document.createElement('p')
     p.classList.add('fr-mb-1v')
+    const columnInfos = gristUtils.getColumnInfos(
+      dataMapped[i],
+      tableColumnsInfos
+    )
     const prettyValue = prettifyValue(currentRecord[dataMapped[i]])
-    const prettyLabel = getColumnInfos(dataMapped[i]).label
+    const prettyLabel = columnInfos.label
     p.textContent = `${prettyLabel} : ${prettyValue}`
     li.appendChild(p)
     dataElement.appendChild(li)
