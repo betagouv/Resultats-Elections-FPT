@@ -1,5 +1,4 @@
 /* SETUP */
-
 grist.ready({
   requiredAccess: 'full',
   allowSelectBy: true,
@@ -48,15 +47,17 @@ let allCollectivites = []
 let organisateurId = null
 let setCursorFromClick = false
 let isFirstTime = true
+let scrutinName = null
 
 /* GRIST */
-grist.onRecords((table, mapping) => {
+grist.onRecords(async (table, mapping) => {
   // Les données dans la table ont changé.
   columnSearchMapped = mapping['ColumnSearch']
   columnBadgeMapped = mapping['ColumnBadge']
   columnOrganisateurMapped = mapping['ColumnOrganisateur']
   columnRattacheesMapped = mapping['ColumnRattachees']
   allRecords = table
+  await setScrutinName()
   search()
 })
 
@@ -73,6 +74,11 @@ grist.onRecord((record) => {
 })
 
 /* COLUMNS */
+const setScrutinName = async () => {
+  const tableId = await grist.getSelectedTableId()
+  scrutinName = tableId.split('_').pop()
+}
+
 const getTableColumnsInfos = async () => {
   const tableName = await grist.getSelectedTableId()
   const allTables = await grist.docApi.fetchTable('_grist_Tables')
@@ -196,11 +202,13 @@ const displaySearchResults = (results) => {
 
 const getCollectiviteInfos = (name) => {
   const index = allCollectivites.Nom_complet.indexOf(name)
+  const organisateurColumnName = `${scrutinName}_Organisateur`
+  const scrutinColumnName = `Scrutin_${scrutinName}`
   return {
     value: allCollectivites.id[index],
     name: allCollectivites.Nom_complet[index],
-    isDisabled: allCollectivites.CST_Organisateur[index],
-    scrutinAlreadyLinked: allCollectivites.Scrutin_CST[index],
+    isDisabled: allCollectivites[organisateurColumnName][index],
+    scrutinAlreadyLinked: allCollectivites[scrutinColumnName][index],
   }
 }
 
@@ -219,13 +227,13 @@ const createRadio = (props) => {
   if (isDisabled) {
     input.setAttribute('disabled', true)
     const span = document.createElement('span')
-    span.textContent = 'La collectivité organise déjà un scrutin CST'
+    span.textContent = `La collectivité organise déjà un scrutin ${scrutinName}`
     span.classList.add('fr-hint-text')
     label.appendChild(span)
   } else if (scrutinAlreadyLinked) {
     input.setAttribute('disabled', true)
     const span = document.createElement('span')
-    span.textContent = `La collectivité est rattachée au scrutin CST de ${scrutinAlreadyLinked}, pour en créer un en tant qu'organisatrice vous devez d'abord la détacher de ce dernier.`
+    span.textContent = `La collectivité est rattachée au scrutin ${scrutinName} de ${scrutinAlreadyLinked}, pour en créer un en tant qu'organisatrice vous devez d'abord la détacher de ce dernier.`
     span.classList.add('fr-hint-text')
     label.appendChild(span)
   }
@@ -277,7 +285,7 @@ searchCreateButton.addEventListener('click', async () => {
   const id = Number(organisateurId)
   const action = [
     'AddRecord',
-    'Scrutins_CST', // Récupérer automatiquement la table id
+    `Scrutins_${scrutinName}`,
     null,
     {
       [columnOrganisateurMapped]: id,

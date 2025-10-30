@@ -42,6 +42,7 @@ let isSaving = false
 let refListSelectedIds = []
 let refListSelectedNames = []
 let refListAll = []
+let scrutinName = null
 
 /* TITLE */
 const updateNumber = () => {
@@ -170,13 +171,14 @@ buttonSearch.addEventListener('click', async (event) => {
   }
 
   for (let i = 0; i < foundRefs.length; i++) {
+    const columnName = `Scrutin_${scrutinName}`
     const index = refListAll.Nom_complet.indexOf(foundRefs[i])
-    const hasCST = refListAll.Scrutin_CST[index] !== null
+    const alreadyLinked = refListAll[columnName][index] !== null
 
     const props = {
       name: foundRefs[i],
-      disabled: hasCST
-        ? `Est déjà rattaché au scrutin CST ${refListAll.Scrutin_CST[index]}`
+      disabled: alreadyLinked
+        ? `Est déjà rattaché au scrutin ${scrutinName} ${refListAll[columnName][index]}`
         : false,
       checked: false,
     }
@@ -217,19 +219,26 @@ buttonSave.addEventListener('click', async () => {
 })
 
 /* TABLE */
-const getRefsListValues = () => {
+const setRefsListValues = () => {
+  // Todo dynamiser avec le champ et son type ?
   grist.docApi.fetchTable('Collectivites').then((response) => {
     refListAll = response
   })
 }
 
+const setScrutinName = async () => {
+  const tableId = await grist.getSelectedTableId()
+  scrutinName = tableId.split('_').pop()
+}
+
 /* GRIST */
-grist.onRecords((table, mapping) => {
+grist.onRecords(async (table, mapping) => {
   // Les données dans la table ont changé.
   columnNameMapped = mapping['Name']
   columnRefIds = mapping['RefIds']
   columnRefNames = mapping['RefNames']
-  getRefsListValues()
+  await setScrutinName()
+  setRefsListValues()
 })
 
 grist.onRecord((record) => {
