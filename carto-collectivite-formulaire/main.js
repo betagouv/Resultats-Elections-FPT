@@ -148,12 +148,6 @@ const getFormValues = () => {
   return values
 }
 
-const formatValue = (value) => {
-  const isCheckboxe = value === 'on' || value === 'off'
-  if (isCheckboxe) return value === 'on'
-  return value
-}
-
 const prefillForm = () => {
   const inputs = formElement.querySelectorAll('input')
   for (let i = 0; i < inputs.length; i++) {
