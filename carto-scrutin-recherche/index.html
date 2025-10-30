@@ -1,0 +1,135 @@
+<html>
+  <head>
+    <script src="https://docs.getgrist.com/grist-plugin-api.js"></script>
+    <link
+      href="https://cdn.jsdelivr.net/npm/@gouvfr/dsfr@1.14.0/dist/dsfr.min.css"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/@gouvfr/dsfr@1.14.2/dist/dsfr.module.min.js"></script>
+  </head>
+  <body>
+    <style>
+      .selected.fr-card button {
+        background: #000091 !important;
+        color: white;
+        font-weight: bold !important;
+      }
+
+      li p {
+        text-align: left !important;
+      }
+      li {
+        cursor: pointer;
+      }
+      li:hover button {
+        background: #cacafb !important;
+        font-weight: bold;
+      }
+    </style>
+    <main id="view" class="fr-container fr-p-3w">
+      <section>
+        <div class="fr-mb-2w fr-grid-row fr-grid-row--left">
+          <button
+            data-fr-opened="false"
+            aria-controls="modal"
+            class="fr-btn"
+            id="open-modal-button"
+          >
+            Créer un scrutin CST
+          </button>
+        </div>
+
+        <dialog
+          id="modal"
+          class="fr-modal"
+          aria-labelledby="modal-title"
+          aria-modal="true"
+        >
+          <div class="fr-container fr-container--fluid fr-container-md">
+            <div class="fr-grid-row fr-grid-row--center">
+              <div class="fr-col-12 fr-col-md-8 fr-col-lg-6">
+                <div class="fr-modal__body">
+                  <div class="fr-modal__header">
+                    <button
+                      aria-controls="modal"
+                      title="Fermer"
+                      type="button"
+                      class="fr-btn--close fr-btn"
+                      id="search-add-close"
+                    >
+                      Fermer
+                    </button>
+                  </div>
+                  <div class="fr-modal__content">
+                    <h2 id="modal-title" class="fr-modal__title">
+                      Créer un nouveau scrutin CST
+                    </h2>
+                    <p>Quelle est la collectivité organisatrice du scrutin ?</p>
+                    <div class="fr-search-bar fr-search-bar--lg" role="search">
+                      <label class="fr-label" for="search-input">
+                        Rechercher par son nom
+                      </label>
+                      <input
+                        class="fr-input"
+                        aria-describedby="search-input-messages"
+                        placeholder="Rechercher une collectivité par son nom"
+                        id="search-add-input"
+                        type="search"
+                      />
+                      <button
+                        id="search-add-button"
+                        title="Rechercher"
+                        type="button"
+                        class="fr-btn"
+                      >
+                        Rechercher
+                      </button>
+                    </div>
+                    <div class="fr-mt-1w">
+                      <p id="search-add-loading" class="fr-hidden">
+                        Recherche en cours
+                      </p>
+                      <p id="search-add-empty" class="fr-hidden">
+                        Aucune collectivité trouvée
+                      </p>
+                      <form id="search-add-results"></form>
+                    </div>
+                    <button
+                      class="fr-btn fr-hidden"
+                      type="button"
+                      id="search-create-button"
+                    >
+                      Créer le scrutin
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </dialog>
+      </section>
+      <section>
+        <div class="fr-search-bar fr-search-bar--lg" role="search">
+          <label class="fr-label" for="search-input"> Rechercher </label>
+          <input
+            class="fr-input"
+            aria-describedby="search-input-messages"
+            placeholder="Rechercher"
+            id="search-input"
+            type="search"
+          />
+          <div
+            class="fr-messages-group"
+            id="search-input-messages"
+            aria-live="polite"
+          ></div>
+          <button title="Rechercher" type="button" class="fr-btn" id="submit">
+            Rechercher
+          </button>
+        </div>
+        <ul id="list" style="list-style: none" class="fr-pl-0"></ul>
+        <p id="error" class="fr-mt-2w"></p>
+      </section>
+    </main>
+  </body>
+</html>
