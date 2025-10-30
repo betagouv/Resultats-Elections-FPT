@@ -26,7 +26,7 @@ const getColumnsInfos = (column, table) => {
   return table.filter((col) => column.includes(col.colId))
 }
 
-const getColumnInfo = (column, table) => {
+const getColumnInfos = (column, table) => {
   const index = table.findIndex((col) => col.colId === column)
   return index >= 0 ? table[index] : null
 }
@@ -42,6 +42,6 @@ const getHtmlType = (type) => {
 export default {
   getTableColumnsInfos,
   getColumnsInfos,
-  getColumnInfo,
+  getColumnInfos,
   getHtmlType,
 }
