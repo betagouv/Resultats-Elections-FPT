@@ -153,6 +153,7 @@ const prettifyValue = (value) => {
   return value
 }
 
+/* ERROR */
 const generateAlertError = (content) => {
   const li = document.createElement('li')
   li.classList.add('fr-alert', 'fr-alert--error')
@@ -163,7 +164,7 @@ const generateAlertError = (content) => {
   return li
 }
 
-// Delete
+/* DELETE */
 deleteElement.addEventListener('click', async () => {
   deleteElement.setAttribute('disabled', true)
   const deleteElementContent = deleteElement.textContent
