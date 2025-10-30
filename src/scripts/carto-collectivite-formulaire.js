@@ -1,5 +1,5 @@
 /* IMPORTS */
-import gristUtils from '../scripts/utils/grist.js'
+import gristUtils from './utils/grist.js'
 
 /* VAR */
 const namesElement = document.querySelectorAll('[data-name="collectivite"]')

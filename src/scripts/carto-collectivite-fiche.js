@@ -1,6 +1,6 @@
 /* IMPORTS */
-import Modal from '../scripts/classes/Modal.js'
-import gristUtils from '../scripts/utils/grist.js'
+import Modal from './classes/Modal.js'
+import gristUtils from './utils/grist.js'
 
 /* VAR */
 const emptyElement = document.querySelector('#empty')
