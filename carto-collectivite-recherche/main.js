@@ -41,7 +41,7 @@ grist.onRecords((table, mapping) => {
   columnSearchMapped = mapping['ColumnSearch']
   columnBadgeMapped = mapping['ColumnBadge']
   allRecords = table
-  search()
+  displayList()
 })
 
 grist.onRecord((record) => {
@@ -58,14 +58,13 @@ const selectRow = (id) => {
   if (newSelected) newSelected.classList.add('selected')
 }
 
-/* SEARCH */
-const search = () => {
+/* DOM */
+const displayList = () => {
   listElement.replaceChildren()
   errorElement.textContent = ''
   const value = inputElement.value.trim()
   if (value === '') {
     displayRows(allRecords)
-    selectRow(currentRecord.id)
   } else {
     const recordsFound = allRecords.filter((record) =>
       searchUtils.containsValue(record[columnSearchMapped], inputElement.value)
@@ -79,7 +78,6 @@ const noResults = () => {
   errorElement.textContent = `Aucun résultat pour la recherche : "${inputElement.value}"`
 }
 
-/* DOM */
 const displayRows = (rows) => {
   for (let i = 0; i < rows.length; i++) {
     const divRow = document.createElement('button')
@@ -130,8 +128,11 @@ const displayRows = (rows) => {
   }
 }
 
-/* EVENTS */
-submitElement.addEventListener('click', search)
+/* SEARCH */
+submitElement.addEventListener('click', () => {
+  displayList()
+  selectRow(currentRecord.id)
+})
 
 /* CONFIGURATION */
 const setupConfiguration = () => {
