@@ -203,10 +203,6 @@ buttonSearch.addEventListener('click', async (event) => {
 buttonSave.addEventListener('click', async () => {
   isSaving = true
   try {
-    console.warn(
-      'CHA refListSelectedIds.toString()',
-      refListSelectedIds.toString()
-    )
     await grist.selectedTable.update({
       id: rowIdSelected,
       fields: {

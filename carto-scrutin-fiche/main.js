@@ -131,7 +131,6 @@ const fillCard = () => {
     const prettyLabel = getColumnInfos(dataMapped[i]).label
     p.textContent = `${prettyLabel} : `
     if (typeof prettyValue === 'object') {
-      console.warn('CHA', prettyValue)
       const orderAlphabetically = prettyValue.sort((a, b) => a.localeCompare(b))
       for (let i = 0; i < orderAlphabetically.length; i++) {
         const element = document.createElement('li')
