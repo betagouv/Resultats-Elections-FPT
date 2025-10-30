@@ -1,18 +1,5 @@
-/* SETUP */
-grist.ready({
-  requiredAccess: 'full',
-  columns: [
-    {
-      name: 'Nom',
-      description: 'Nom de la collectivite',
-    },
-    {
-      name: 'Data',
-      description: 'Colonnes des champs à remplir',
-      allowMultiple: true,
-    },
-  ],
-})
+/* IMPORTS */
+import gristUtils from '../scripts/grist.js'
 
 /* VAR */
 const namesElement = document.querySelectorAll('[data-name="collectivite"]')
@@ -30,54 +17,12 @@ let tableColumnsInfos = []
 let currentRecord = null
 let isSaving = false
 
-/* FUNCTIONS */
-const getHtmlType = (gristName) => {
-  if (gristName.indexOf('Ref:') >= 0) return 'select'
-  if (gristName === 'Int' || gristName === 'Numeric') return 'number'
-  if (gristName === 'Bool') return 'checkbox'
-  if (gristName === 'Attachments') return 'file'
-  return 'text'
-}
-
-/* COLUMNS */
-const getTableColumnsInfos = async () => {
-  if (tableColumnsInfos.length > 0) return
-  const tableName = await grist.getSelectedTableId()
-  const allTables = await grist.docApi.fetchTable('_grist_Tables')
-  const tableId = allTables.id[allTables.tableId.indexOf(tableName)]
-  const allGristColumns = await grist.docApi.fetchTable('_grist_Tables_column')
-  let index = 0
-  tableColumnsInfos = allGristColumns.parentId.reduce(function (
-    filtered,
-    currentValue
-  ) {
-    if (currentValue === tableId)
-      filtered.push({
-        label: allGristColumns.label[index],
-        description: allGristColumns.description[index],
-        colId: allGristColumns.colId[index],
-        type: allGristColumns.type[index],
-      })
-    index++
-    return filtered
-  },
-  [])
-}
-
-const getColumnsInfos = (column) => {
-  return tableColumnsInfos.filter((col) => column.includes(col.colId))
-}
-
-const getColumnInfo = (column) => {
-  const index = tableColumnsInfos.findIndex((col) => col.colId === column)
-  return index >= 0 ? tableColumnsInfos[index] : null
-}
-
+/* FORM */
 const generateForm = async () => {
   dataInputs.innerHTML = ''
-  const data = getColumnsInfos(dataMapped)
+  const data = gristUtils.getColumnsInfos(dataMapped, tableColumnsInfos)
   for (let i = 0; i < data.length; i++) {
-    const type = getHtmlType(data[i].type)
+    const type = gristUtils.getHtmlType(data[i].type)
     let input = null
     if (type === 'number' || type === 'text')
       input = generateInputText(data[i], type, 'fr-col-12')
@@ -288,8 +233,24 @@ grist.onRecord((record) => {
   window.scrollTo(0, 0)
 })
 
+grist.ready({
+  requiredAccess: 'full',
+  columns: [
+    {
+      name: 'Nom',
+      description: 'Nom de la collectivite',
+    },
+    {
+      name: 'Data',
+      description: 'Colonnes des champs à remplir',
+      allowMultiple: true,
+    },
+  ],
+})
+
+/* VIEW */
 const initView = async () => {
-  await getTableColumnsInfos()
+  tableColumnsInfos = await gristUtils.getTableColumnsInfos()
   await generateForm()
 }
 initView()
