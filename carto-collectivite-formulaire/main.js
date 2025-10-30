@@ -16,6 +16,7 @@ let dataMapped = []
 let tableColumnsInfos = []
 let currentRecord = null
 let isSaving = false
+let viewHasInitialized = false
 
 /* FORM */
 const generateForm = async () => {
@@ -222,6 +223,7 @@ grist.onRecord((record) => {
   namesElement.forEach((name) => {
     name.textContent = record[columnNameMapped]
   })
+  if (!viewHasInitialized) return
   if (!isSaving) resetView()
   isSaving = false
   window.scrollTo(0, 0)
@@ -246,5 +248,7 @@ grist.ready({
 const initView = async () => {
   tableColumnsInfos = await gristUtils.getTableColumnsInfos()
   await generateForm()
+  resetView()
+  viewHasInitialized = true
 }
 initView()
