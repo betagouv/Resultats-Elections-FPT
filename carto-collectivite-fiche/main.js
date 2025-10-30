@@ -1,4 +1,4 @@
-/* Imports */
+/* IMPORTS */
 import Modal from '../scripts/classes/Modal.js'
 
 /* VAR */

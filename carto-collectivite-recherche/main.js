@@ -1,4 +1,4 @@
-/* UTILS */
+/* IMPORTS */
 import searchUtils from '../scripts/utils/search.js'
 import Configuration from '../scripts/classes/Configuration.js'
 import Modal from '../scripts/classes/Modal.js'
