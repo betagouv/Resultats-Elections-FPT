@@ -1,0 +1,18 @@
+.selected.fr-card button {
+	background: #000091 !important;
+	color: white;
+	font-weight: bold !important;
+}
+
+li p {
+	text-align: left !important;
+}
+
+li {
+	cursor: pointer;
+}
+
+li:hover button {
+	background: #cacafb !important;
+	font-weight: bold;
+}
