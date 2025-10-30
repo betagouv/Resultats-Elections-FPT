@@ -4,7 +4,7 @@
   "description": "Saisir et centraliser les résultats des élections professionnelles dans la fonction publique territoriale",
   "main": "index.js",
   "scripts": {
-    "serve": "npx @11ty/eleventy --serve --input=dev --output=site"
+    "serve": "npx @11ty/eleventy --serve"
   },
   "repository": {
     "type": "git",
