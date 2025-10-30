@@ -4,7 +4,7 @@
   "description": "Saisir et centraliser les résultats des élections professionnelles dans la fonction publique territoriale",
   "main": "index.js",
   "scripts": {
-    "serve": "http-server"
+    "serve": "npx @11ty/eleventy --serve --input=dev --output=site"
   },
   "repository": {
     "type": "git",
@@ -17,6 +17,6 @@
   },
   "homepage": "https://github.com/betagouv/Resultats-Elections-FPT#readme",
   "dependencies": {
-    "http-server": "^14.1.1"
+    "@11ty/eleventy": "^3.1.2"
   }
 }
