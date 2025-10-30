@@ -1,5 +1,5 @@
 /* Imports */
-import Modal from '../scripts/modal.js'
+import Modal from '../scripts/classes/Modal.js'
 
 /* VAR */
 const emptyElement = document.querySelector('#empty')

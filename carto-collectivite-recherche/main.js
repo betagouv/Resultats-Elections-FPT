@@ -1,7 +1,7 @@
 /* UTILS */
-import searchUtils from '../scripts/search.js'
-import Configuration from '../scripts/configuration.js'
-import Modal from '../scripts/modal.js'
+import searchUtils from '../scripts/utils/search.js'
+import Configuration from '../scripts/classes/Configuration.js'
+import Modal from '../scripts/classes/Modal.js'
 
 /* VAR */
 const inputElement = document.querySelector('#search-input')
