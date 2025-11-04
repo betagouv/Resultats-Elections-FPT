@@ -60,8 +60,8 @@ const updateNumber = () => {
 
 /* FORM */
 const updateType = () => {
-  if (!columnType) return
-  selectTypeElement.value = currentRecord[columnType]
+  if (!columnTypeMapped) return
+  selectTypeElement.value = currentRecord[columnTypeMapped]
 }
 
 const updateRefsList = () => {
@@ -201,7 +201,7 @@ buttonSearch.addEventListener('click', async (event) => {
       : false
     const props = {
       name: foundRefs[i],
-      disabled: columnType !== null ? false : disabledIfRelated,
+      disabled: columnTypeMapped !== null ? false : disabledIfRelated,
       checked: false,
       scrutins: refListAll[columnName][index],
     }
@@ -232,7 +232,7 @@ buttonSave.addEventListener('click', async () => {
       id: rowIdSelected,
       fields: {
         [columnRefIds]: `[${refListSelectedIds.toString()}]`,
-        [columnType]: selectTypeElement.value,
+        [columnTypeMapped]: selectTypeElement.value,
       },
     })
     displayMessage('success')
@@ -262,7 +262,7 @@ grist.onRecords(async (table, mapping) => {
   columnRefIds = mapping['RefIds']
   columnRefNames = mapping['RefNames']
   if (mapping['Type']) {
-    columnType = mapping['Type']
+    columnTypeMapped = mapping['Type']
     typeElement.classList.remove('fr-hidden')
   }
   await setScrutinName()
