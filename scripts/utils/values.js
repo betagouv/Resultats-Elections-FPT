@@ -1,8 +1,8 @@
-const doesContain = (string, value) => {
-    if (typeof value !== "string") return false // Censored values
-    const stringClean = string.toLowerCase()
-    const valueLower = value.toLowerCase()
-    return stringClean.indexOf(valueLower) >= 0
+const contains = (string, value) => {
+  if (typeof value !== "string") return false // Censored values
+  const stringClean = string.toLowerCase()
+  const valueLower = value.toLowerCase()
+  return stringClean.indexOf(valueLower) >= 0
 }
 
 const prettify = (value) => {
@@ -12,4 +12,4 @@ const prettify = (value) => {
   return value
 }
 
-export default { doesContain, prettify }
+export default { contains, prettify }
