@@ -1,27 +1,3 @@
-/* SETUP */
-grist.ready({
-  requiredAccess: 'full',
-  columns: [
-    {
-      name: 'Name',
-      description: 'Nom de la collectivite',
-    },
-    {
-      name: 'RefIds',
-      description: 'Identifiant',
-    },
-    {
-      name: 'RefNames',
-      description: 'Nom',
-    },
-    {
-      name: 'Type',
-      description: 'Type de scrutin',
-      optional: true,
-    },
-  ],
-})
-
 /* VAR */
 const namesElement = document.querySelectorAll('[data-name="collectivite"]')
 const formElement = document.querySelector('#form')
@@ -52,7 +28,7 @@ let refListSelectedNames = []
 let refListAll = []
 let scrutinName = null
 
-/* TITLE */
+/* CONTENT */
 const updateNumber = () => {
   numberElement.textContent =
     refListSelectedIds.length > 0 ? refListSelectedIds.length : 'Aucune'
@@ -259,6 +235,29 @@ const setScrutinName = async () => {
 }
 
 /* GRIST */
+grist.ready({
+  requiredAccess: 'full',
+  columns: [
+    {
+      name: 'Name',
+      description: 'Nom de la collectivite',
+    },
+    {
+      name: 'RefIds',
+      description: 'Identifiant',
+    },
+    {
+      name: 'RefNames',
+      description: 'Nom',
+    },
+    {
+      name: 'Type',
+      description: 'Type de scrutin',
+      optional: true,
+    },
+  ],
+})
+
 grist.onRecords(async (table, mapping) => {
   // Les données dans la table ont changé.
   columnNameMapped = mapping['Name']

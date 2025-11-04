@@ -3,7 +3,26 @@ import Modal from '../scripts/classes/Modal.js'
 import gristUtils from '../scripts/utils/grist.js'
 import valuesUtils from '../scripts/utils/values.js'
 
-/* SETUP */
+/* VAR */
+const emptyElement = document.querySelector('#empty')
+const filledElement = document.querySelector('#filled')
+const titleElement = document.querySelector('#title')
+const badgeElement = document.querySelector('#badge')
+const dataElement = document.querySelector('#data')
+const errorsElement = document.querySelector('#errors')
+const deleteElement = document.querySelector('#delete')
+const modal = new Modal({
+  container: document.querySelector('#section-modal'),
+})
+
+let titleMapped = null
+let badgeMapped = null
+let dataMapped = null
+let errorsMapped = null
+let currentRecord = null
+let tableColumnsInfos = []
+
+/* GRIST */
 grist.ready({
   requiredAccess: 'full',
   columns: [
@@ -30,26 +49,6 @@ grist.ready({
   ],
 })
 
-/* VAR */
-const emptyElement = document.querySelector('#empty')
-const filledElement = document.querySelector('#filled')
-const titleElement = document.querySelector('#title')
-const badgeElement = document.querySelector('#badge')
-const dataElement = document.querySelector('#data')
-const errorsElement = document.querySelector('#errors')
-const deleteElement = document.querySelector('#delete')
-const modal = new Modal({
-  container: document.querySelector('#section-modal'),
-})
-
-let titleMapped = null
-let badgeMapped = null
-let dataMapped = null
-let errorsMapped = null
-let currentRecord = null
-let tableColumnsInfos = []
-
-/* GRIST */
 grist.onRecord((record) => {
   // Le curseur s'est déplacé
   currentRecord = record

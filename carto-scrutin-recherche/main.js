@@ -1,7 +1,36 @@
 /* IMPORTS */
 import Modal from '../scripts/classes/Modal.js'
 
-/* SETUP */
+/* VAR */
+const inputElement = document.querySelector('#search-input')
+const submitElement = document.querySelector('#submit')
+const listElement = document.querySelector('#list')
+const errorElement = document.querySelector('#error')
+const searchAddInput = document.querySelector('#search-add-input')
+const searchAddButton = document.querySelector('#search-add-button')
+const searchAddLoading = document.querySelector('#search-add-loading')
+const searchAddEmpty = document.querySelector('#search-add-empty')
+const searchAddResults = document.querySelector('#search-add-results')
+const searchAddClose = document.querySelector('#search-add-close')
+const searchCreateButton = document.querySelector('#search-create-button')
+new Modal({
+  container: document.querySelector('#section-modal'),
+})
+
+let allRecords = []
+let columnSearchMapped = null
+let columnBadgeMapped = null
+let columnOrganisateurMapped = null
+let columnRattacheesMapped = null
+let columnDescriptionMapped = null
+let currentRecord = null
+let allCollectivites = []
+let organisateurId = null
+let setCursorFromClick = false
+let isFirstTime = true
+let scrutinName = null
+
+/* GRIST */
 grist.ready({
   requiredAccess: 'full',
   allowSelectBy: true,
@@ -29,38 +58,6 @@ grist.ready({
   ],
 })
 
-/* VAR */
-const inputElement = document.querySelector('#search-input')
-const submitElement = document.querySelector('#submit')
-const listElement = document.querySelector('#list')
-const errorElement = document.querySelector('#error')
-const searchAddInput = document.querySelector('#search-add-input')
-const searchAddButton = document.querySelector('#search-add-button')
-const searchAddLoading = document.querySelector('#search-add-loading')
-const searchAddEmpty = document.querySelector('#search-add-empty')
-const searchAddResults = document.querySelector('#search-add-results')
-const searchAddClose = document.querySelector('#search-add-close')
-const searchCreateButton = document.querySelector('#search-create-button')
-/* MODAL */
-new Modal({
-  container: document.querySelector('#section-modal'),
-})
-
-let allRecords = []
-let columnSearchMapped = null
-let columnBadgeMapped = null
-let columnOrganisateurMapped = null
-let columnRattacheesMapped = null
-let columnDescriptionMapped = null
-let currentRecord = null
-let tableColumnsInfos = []
-let allCollectivites = []
-let organisateurId = null
-let setCursorFromClick = false
-let isFirstTime = true
-let scrutinName = null
-
-/* GRIST */
 grist.onRecords(async (table, mapping) => {
   // Les données dans la table ont changé.
   columnSearchMapped = mapping['ColumnSearch']
