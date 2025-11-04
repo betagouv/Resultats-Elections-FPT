@@ -1,5 +1,6 @@
 /* IMPORTS */
 import valuesUtils from '../scripts/utils/values.js'
+import gristUtils from '../scripts/utils/grist.js'
 
 /* VAR */
 const namesElement = document.querySelectorAll('[data-name="collectivite"]')
@@ -231,7 +232,7 @@ const setRefsListValues = () => {
 }
 
 const setScrutinName = async () => {
-  const tableId = await grist.getSelectedTableId()
+  const tableId = await gristUtils.getCurrentTableID()
   scrutinName = tableId.split('_').pop()
 }
 

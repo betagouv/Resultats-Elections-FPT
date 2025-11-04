@@ -1,6 +1,7 @@
 /* IMPORTS */
 import Modal from '../scripts/classes/Modal.js'
 import valuesUtils from '../scripts/utils/values.js'
+import gristUtils from '../scripts/utils/grist.js'
 
 /* VAR */
 const inputElement = document.querySelector('#search-input')
@@ -85,7 +86,7 @@ grist.onRecord((record) => {
 
 /* COLUMNS */
 const setScrutinName = async () => {
-  const tableId = await grist.getSelectedTableId()
+  const tableId = await gristUtils.getCurrentTableID()
   scrutinName = tableId.split('_').pop()
 }
 
