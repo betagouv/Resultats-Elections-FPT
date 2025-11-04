@@ -49,9 +49,10 @@ grist.ready({
   ],
 })
 
-grist.onRecord((record) => {
+grist.onRecord(async (record) => {
   // Le curseur s'est déplacé
   currentRecord = record
+  await needsColumnInfos()
   displayContent()
   window.scrollTo(0, 0)
 })
@@ -107,8 +108,11 @@ const fillCard = () => {
     const list = document.createElement('ul')
     p.classList.add('fr-mb-1v')
     const prettyValue = valuesUtils.prettify(currentRecord[dataMapped[i]])
-    const prettyLabel = gristUtils.getColumnInfos(dataMapped[i]).label
-    p.textContent = `${prettyLabel} : `
+    const columnInfos = gristUtils.getColumnInfos(
+      dataMapped[i],
+      tableColumnsInfos
+    )
+    p.textContent = `${columnInfos.label} : `
     if (typeof prettyValue === 'object') {
       const orderAlphabetically = prettyValue.sort((a, b) => a.localeCompare(b))
       for (let i = 0; i < orderAlphabetically.length; i++) {
@@ -124,7 +128,6 @@ const fillCard = () => {
     }
     li.appendChild(p)
     li.appendChild(list)
-
     dataElement.appendChild(li)
   }
 
