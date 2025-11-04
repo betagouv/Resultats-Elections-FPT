@@ -195,9 +195,11 @@ buttonSearch.addEventListener('click', async (event) => {
   for (let i = 0; i < foundRefs.length; i++) {
     const columnName = `Scrutin_${scrutinName}`
     const index = refListAll.Nom_complet.indexOf(foundRefs[i])
-    const alreadyLinked = refListAll[columnName][index] !== null
+    const alreadyLinked =
+      refListAll[columnName][index] !== null &&
+      refListAll[columnName][index] !== ''
     const disabledIfRelated = alreadyLinked
-      ? `Est déjà rattaché au scrutin ${scrutinName} ${refListAll[columnName][index]}`
+      ? `Est déjà rattachée au scrutin ${scrutinName} ${refListAll[columnName][index]}`
       : false
     const props = {
       name: foundRefs[i],
