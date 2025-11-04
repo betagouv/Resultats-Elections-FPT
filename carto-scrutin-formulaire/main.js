@@ -14,6 +14,11 @@ grist.ready({
       name: 'RefNames',
       description: 'Nom',
     },
+    {
+      name: 'Type',
+      description: 'Type de scrutin',
+      optional: true,
+    },
   ],
 })
 
@@ -32,10 +37,13 @@ const loadingSearch = document.querySelector('#search-loading')
 const emptySearch = document.querySelector('#search-empty')
 const resultSearch = document.querySelector('#search-result')
 const numberElement = document.querySelector('#number')
+const typeElement = document.querySelector('#type')
+const selectTypeElement = document.querySelector('#select')
 
 let rowIdSelected = null
 let currentRecord = null
 let columnNameMapped = null
+let columnTypeMapped = null
 let columnRefIds = []
 let columnRefNames = []
 let isSaving = false
@@ -51,6 +59,11 @@ const updateNumber = () => {
 }
 
 /* FORM */
+const updateType = () => {
+  if (!columnType) return
+  selectTypeElement.value = currentRecord[columnType]
+}
+
 const updateRefsList = () => {
   checkboxesElement.innerHTML = ''
   if (!refListSelectedNames) return
@@ -209,6 +222,7 @@ buttonSave.addEventListener('click', async () => {
       id: rowIdSelected,
       fields: {
         [columnRefIds]: `[${refListSelectedIds.toString()}]`,
+        [columnType]: selectTypeElement.value,
       },
     })
     displayMessage('success')
@@ -237,6 +251,10 @@ grist.onRecords(async (table, mapping) => {
   columnNameMapped = mapping['Name']
   columnRefIds = mapping['RefIds']
   columnRefNames = mapping['RefNames']
+  if (mapping['Type']) {
+    columnType = mapping['Type']
+    typeElement.classList.remove('fr-hidden')
+  }
   await setScrutinName()
   setRefsListValues()
 })
@@ -251,6 +269,7 @@ grist.onRecord((record) => {
     : []
   updateRefsList()
   updateNumber()
+  updateType()
   namesElement.forEach((name) => {
     name.textContent = record[columnNameMapped]
   })

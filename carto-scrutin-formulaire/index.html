@@ -17,6 +17,35 @@
         </fieldset>
 
         <fieldset
+          class="fr-fieldset fr-mb-2w fr-hidden"
+          aria-labelledby="checkboxes-legend checkboxes-messages"
+          id="type"
+        >
+          <div class="fr-fieldset__element fr-select-group">
+            <label class="fr-label" for="select-hint">
+              Type de scrutin :
+            </label>
+            <select
+              class="fr-select"
+              aria-describedby="select-hint-messages"
+              id="select"
+              name="select-hint"
+            >
+              <option value="" selected disabled hidden>
+                Sélectionner une option
+              </option>
+              <option value="CAP A">CAP A</option>
+              <option value="CAP B">CAP B</option>
+              <option value="CAP C">CAP C</option>
+              <option value="CAP (A+B)">CAP (A+B)</option>
+              <option value="CAP (A+C)">CAP (A+C)</option>
+              <option value="CAP (B+C)">CAP (B+C)</option>
+              <option value="CAP (A+B+C)">CAP (A+B+C)</option>
+            </select>
+          </div>
+        </fieldset>
+
+        <fieldset
           class="fr-fieldset"
           aria-labelledby="checkboxes-legend checkboxes-messages"
         >
