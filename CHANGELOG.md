@@ -1,5 +1,6 @@
 # Changelog
 
+- improve(Cartographie): mise en commun de code et corrections diverses [7](https://github.com/betagouv/Resultats-Elections-FPT/pull/7)
 - improve: reutilisations de styles et scripts [#6](https://github.com/betagouv/Resultats-Elections-FPT/pull/6)
 - feat(Cartographie scrutins): ajout des widgets customs recherche, fiche, et formulaire [#5](https://github.com/betagouv/Resultats-Elections-FPT/pull/5)
 - fix(Cartographie collectivité): corrige les erreurs d'affichage à l'ouverture de l'onglet [#4](https://github.com/betagouv/Resultats-Elections-FPT/pull/4)
