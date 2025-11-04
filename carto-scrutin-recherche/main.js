@@ -1,3 +1,6 @@
+/* IMPORTS */
+import Modal from '../scripts/classes/Modal.js'
+
 /* SETUP */
 grist.ready({
   requiredAccess: 'full',
@@ -38,7 +41,10 @@ const searchAddEmpty = document.querySelector('#search-add-empty')
 const searchAddResults = document.querySelector('#search-add-results')
 const searchAddClose = document.querySelector('#search-add-close')
 const searchCreateButton = document.querySelector('#search-create-button')
-const openModalButton = document.querySelector('#open-modal-button')
+/* MODAL */
+new Modal({
+  container: document.querySelector('#section-modal'),
+})
 
 let allRecords = []
 let columnSearchMapped = null
@@ -335,9 +341,4 @@ searchCreateButton.addEventListener('click', async () => {
     resetAddSearch()
     console.error('Une erreur est survenue lors de la création du scrutin')
   }
-})
-
-openModalButton.addEventListener('click', () => {
-  inputElement.value = ''
-  search()
 })
