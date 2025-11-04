@@ -195,7 +195,7 @@ const getCollectiviteInfos = (name) => {
     name: allCollectivites.Nom_complet[index],
     isOrganisor: allCollectivites[organisateurColumnName][index],
     scrutinAlreadyLinked:
-      typeof scrutinAlreadyLinked === 'string'
+      typeof scrutinAlreadyLinked === 'string' && scrutinAlreadyLinked !== ''
         ? [scrutinAlreadyLinked]
         : scrutinAlreadyLinked,
   }
@@ -293,7 +293,6 @@ searchCreateButton.addEventListener('click', async () => {
   searchCreateButton.setAttribute('disabled', false)
 
   if (newRecord.retValues.length > 0) {
-    isNew = true
     const newRecordId = newRecord.retValues[0]
     searchAddClose.click()
     grist.setCursorPos({ rowId: newRecordId })
