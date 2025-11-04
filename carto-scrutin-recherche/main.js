@@ -1,5 +1,6 @@
 /* IMPORTS */
 import Modal from '../scripts/classes/Modal.js'
+import valuesUtils from '../scripts/utils/values.js'
 
 /* VAR */
 const inputElement = document.querySelector('#search-input')
@@ -67,7 +68,7 @@ grist.onRecords(async (table, mapping) => {
   columnDescriptionMapped = mapping['ColumnDescription']
   allRecords = table
   await setScrutinName()
-  search()
+  displayList()
 })
 
 grist.onRecord((record) => {
@@ -96,32 +97,27 @@ const selectRow = (id) => {
   if (newSelected) newSelected.classList.add('selected')
 }
 
-/* SEARCH */
-const search = () => {
-  listElement.innerHTML = ''
-  errorElement.innerHTML = ''
-  if (inputElement.value === '') {
+/* DOM */
+const displayList = () => {
+  listElement.replaceChildren()
+  errorElement.textContent = ''
+  const value = inputElement.value.trim()
+  if (value === '') {
     displayRows(allRecords)
-    selectRow(currentRecord.id)
   } else {
-    const recordsFound = allRecords.filter((record) => {
-      const valueClean = inputElement.value.toLowerCase()
-      const name = record[columnSearchMapped].toLowerCase()
-      return name.indexOf(valueClean) >= 0
-    })
+    const recordsFound = allRecords.filter((record) => 
+      valuesUtils.doesContain(record[columnSearchMapped], inputElement.value)
+    )
     if (recordsFound.length > 0) displayRows(recordsFound)
     else noResults()
   }
 }
 
 const noResults = () => {
-  errorElement.innerHTML = `Aucun résultat pour la recherche : "${inputElement.value}"`
+  errorElement.textContent = `Aucun résultat pour la recherche : "${inputElement.value}"`
 }
 
-inputElement.addEventListener('input', search)
-submitElement.addEventListener('click', search)
 
-/* DYNAMIC VIEW */
 const displayRows = (rows) => {
   for (let i = 0; i < rows.length; i++) {
     const divRow = document.createElement('button')
@@ -181,6 +177,12 @@ const displayRows = (rows) => {
     })
   }
 }
+
+/* SEARCH */
+submitElement.addEventListener('click', () => {
+  displayList()
+  selectRow(currentRecord.id)
+})
 
 /* MODAL */
 const displaySearchResults = (results) => {
