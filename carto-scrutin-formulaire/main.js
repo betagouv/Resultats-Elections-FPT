@@ -228,12 +228,15 @@ buttonSearch.addEventListener('click', async (event) => {
 buttonSave.addEventListener('click', async () => {
   isSaving = true
   try {
+    const fields = {
+      [columnRefIds]: `[${refListSelectedIds.toString()}]`,
+    }
+    if (columnTypeMapped) {
+      fields[columnTypeMapped] = selectTypeElement.value
+    }
     await grist.selectedTable.update({
       id: rowIdSelected,
-      fields: {
-        [columnRefIds]: `[${refListSelectedIds.toString()}]`,
-        [columnTypeMapped]: selectTypeElement.value,
-      },
+      fields,
     })
     displayMessage('success')
   } catch (e) {
