@@ -290,7 +290,7 @@ searchCreateButton.addEventListener('click', async () => {
   const newRecord = await grist.docApi.applyUserActions(actions)
 
   searchCreateButton.textContent = searchCreateButtonText
-  searchCreateButton.setAttribute('disabled', false)
+  searchCreateButton.removeAttribute('disabled')
 
   if (newRecord.retValues.length > 0) {
     const newRecordId = newRecord.retValues[0]
