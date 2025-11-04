@@ -219,16 +219,20 @@ const getCollectiviteInfos = (name) => {
   const index = allCollectivites.Nom_complet.indexOf(name)
   const organisateurColumnName = `${scrutinName}_Organisateur`
   const scrutinColumnName = `Scrutin_${scrutinName}`
+  const scrutinAlreadyLinked = allCollectivites[scrutinColumnName][index]
   return {
     value: allCollectivites.id[index],
     name: allCollectivites.Nom_complet[index],
-    isDisabled: allCollectivites[organisateurColumnName][index],
-    scrutinAlreadyLinked: allCollectivites[scrutinColumnName][index],
+    isOrganisor: allCollectivites[organisateurColumnName][index],
+    scrutinAlreadyLinked:
+      typeof scrutinAlreadyLinked === 'string'
+        ? [scrutinAlreadyLinked]
+        : scrutinAlreadyLinked,
   }
 }
 
 const createRadio = (props) => {
-  const { value, name, isDisabled, scrutinAlreadyLinked } = props
+  const { value, name, isOrganisor, scrutinAlreadyLinked } = props
   const radio = document.createElement('div')
   radio.classList.add('fr-radio-group', 'fr-mb-1w')
   const input = document.createElement('input')
@@ -239,16 +243,25 @@ const createRadio = (props) => {
   const label = document.createElement('label')
   label.setAttribute('for', value)
   label.textContent = name
-  if (isDisabled) {
+  if (isOrganisor) {
     input.setAttribute('disabled', true)
     const span = document.createElement('span')
     span.textContent = `La collectivité organise déjà un scrutin ${scrutinName}`
     span.classList.add('fr-hint-text')
     label.appendChild(span)
-  } else if (scrutinAlreadyLinked) {
+  } else if (scrutinAlreadyLinked.length === 1 && scrutinName !== 'CAP') {
     input.setAttribute('disabled', true)
     const span = document.createElement('span')
     span.textContent = `La collectivité est rattachée au scrutin ${scrutinName} de ${scrutinAlreadyLinked}, pour en créer un en tant qu'organisatrice vous devez d'abord la détacher de ce dernier.`
+    span.classList.add('fr-hint-text')
+    label.appendChild(span)
+  } else if (scrutinAlreadyLinked.length > 1 && scrutinName === 'CAP') {
+    const span = document.createElement('span')
+    const scrutinAlreadyLinkedClean = scrutinAlreadyLinked.slice(1) // HACK first value is "L"
+    const scrutinName =
+      scrutinAlreadyLinkedClean.length > 1 ? 'aux scrutins' : 'au scrutin'
+    const scrutinList = scrutinAlreadyLinkedClean.join(', ')
+    span.textContent = `La collectivité est déjà rattachée ${scrutinName} : ${scrutinList}`
     span.classList.add('fr-hint-text')
     label.appendChild(span)
   }
