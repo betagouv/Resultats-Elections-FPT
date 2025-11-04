@@ -67,7 +67,7 @@ const displayList = () => {
     displayRows(allRecords)
   } else {
     const recordsFound = allRecords.filter((record) =>
-      valuesUtils.contains(record[columnSearchMapped], inputElement.value)
+      valuesUtils.isInString(record[columnSearchMapped], inputElement.value)
     )
     if (recordsFound.length > 0) displayRows(recordsFound)
     else noResults()

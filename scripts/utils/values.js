@@ -1,4 +1,4 @@
-const contains = (string, value) => {
+const isInString = (string, value) => {
   if (typeof value !== "string") return false // Censored values
   const stringClean = string.toLowerCase()
   const valueLower = value.toLowerCase()
@@ -12,4 +12,4 @@ const prettify = (value) => {
   return value
 }
 
-export default { contains, prettify }
+export default { isInString, prettify }
