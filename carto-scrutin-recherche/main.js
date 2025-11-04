@@ -28,8 +28,6 @@ let columnDescriptionMapped = null
 let currentRecord = null
 let allCollectivites = []
 let organisateurId = null
-let setCursorFromClick = false
-let isFirstTime = true
 let scrutinName = null
 
 /* GRIST */
@@ -76,12 +74,6 @@ grist.onRecord((record) => {
   // Le curseur a été déplacé.
   currentRecord = record
   selectRow(currentRecord.id)
-  if (!setCursorFromClick && !isFirstTime) {
-    const selectedRow = document.querySelector('.selected')
-    selectedRow.scrollIntoView()
-  }
-  isFirstTime = false
-  setCursorFromClick = false
 })
 
 /* COLUMNS */
@@ -173,7 +165,6 @@ const displayRows = (rows) => {
 
     listElement.appendChild(li)
     li.addEventListener('click', () => {
-      setCursorFromClick = true
       grist.setCursorPos({ rowId: id })
     })
   }
