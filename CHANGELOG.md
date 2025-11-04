@@ -1,5 +1,6 @@
 # Changelog
 
+- feat(Cartographie scrutins): ajout des widgets customs recherche, fiche, et formulaire [#5](https://github.com/betagouv/Resultats-Elections-FPT/pull/5)
 - fix(Cartographie collectivité): corrige les erreurs d'affichage à l'ouverture de l'onglet [#4](https://github.com/betagouv/Resultats-Elections-FPT/pull/4)
 - feat(Cartographie collectivité): ajout des custom widgets recherche, fiche et formulaire [#3](https://github.com/betagouv/Resultats-Elections-FPT/pull/3)
 - chore: mise en place de l'environnement de développement [#2](https://github.com/betagouv/Resultats-Elections-FPT/pull/2)
