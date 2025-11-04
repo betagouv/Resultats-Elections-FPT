@@ -19,6 +19,10 @@ grist.ready({
       name: 'ColumnBadge',
       optional: true,
     },
+    {
+      name: 'ColumnDescription',
+      optional: true,
+    },
   ],
 })
 
@@ -41,6 +45,7 @@ let columnSearchMapped = null
 let columnBadgeMapped = null
 let columnOrganisateurMapped = null
 let columnRattacheesMapped = null
+let columnDescriptionMapped = null
 let currentRecord = null
 let tableColumnsInfos = []
 let allCollectivites = []
@@ -56,6 +61,7 @@ grist.onRecords(async (table, mapping) => {
   columnBadgeMapped = mapping['ColumnBadge']
   columnOrganisateurMapped = mapping['ColumnOrganisateur']
   columnRattacheesMapped = mapping['ColumnRattachees']
+  columnDescriptionMapped = mapping['ColumnDescription']
   allRecords = table
   await setScrutinName()
   search()
@@ -160,6 +166,14 @@ const displayRows = (rows) => {
     p.textContent = rows[i][columnSearchMapped]
     p.classList.add('fr-mb-0')
     divName.appendChild(p)
+
+    if (rows[i][columnDescriptionMapped]) {
+      const description = document.createElement('p')
+      description.classList.add('fr-text--xs', 'fr-mb-0')
+      description.textContent = rows[i][columnDescriptionMapped]
+      divName.appendChild(description)
+    }
+
     divRow.appendChild(divName)
 
     if (columnBadgeMapped) {
