@@ -252,7 +252,7 @@ const resetAddSearch = () => {
   searchAddEmpty.classList.add('fr-hidden')
   searchAddLoading.classList.add('fr-hidden')
   searchCreateButton.classList.add('fr-hidden')
-  searchAddResults.innerHTML = ''
+  searchAddResults.replaceChildren()
 }
 
 searchAddButton.addEventListener('click', async () => {

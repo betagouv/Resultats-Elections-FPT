@@ -41,7 +41,7 @@ const updateType = () => {
 }
 
 const updateRefsList = () => {
-  checkboxesElement.innerHTML = ''
+  checkboxesElement.replaceChildren()
   if (!refListSelectedNames) return
   for (let i = 0; i < refListSelectedNames.length; i++) {
     addSelectedCheckboxe({
@@ -117,7 +117,7 @@ const resetView = () => {
 
 const resetSearch = () => {
   inputSearch.value = ''
-  resultSearch.innerHTML = ''
+  resultSearch.replaceChildren()
   emptySearch.classList.add('fr-hidden')
   loadingSearch.classList.add('fr-hidden')
 }
@@ -140,7 +140,7 @@ inputSearch.addEventListener('input', () => {
 
 buttonSearch.addEventListener('click', async (event) => {
   event.preventDefault()
-  resultSearch.innerHTML = ''
+  resultSearch.replaceChildren()
 
   const searchValue = inputSearch.value.trim().toLowerCase()
   if (searchValue.length < 3) return

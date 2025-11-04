@@ -20,7 +20,7 @@ let viewHasInitialized = false
 
 /* FORM */
 const generateForm = async () => {
-  dataInputs.innerHTML = ''
+  dataInputs.replaceChildren()
   const data = gristUtils.getColumnsInfos(dataMapped, tableColumnsInfos)
   for (let i = 0; i < data.length; i++) {
     const type = gristUtils.getHtmlType(data[i].type)

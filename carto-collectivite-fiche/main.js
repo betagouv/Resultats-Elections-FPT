@@ -81,8 +81,8 @@ const displayContent = () => {
 }
 
 const resetCard = () => {
-  dataElement.innerHTML = ''
-  errorsElement.innerHTML = ''
+  dataElement.replaceChildren()
+  errorsElement.replaceChildren()
 }
 
 const fillCard = () => {
