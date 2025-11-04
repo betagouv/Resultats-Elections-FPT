@@ -227,13 +227,13 @@ const createRadio = (props) => {
     span.textContent = `La collectivité organise déjà un scrutin ${scrutinName}`
     span.classList.add('fr-hint-text')
     label.appendChild(span)
-  } else if (scrutinAlreadyLinked.length === 1 && scrutinName !== 'CAP') {
+  } else if (scrutinAlreadyLinked && scrutinAlreadyLinked.length === 1 && scrutinName !== 'CAP') {
     input.setAttribute('disabled', true)
     const span = document.createElement('span')
     span.textContent = `La collectivité est rattachée au scrutin ${scrutinName} de ${scrutinAlreadyLinked}, pour en créer un en tant qu'organisatrice vous devez d'abord la détacher de ce dernier.`
     span.classList.add('fr-hint-text')
     label.appendChild(span)
-  } else if (scrutinAlreadyLinked.length > 1 && scrutinName === 'CAP') {
+  } else if (scrutinAlreadyLinked && scrutinAlreadyLinked.length > 1 && scrutinName === 'CAP') {
     const span = document.createElement('span')
     const scrutinAlreadyLinkedClean = scrutinAlreadyLinked.slice(1) // HACK first value is "L"
     const scrutinName =
@@ -261,11 +261,7 @@ searchAddButton.addEventListener('click', async () => {
   if (searchValue.length === 0) return
   searchAddLoading.classList.remove('fr-hidden')
   allCollectivites = await grist.docApi.fetchTable('Collectivites')
-  const filteredCollectivites = allCollectivites.Nom_complet.filter((name) => {
-    if (typeof name !== 'string') return false
-    const nameLower = name.toLowerCase()
-    return nameLower.indexOf(searchValue) === 0
-  })
+  const filteredCollectivites = allCollectivites.Nom_complet.filter((name) => valuesUtils.isInString(name, searchValue))
   searchAddLoading.classList.add('fr-hidden')
   if (filteredCollectivites.length === 0)
     searchAddEmpty.classList.remove('fr-hidden')
