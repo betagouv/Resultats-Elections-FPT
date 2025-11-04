@@ -1,3 +1,6 @@
+/* IMPORTS */
+import valuesUtils from '../scripts/utils/values.js'
+
 /* VAR */
 const namesElement = document.querySelectorAll('[data-name="collectivite"]')
 const formElement = document.querySelector('#form')
@@ -151,9 +154,7 @@ buttonSearch.addEventListener('click', async (event) => {
   }
 
   const foundRefs = refListAll.Nom_complet.filter((name, index) => {
-    if (typeof name !== 'string') return false
-    let isFound = true
-    if (isFound) isFound = name.toLowerCase().indexOf(searchValue) === 0
+    let isFound = valuesUtils.isInString(name, searchValue)
     if (isFound && refListSelectedIds)
       isFound = !refListSelectedIds.includes(refListAll.id[index])
     return isFound
