@@ -1,5 +1,7 @@
 /* IMPORTS */
 import Modal from '../scripts/classes/Modal.js'
+import gristUtils from '../scripts/utils/grist.js'
+
 
 /* SETUP */
 grist.ready({
@@ -61,37 +63,9 @@ grist.onRecords(async (table, mapping) => {
   badgeMapped = mapping['badge']
   dataMapped = mapping['data']
   errorsMapped = mapping['errors']
-  if (tableColumnsInfos.length === 0) await getTableColumnsInfos()
+  await needsColumnInfos()
 })
 
-/* COLUMNS */
-const getTableColumnsInfos = async () => {
-  if (tableColumnsInfos.length > 0) return
-  const tableName = await grist.getSelectedTableId()
-  const allTables = await grist.docApi.fetchTable('_grist_Tables')
-  const tableId = allTables.id[allTables.tableId.indexOf(tableName)]
-  const allGristColumns = await grist.docApi.fetchTable('_grist_Tables_column')
-  let index = 0
-  tableColumnsInfos = allGristColumns.parentId.reduce(function (
-    filtered,
-    currentValue
-  ) {
-    if (currentValue === tableId)
-      filtered.push({
-        label: allGristColumns.label[index],
-        description: allGristColumns.description[index],
-        colId: allGristColumns.colId[index],
-        type: allGristColumns.type[index],
-      })
-    index++
-    return filtered
-  },
-  [])
-}
-
-const getColumnInfos = (column) => {
-  return tableColumnsInfos.filter((col) => col.colId === column)[0]
-}
 
 /* CONTENT */
 const displayContent = () => {
@@ -134,7 +108,7 @@ const fillCard = () => {
     const list = document.createElement('ul')
     p.classList.add('fr-mb-1v')
     const prettyValue = prettifyValue(currentRecord[dataMapped[i]])
-    const prettyLabel = getColumnInfos(dataMapped[i]).label
+    const prettyLabel = gristUtils.getColumnInfos(dataMapped[i]).label
     p.textContent = `${prettyLabel} : `
     if (typeof prettyValue === 'object') {
       const orderAlphabetically = prettyValue.sort((a, b) => a.localeCompare(b))
@@ -195,3 +169,11 @@ deleteElement.addEventListener('click', async () => {
     console.warn('error', e)
   }
 })
+
+
+/* COLUMNS INFOS */
+const needsColumnInfos = async () => {
+  if (tableColumnsInfos.length === 0) {
+    tableColumnsInfos = await gristUtils.getTableColumnsInfos()
+  }
+}
