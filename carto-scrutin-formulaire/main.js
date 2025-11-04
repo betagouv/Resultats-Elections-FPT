@@ -80,7 +80,7 @@ const addSelectedCheckboxe = (props) => {
   const checkbox = getCheckbox(props)
   const input = checkbox.querySelector('input')
   input.addEventListener('change', () => {
-    const index = refListAll.Nom_de_collectivite.indexOf(input.value)
+    const index = refListAll.Nom_complet.indexOf(input.value)
     const id = refListAll.id[index]
     if (input.checked) refListSelectedIds.push(id)
     else refListSelectedIds = refListSelectedIds.filter((refId) => refId !== id)
@@ -112,9 +112,7 @@ const getCheckbox = (props) => {
     span.textContent = disabled
     span.classList.add('fr-hint-text')
     label.appendChild(span)
-  }
-
-  if (scrutins && scrutins.length > 1) {
+  } else if (scrutins && scrutins.length > 1) {
     const scrutinsCleaned = scrutins.slice(1) // HACK first value is "L"
     const span = document.createElement('span')
     const scrutinsNames = scrutinsCleaned.join(', ')
