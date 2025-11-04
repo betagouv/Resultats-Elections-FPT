@@ -184,7 +184,8 @@ const displayRows = (rows) => {
       badge.classList.add('fr-badge')
       badge.textContent = status
       if (status === 'Complet') badge.classList.add('fr-badge--success')
-      else if (status === 'Incomplet') badge.classList.add('fr-badge--error')
+      else if (status === 'Incomplet' || status === 'Doublon')
+        badge.classList.add('fr-badge--error')
       divBadge.appendChild(badge)
       divRow.appendChild(divBadge)
     } else {
