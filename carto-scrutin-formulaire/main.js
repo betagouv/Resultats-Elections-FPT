@@ -1,26 +1,6 @@
-/* SETUP */
-grist.ready({
-  requiredAccess: 'full',
-  columns: [
-    {
-      name: 'Name',
-      description: 'Nom de la collectivite',
-    },
-    {
-      name: 'RefIds',
-      description: 'Identifiant',
-    },
-    {
-      name: 'RefNames',
-      description: 'Nom',
-    },
-    {
-      name: 'Type',
-      description: 'Type de scrutin',
-      optional: true,
-    },
-  ],
-})
+/* IMPORTS */
+import valuesUtils from '../scripts/utils/values.js'
+import gristUtils from '../scripts/utils/grist.js'
 
 /* VAR */
 const namesElement = document.querySelectorAll('[data-name="collectivite"]')
@@ -52,7 +32,7 @@ let refListSelectedNames = []
 let refListAll = []
 let scrutinName = null
 
-/* TITLE */
+/* CONTENT */
 const updateNumber = () => {
   numberElement.textContent =
     refListSelectedIds.length > 0 ? refListSelectedIds.length : 'Aucune'
@@ -65,7 +45,7 @@ const updateType = () => {
 }
 
 const updateRefsList = () => {
-  checkboxesElement.innerHTML = ''
+  checkboxesElement.replaceChildren()
   if (!refListSelectedNames) return
   for (let i = 0; i < refListSelectedNames.length; i++) {
     addSelectedCheckboxe({
@@ -141,7 +121,7 @@ const resetView = () => {
 
 const resetSearch = () => {
   inputSearch.value = ''
-  resultSearch.innerHTML = ''
+  resultSearch.replaceChildren()
   emptySearch.classList.add('fr-hidden')
   loadingSearch.classList.add('fr-hidden')
 }
@@ -164,7 +144,7 @@ inputSearch.addEventListener('input', () => {
 
 buttonSearch.addEventListener('click', async (event) => {
   event.preventDefault()
-  resultSearch.innerHTML = ''
+  resultSearch.replaceChildren()
 
   const searchValue = inputSearch.value.trim().toLowerCase()
   if (searchValue.length < 3) return
@@ -175,9 +155,7 @@ buttonSearch.addEventListener('click', async (event) => {
   }
 
   const foundRefs = refListAll.Nom_complet.filter((name, index) => {
-    if (typeof name !== 'string') return false
-    let isFound = true
-    if (isFound) isFound = name.toLowerCase().indexOf(searchValue) === 0
+    let isFound = valuesUtils.isInString(name, searchValue)
     if (isFound && refListSelectedIds)
       isFound = !refListSelectedIds.includes(refListAll.id[index])
     return isFound
@@ -254,11 +232,34 @@ const setRefsListValues = () => {
 }
 
 const setScrutinName = async () => {
-  const tableId = await grist.getSelectedTableId()
+  const tableId = await gristUtils.getCurrentTableID()
   scrutinName = tableId.split('_').pop()
 }
 
 /* GRIST */
+grist.ready({
+  requiredAccess: 'full',
+  columns: [
+    {
+      name: 'Name',
+      description: 'Nom de la collectivite',
+    },
+    {
+      name: 'RefIds',
+      description: 'Identifiant',
+    },
+    {
+      name: 'RefNames',
+      description: 'Nom',
+    },
+    {
+      name: 'Type',
+      description: 'Type de scrutin',
+      optional: true,
+    },
+  ],
+})
+
 grist.onRecords(async (table, mapping) => {
   // Les données dans la table ont changé.
   columnNameMapped = mapping['Name']

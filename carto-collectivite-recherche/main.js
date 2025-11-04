@@ -1,5 +1,5 @@
 /* IMPORTS */
-import searchUtils from '../scripts/utils/search.js'
+import valuesUtils from '../scripts/utils/values.js'
 import Configuration from '../scripts/classes/Configuration.js'
 import Modal from '../scripts/classes/Modal.js'
 
@@ -67,7 +67,7 @@ const displayList = () => {
     displayRows(allRecords)
   } else {
     const recordsFound = allRecords.filter((record) =>
-      searchUtils.containsValue(record[columnSearchMapped], inputElement.value)
+      valuesUtils.isInString(record[columnSearchMapped], inputElement.value)
     )
     if (recordsFound.length > 0) displayRows(recordsFound)
     else noResults()

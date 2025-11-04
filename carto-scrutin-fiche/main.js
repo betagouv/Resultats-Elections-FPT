@@ -1,7 +1,28 @@
 /* IMPORTS */
 import Modal from '../scripts/classes/Modal.js'
+import gristUtils from '../scripts/utils/grist.js'
+import valuesUtils from '../scripts/utils/values.js'
 
-/* SETUP */
+/* VAR */
+const emptyElement = document.querySelector('#empty')
+const filledElement = document.querySelector('#filled')
+const titleElement = document.querySelector('#title')
+const badgeElement = document.querySelector('#badge')
+const dataElement = document.querySelector('#data')
+const errorsElement = document.querySelector('#errors')
+const deleteElement = document.querySelector('#delete')
+const modal = new Modal({
+  container: document.querySelector('#section-modal'),
+})
+
+let titleMapped = null
+let badgeMapped = null
+let dataMapped = null
+let errorsMapped = null
+let currentRecord = null
+let tableColumnsInfos = []
+
+/* GRIST */
 grist.ready({
   requiredAccess: 'full',
   columns: [
@@ -28,29 +49,10 @@ grist.ready({
   ],
 })
 
-/* VAR */
-const emptyElement = document.querySelector('#empty')
-const filledElement = document.querySelector('#filled')
-const titleElement = document.querySelector('#title')
-const badgeElement = document.querySelector('#badge')
-const dataElement = document.querySelector('#data')
-const errorsElement = document.querySelector('#errors')
-const deleteElement = document.querySelector('#delete')
-const modal = new Modal({
-  container: document.querySelector('#section-modal'),
-})
-
-let titleMapped = null
-let badgeMapped = null
-let dataMapped = null
-let errorsMapped = null
-let currentRecord = null
-let tableColumnsInfos = []
-
-/* GRIST */
-grist.onRecord((record) => {
+grist.onRecord(async (record) => {
   // Le curseur s'est déplacé
   currentRecord = record
+  await needsColumnInfos()
   displayContent()
   window.scrollTo(0, 0)
 })
@@ -61,37 +63,9 @@ grist.onRecords(async (table, mapping) => {
   badgeMapped = mapping['badge']
   dataMapped = mapping['data']
   errorsMapped = mapping['errors']
-  if (tableColumnsInfos.length === 0) await getTableColumnsInfos()
+  await needsColumnInfos()
 })
 
-/* COLUMNS */
-const getTableColumnsInfos = async () => {
-  if (tableColumnsInfos.length > 0) return
-  const tableName = await grist.getSelectedTableId()
-  const allTables = await grist.docApi.fetchTable('_grist_Tables')
-  const tableId = allTables.id[allTables.tableId.indexOf(tableName)]
-  const allGristColumns = await grist.docApi.fetchTable('_grist_Tables_column')
-  let index = 0
-  tableColumnsInfos = allGristColumns.parentId.reduce(function (
-    filtered,
-    currentValue
-  ) {
-    if (currentValue === tableId)
-      filtered.push({
-        label: allGristColumns.label[index],
-        description: allGristColumns.description[index],
-        colId: allGristColumns.colId[index],
-        type: allGristColumns.type[index],
-      })
-    index++
-    return filtered
-  },
-  [])
-}
-
-const getColumnInfos = (column) => {
-  return tableColumnsInfos.filter((col) => col.colId === column)[0]
-}
 
 /* CONTENT */
 const displayContent = () => {
@@ -108,8 +82,8 @@ const displayContent = () => {
 }
 
 const resetCard = () => {
-  dataElement.innerHTML = ''
-  errorsElement.innerHTML = ''
+  dataElement.replaceChildren()
+  errorsElement.replaceChildren()
 }
 
 const fillCard = () => {
@@ -133,9 +107,12 @@ const fillCard = () => {
     const p = document.createElement('p')
     const list = document.createElement('ul')
     p.classList.add('fr-mb-1v')
-    const prettyValue = prettifyValue(currentRecord[dataMapped[i]])
-    const prettyLabel = getColumnInfos(dataMapped[i]).label
-    p.textContent = `${prettyLabel} : `
+    const prettyValue = valuesUtils.prettify(currentRecord[dataMapped[i]])
+    const columnInfos = gristUtils.getColumnInfos(
+      dataMapped[i],
+      tableColumnsInfos
+    )
+    p.textContent = `${columnInfos.label} : `
     if (typeof prettyValue === 'object') {
       const orderAlphabetically = prettyValue.sort((a, b) => a.localeCompare(b))
       for (let i = 0; i < orderAlphabetically.length; i++) {
@@ -151,7 +128,6 @@ const fillCard = () => {
     }
     li.appendChild(p)
     li.appendChild(list)
-
     dataElement.appendChild(li)
   }
 
@@ -162,13 +138,6 @@ const fillCard = () => {
     const alertError = generateAlertError(error)
     errorsElement.appendChild(alertError)
   }
-}
-
-const prettifyValue = (value) => {
-  if (value === true) return 'oui'
-  if (value === false) return 'non'
-  if (value === null || value.length === 0) return 'non renseigné'
-  return value
 }
 
 const generateAlertError = (content) => {
@@ -195,3 +164,11 @@ deleteElement.addEventListener('click', async () => {
     console.warn('error', e)
   }
 })
+
+
+/* COLUMNS INFOS */
+const needsColumnInfos = async () => {
+  if (tableColumnsInfos.length === 0) {
+    tableColumnsInfos = await gristUtils.getTableColumnsInfos()
+  }
+}

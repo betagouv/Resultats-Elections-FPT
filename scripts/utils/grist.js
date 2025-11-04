@@ -39,8 +39,13 @@ const getHtmlType = (type) => {
   return 'text'
 }
 
+const getCurrentTableID = async () => {
+  return await grist.getSelectedTableId()
+}
+
 export default {
   getTableColumnsInfos,
+  getCurrentTableID,
   getColumnsInfos,
   getColumnInfos,
   getHtmlType,
