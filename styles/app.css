@@ -17,3 +17,22 @@
 	display: flex;
 	flex-direction: column;
 }
+
+.app-cw-search .selected.fr-card button {
+	background: #000091 !important;
+	color: white;
+	font-weight: bold !important;
+}
+
+.app-cw-search li {
+	cursor: pointer;
+}
+
+.app-cw-search li:hover button {
+	background: #cacafb !important;
+	font-weight: bold;
+}
+
+.app-cw-search li p {
+	text-align: left !important;
+}

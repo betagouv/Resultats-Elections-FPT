@@ -1,3 +1,6 @@
+/* IMPORTS */
+import Modal from '../scripts/classes/Modal.js'
+
 /* SETUP */
 grist.ready({
   requiredAccess: 'full',
@@ -33,7 +36,9 @@ const badgeElement = document.querySelector('#badge')
 const dataElement = document.querySelector('#data')
 const errorsElement = document.querySelector('#errors')
 const deleteElement = document.querySelector('#delete')
-const modalElement = document.getElementById('modal')
+const modal = new Modal({
+  container: document.querySelector('#section-modal'),
+})
 
 let titleMapped = null
 let badgeMapped = null
@@ -183,7 +188,7 @@ deleteElement.addEventListener('click', async () => {
   deleteElement.textContent = 'Suppression en cours'
   try {
     await grist.selectedTable.destroy(currentRecord.id)
-    dsfr(modalElement).modal.conceal()
+    modal.closeDialog()
     deleteElement.removeAttribute('disabled')
     deleteElement.textContent = deleteElementContent
   } catch (e) {
