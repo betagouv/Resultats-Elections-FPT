@@ -91,7 +91,7 @@ const addSelectedCheckboxe = (props) => {
 }
 
 const getCheckbox = (props) => {
-  const { name, disabled, checked } = props
+  const { name, disabled, checked, scrutins } = props
   const checkboxId = `id-${name}`
   const fieldset = document.createElement('div')
   fieldset.classList.add('fr-fieldset__element')
@@ -110,6 +110,15 @@ const getCheckbox = (props) => {
     input.setAttribute('disabled', true)
     const span = document.createElement('span')
     span.textContent = disabled
+    span.classList.add('fr-hint-text')
+    label.appendChild(span)
+  }
+
+  if (scrutins && scrutins.length > 1) {
+    const scrutinsCleaned = scrutins.slice(1) // HACK first value is "L"
+    const span = document.createElement('span')
+    const scrutinsNames = scrutinsCleaned.join(', ')
+    span.textContent = `Est déja rattachée aux scrutins : ${scrutinsNames}`
     span.classList.add('fr-hint-text')
     label.appendChild(span)
   }
@@ -187,13 +196,14 @@ buttonSearch.addEventListener('click', async (event) => {
     const columnName = `Scrutin_${scrutinName}`
     const index = refListAll.Nom_complet.indexOf(foundRefs[i])
     const alreadyLinked = refListAll[columnName][index] !== null
-
+    const disabledIfRelated = alreadyLinked
+      ? `Est déjà rattaché au scrutin ${scrutinName} ${refListAll[columnName][index]}`
+      : false
     const props = {
       name: foundRefs[i],
-      disabled: alreadyLinked
-        ? `Est déjà rattaché au scrutin ${scrutinName} ${refListAll[columnName][index]}`
-        : false,
+      disabled: columnType !== null ? false : disabledIfRelated,
       checked: false,
+      scrutins: refListAll[columnName][index],
     }
 
     const checkbox = getCheckbox(props)
