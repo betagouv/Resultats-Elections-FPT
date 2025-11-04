@@ -1,7 +1,7 @@
 /* IMPORTS */
 import Modal from '../scripts/classes/Modal.js'
 import gristUtils from '../scripts/utils/grist.js'
-
+import valuesUtils from '../scripts/utils/values.js'
 
 /* SETUP */
 grist.ready({
@@ -107,7 +107,7 @@ const fillCard = () => {
     const p = document.createElement('p')
     const list = document.createElement('ul')
     p.classList.add('fr-mb-1v')
-    const prettyValue = prettifyValue(currentRecord[dataMapped[i]])
+    const prettyValue = valuesUtils.prettify(currentRecord[dataMapped[i]])
     const prettyLabel = gristUtils.getColumnInfos(dataMapped[i]).label
     p.textContent = `${prettyLabel} : `
     if (typeof prettyValue === 'object') {
@@ -136,13 +136,6 @@ const fillCard = () => {
     const alertError = generateAlertError(error)
     errorsElement.appendChild(alertError)
   }
-}
-
-const prettifyValue = (value) => {
-  if (value === true) return 'oui'
-  if (value === false) return 'non'
-  if (value === null || value.length === 0) return 'non renseigné'
-  return value
 }
 
 const generateAlertError = (content) => {

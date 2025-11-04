@@ -1,6 +1,7 @@
 /* IMPORTS */
 import Modal from '../scripts/classes/Modal.js'
 import gristUtils from '../scripts/utils/grist.js'
+import valuesUtils from '../scripts/utils/values.js'
 
 /* VAR */
 const emptyElement = document.querySelector('#empty')
@@ -107,7 +108,7 @@ const fillCard = () => {
       dataMapped[i],
       tableColumnsInfos
     )
-    const prettyValue = prettifyValue(currentRecord[dataMapped[i]])
+    const prettyValue = valuesUtils.prettify(currentRecord[dataMapped[i]])
     const prettyLabel = columnInfos.label
     p.textContent = `${prettyLabel} : ${prettyValue}`
     li.appendChild(p)
@@ -123,12 +124,6 @@ const fillCard = () => {
   }
 }
 
-const prettifyValue = (value) => {
-  if (value === true) return 'oui'
-  if (value === false) return 'non'
-  if (value === null) return 'non renseigné'
-  return value
-}
 
 /* ERROR */
 const generateAlertError = (content) => {
