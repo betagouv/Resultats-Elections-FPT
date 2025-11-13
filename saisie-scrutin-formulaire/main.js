@@ -3,7 +3,6 @@ import gristUtils from '../scripts/utils/grist.js'
 
 /* VAR */
 const namesElement = document.querySelectorAll('[data-name="collectivite"]')
-const fieldsetElement = document.querySelector('#fieldset')
 const requiredInputs = document.querySelector('#required-inputs')
 const votesInputs = document.querySelector('#votes-inputs')
 const syndicatInputs = document.querySelector('#syndicats-inputs')
@@ -15,7 +14,6 @@ const backToForm = document.querySelector('#backToForm')
 
 let rowIdSelected = null
 let columnNameMapped = null
-let fieldsMapped = []
 let nombreInscritsMapped = []
 let absenceCandidatMapped = []
 let resultatsMapped = []
@@ -262,7 +260,6 @@ grist.onRecord(async (record, mapping) => {
   rowIdSelected = record.id
 
   columnNameMapped = mapping['ColumnName']
-  fieldsMapped = mapping['Fields']
   nombreInscritsMapped = mapping['NombreInscrits']
   absenceCandidatMapped = mapping['AbsenceCandidat']
   resultatsMapped = mapping['Resultats']
@@ -275,6 +272,13 @@ grist.onRecord(async (record, mapping) => {
   window.scrollTo(0, 0)
 })
 
+/* COLUMNS INFOS */
+const needsColumnInfos = async () => {
+  if (tableColumnsInfos.length === 0) {
+    tableColumnsInfos = await gristUtils.getTableColumnsInfos()
+  }
+}
+
 /* INIT */
 const initView = async () => {
   await needsColumnInfos()
@@ -284,10 +288,3 @@ const initView = async () => {
 }
 
 initView()
-
-/* COLUMNS INFOS */
-const needsColumnInfos = async () => {
-  if (tableColumnsInfos.length === 0) {
-    tableColumnsInfos = await gristUtils.getTableColumnsInfos()
-  }
-}
