@@ -46,7 +46,10 @@ const generateForm = () => {
   requiredInputs.appendChild(absenceInput)
 
   for (let i = 0; i < resultatsMapped.length; i++) {
-    const coloneInfo = gristUtils.getColumnInfos(resultatsMapped[i])
+    const coloneInfo = gristUtils.getColumnInfos(
+      resultatsMapped[i],
+      tableColumnsInfos
+    )
     const type = gristUtils.getHtmlType(coloneInfo.type)
     const isTypeText = type === 'number' || type === 'text'
     const input = isTypeText
@@ -60,7 +63,7 @@ const generateForm = () => {
     tableColumnsInfos
   )
   for (let i = 0; i < syndicats.length; i++) {
-    const type = getHtmlType(syndicats[i].type)
+    const type = gristUtils.getHtmlType(syndicats[i].type)
     const isTypeText = type === 'number' || type === 'text'
     const input = isTypeText
       ? generateInputText(syndicats[i], type, 'fr-col-6')
@@ -177,7 +180,7 @@ const checkAbsence = () => {
     ...syndicatInputs.querySelectorAll('input'),
   ]
   abscenceInput = document.querySelector('#absence input')
-  toggleInputs(abscenceInput.checked)
+  if (abscenceInput) toggleInputs(abscenceInput.checked)
 }
 
 const toggleInputs = (isChecked) => {
