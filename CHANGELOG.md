@@ -1,5 +1,6 @@
 # Changelog
 
+- fix(Cartographie scrutins): corrige les valeurs censurées et amélioration du code [#8](https://github.com/betagouv/Resultats-Elections-FPT/pull/8)
 - improve(Cartographie): mise en commun de code et corrections diverses [7](https://github.com/betagouv/Resultats-Elections-FPT/pull/7)
 - improve: reutilisations de styles et scripts [#6](https://github.com/betagouv/Resultats-Elections-FPT/pull/6)
 - feat(Cartographie scrutins): ajout des widgets customs recherche, fiche, et formulaire [#5](https://github.com/betagouv/Resultats-Elections-FPT/pull/5)
