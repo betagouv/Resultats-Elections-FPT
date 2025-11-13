@@ -11,6 +11,11 @@ const badgeElement = document.querySelector('#badge')
 const dataElement = document.querySelector('#data')
 const errorsElement = document.querySelector('#errors')
 const modalElement = document.querySelector('#modal')
+const actionButton = modalElement.querySelector('#action-name')
+const actionDescription = modalElement.querySelector('#action-title')
+modal = new Modal({
+  container: modalElement,
+})
 
 let titleMapped = null
 let badgeMapped = null
@@ -132,15 +137,9 @@ const fillCard = () => {
   // Action
   if (actionMapped) {
     // Créer un bouton
-    const actionButton = modalElement.querySelector('#action-name')
-    const actionDescription = modalElement.querySelector('#action-title')
     actionButton.textContent = currentRecord[actionMapped].button
     actionDescription.textContent = currentRecord[actionMapped].description
     modalElement.classList.remove('fr-hidden')
-    // Créer la modale
-    modal = new Modal({
-      container: modalElement,
-    })
     actionSubmit = modalElement.querySelector('#submit')
     // Active un bouton ou non
     if (currentRecord[actionMapped].isDisabled) {
