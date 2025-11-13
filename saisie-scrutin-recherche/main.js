@@ -1,3 +1,6 @@
+/* IMPORTS */
+import valuesUtils from '../scripts/utils/values.js'
+
 /* VAR */
 const inputElement = document.querySelector('#search-input')
 const submitElement = document.querySelector('#submit')
