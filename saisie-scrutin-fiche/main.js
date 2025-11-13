@@ -13,7 +13,7 @@ const errorsElement = document.querySelector('#errors')
 const modalElement = document.querySelector('#modal')
 const actionButton = modalElement.querySelector('#action-name')
 const actionDescription = modalElement.querySelector('#action-title')
-modal = new Modal({
+const modal = new Modal({
   container: modalElement,
 })
 
@@ -24,7 +24,6 @@ let errorsMapped = null
 let actionMapped = null
 let currentRecord = null
 let tableColumnsInfos = []
-let modal = null
 let actionSubmit = null
 
 /* GRIST */
@@ -89,6 +88,24 @@ const displayContent = () => {
     filledElement.classList.remove('fr-hidden')
     emptyElement.classList.add('fr-hidden')
   }
+
+  // Action
+  if (actionMapped) {
+    // Créer un bouton
+    actionButton.textContent = currentRecord[actionMapped].button
+    actionDescription.textContent = currentRecord[actionMapped].description
+    modalElement.classList.remove('fr-hidden')
+    actionSubmit = modalElement.querySelector('#submit')
+    // Active un bouton ou non
+    if (currentRecord[actionMapped].isDisabled) {
+      actionSubmit.classList.add('fr-hidden')
+    } else {
+      actionSubmit.classList.remove('fr-hidden')
+      actionSubmit.addEventListener('click', () => {
+        submitAction([currentRecord[actionMapped].action])
+      })
+    }
+  }
 }
 
 const resetCard = () => {
@@ -132,24 +149,6 @@ const fillCard = () => {
     if (!error) continue
     const alertError = generateAlertError(error)
     errorsElement.appendChild(alertError)
-  }
-
-  // Action
-  if (actionMapped) {
-    // Créer un bouton
-    actionButton.textContent = currentRecord[actionMapped].button
-    actionDescription.textContent = currentRecord[actionMapped].description
-    modalElement.classList.remove('fr-hidden')
-    actionSubmit = modalElement.querySelector('#submit')
-    // Active un bouton ou non
-    if (currentRecord[actionMapped].isDisabled) {
-      actionSubmit.classList.add('fr-hidden')
-    } else {
-      actionSubmit.classList.remove('fr-hidden')
-      actionSubmit.addEventListener('click', () => {
-        submitAction([currentRecord[actionMapped].action])
-      })
-    }
   }
 }
 
