@@ -1,6 +1,3 @@
-/* SETUP */
-grist.ready({ requiredAccess: 'full', allowSelectBy: true, columns: ['ColumnSearch', 'ColumnBadge']});
-
 /* VAR */
 const inputElement = document.querySelector('#search-input')
 const submitElement = document.querySelector('#submit')
@@ -14,44 +11,25 @@ let currentRecord = null
 let tableColumnsInfos = []
 
 /* GRIST */
+grist.ready({
+  requiredAccess: 'full',
+  allowSelectBy: true,
+  columns: ['ColumnSearch', 'ColumnBadge'],
+})
+
 grist.onRecords((table, mapping) => {
   // Les données dans la table ont changé.
   columnSearchMapped = mapping['ColumnSearch']
   columnBadgeMapped = mapping['ColumnBadge']
   allRecords = table
   search()
-});
+})
 
 grist.onRecord((record) => {
   // Le curseur a été déplacé.
   currentRecord = record
   selectRow(currentRecord.id)
-});
-
-/* COLUMNS */
-const getTableColumnsInfos = async () => {
-  const tableName = await grist.getSelectedTableId()
-  const allTables = await grist.docApi.fetchTable('_grist_Tables')
-  const tableId = allTables.id[allTables.tableId.indexOf(tableName)]
-  const allGristColumns = await grist.docApi.fetchTable('_grist_Tables_column')
-  let index = 0
-  const onlyCurrentTableColumnsInfos = allGristColumns.parentId.reduce(function (filtered, currentValue){
-    if (currentValue === tableId ) filtered.push({
-      label: allGristColumns.label[index],
-      description: allGristColumns.description[index],
-      colId: allGristColumns.colId[index],
-      type: allGristColumns.type[index],
-    })
-    index++
-    return filtered
-  }, [])
-  return onlyCurrentTableColumnsInfos;
-}
-
-const getColumnInfos = (column) => {
-  return tableColumnsInfos.filter(col => col.colId === column)[0]
-}
-
+})
 
 /* SELECT ROW */
 const selectRow = (id) => {
@@ -68,9 +46,8 @@ const search = () => {
   if (inputElement.value === '') {
     displayRows(allRecords)
     selectRow(currentRecord.id)
-  }
-  else {
-    const recordsFound = allRecords.filter(record => {
+  } else {
+    const recordsFound = allRecords.filter((record) => {
       const valueClean = inputElement.value.toLowerCase()
       const name = record[columnSearchMapped].toLowerCase()
       return name.indexOf(valueClean) >= 0
@@ -89,13 +66,18 @@ submitElement.addEventListener('click', search)
 
 /* DYNAMIC VIEW */
 const displayRows = (rows) => {
-  for(let i = 0; i<rows.length; i++) {
+  for (let i = 0; i < rows.length; i++) {
     const divRow = document.createElement('button')
     divRow.classList.add('fr-grid-row', 'fr-grid-row--gutters')
 
     const id = rows[i].id
     const divTop = document.createElement('div')
-    divTop.classList.add('fr-mb-1', 'fr-grid-row', 'fr-grid-row--gutters', 'fr-grid-row--top')
+    divTop.classList.add(
+      'fr-mb-1',
+      'fr-grid-row',
+      'fr-grid-row--gutters',
+      'fr-grid-row--top'
+    )
 
     const divName = document.createElement('div')
     divName.classList.add('fr-col-6')
@@ -110,8 +92,8 @@ const displayRows = (rows) => {
     const status = rows[i][columnBadgeMapped]
     badge.classList.add('fr-badge')
     badge.textContent = status
-    if (status === "Complet") badge.classList.add('fr-badge--success')
-    else if (status === "Incomplet") badge.classList.add('fr-badge--error')
+    if (status === 'Complet') badge.classList.add('fr-badge--success')
+    else if (status === 'Incomplet') badge.classList.add('fr-badge--error')
     divBadge.appendChild(badge)
 
     divRow.appendChild(divName)
@@ -123,6 +105,8 @@ const displayRows = (rows) => {
     li.setAttribute('data-row-id', id)
 
     listElement.appendChild(li)
-    li.addEventListener('click', () => {grist.setCursorPos({rowId: id})})
+    li.addEventListener('click', () => {
+      grist.setCursorPos({ rowId: id })
+    })
   }
 }
