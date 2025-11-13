@@ -1,28 +1,5 @@
-/* SETUP */
-grist.ready({
-  requiredAccess: 'full',
-  columns: [
-    'ColumnName',
-    {
-      name: 'NombreInscrits',
-      description: "Nombre d'inscrit",
-    },
-    {
-      name: 'AbsenceCandidat',
-      description: "Colonne s'il n'y a pas de candidat",
-    },
-    {
-      name: 'Resultats',
-      description: 'Colonnes qui comptabilisent les votes',
-      allowMultiple: true,
-    },
-    {
-      name: 'Syndicats',
-      description: 'Colonnes qui comptabilisent les voix des syndicats',
-      allowMultiple: true,
-    },
-  ],
-})
+/* IMPORTS */
+import gristUtils from '../scripts/utils/grist.js'
 
 /* VAR */
 const namesElement = document.querySelectorAll('[data-name="collectivite"]')
@@ -49,65 +26,30 @@ let abscenceInput = null
 let currentRecord = null
 let isSaving = false
 
-/* FUNCTIONS */
-const getHtmlType = (gristName) => {
-  if (gristName === 'Int' || gristName === 'Numeric') return 'number'
-  if (gristName === 'Bool') return 'checkbox'
-  if (gristName === 'Attachments') return 'file'
-  return 'text'
-}
-
 /* COLUMNS */
-const getTableColumnsInfos = async () => {
-  if (tableColumnsInfos.length > 0) return
-  const tableName = await grist.getSelectedTableId()
-  const allTables = await grist.docApi.fetchTable('_grist_Tables')
-  const tableId = allTables.id[allTables.tableId.indexOf(tableName)]
-  const allGristColumns = await grist.docApi.fetchTable('_grist_Tables_column')
-  let index = 0
-  tableColumnsInfos = allGristColumns.parentId.reduce(function (
-    filtered,
-    currentValue
-  ) {
-    if (currentValue === tableId)
-      filtered.push({
-        label: allGristColumns.label[index],
-        description: allGristColumns.description[index],
-        colId: allGristColumns.colId[index],
-        type: allGristColumns.type[index],
-      })
-    index++
-    return filtered
-  },
-  [])
-}
-
-const getColumnsInfos = (column) => {
-  return tableColumnsInfos.filter((col) => column.includes(col.colId))
-}
-
-const getColumnInfo = (column) => {
-  const index = tableColumnsInfos.findIndex((col) => col.colId === column)
-  return index >= 0 ? tableColumnsInfos[index] : null
-}
-
 const generateForm = () => {
-  const inscrits = getColumnsInfos(nombreInscritsMapped)
+  const inscrits = gristUtils.getColumnsInfos(
+    nombreInscritsMapped,
+    tableColumnsInfos
+  )
   const inscritInput = generateInputText(
     inscrits[0],
-    getHtmlType(inscrits[0].type)
+    gristUtils.getHtmlType(inscrits[0].type)
   )
   inscritInput.setAttribute('id', 'inscrits')
   requiredInputs.appendChild(inscritInput)
 
-  const absence = getColumnsInfos(absenceCandidatMapped)
+  const absence = gristUtils.getColumnsInfos(
+    absenceCandidatMapped,
+    tableColumnsInfos
+  )
   const absenceInput = generateInputCheckbox(absence[0])
   absenceInput.setAttribute('id', 'absence')
   requiredInputs.appendChild(absenceInput)
 
   for (let i = 0; i < resultatsMapped.length; i++) {
-    const coloneInfo = getColumnInfo(resultatsMapped[i])
-    const type = getHtmlType(coloneInfo.type)
+    const coloneInfo = gristUtils.getColumnInfos(resultatsMapped[i])
+    const type = gristUtils.getHtmlType(coloneInfo.type)
     const isTypeText = type === 'number' || type === 'text'
     const input = isTypeText
       ? generateInputText(coloneInfo, type, 'fr-col-12')
@@ -115,7 +57,10 @@ const generateForm = () => {
     votesInputs.appendChild(input)
   }
 
-  const syndicats = getColumnsInfos(syndicatsMapped)
+  const syndicats = gristUtils.getColumnsInfos(
+    syndicatsMapped,
+    tableColumnsInfos
+  )
   for (let i = 0; i < syndicats.length; i++) {
     const type = getHtmlType(syndicats[i].type)
     const isTypeText = type === 'number' || type === 'text'
@@ -193,12 +138,6 @@ const getFormValues = () => {
     values[name] = isCheckboxe ? input.checked : input.value
   }
   return values
-}
-
-const formatValue = (value) => {
-  const isCheckboxe = value === 'on' || value === 'off'
-  if (isCheckboxe) return value === 'on'
-  return value
 }
 
 const prefillForm = () => {
@@ -292,6 +231,31 @@ formElement.addEventListener('submit', async (event) => {
 })
 
 /* GRIST */
+grist.ready({
+  requiredAccess: 'full',
+  columns: [
+    'ColumnName',
+    {
+      name: 'NombreInscrits',
+      description: "Nombre d'inscrit",
+    },
+    {
+      name: 'AbsenceCandidat',
+      description: "Colonne s'il n'y a pas de candidat",
+    },
+    {
+      name: 'Resultats',
+      description: 'Colonnes qui comptabilisent les votes',
+      allowMultiple: true,
+    },
+    {
+      name: 'Syndicats',
+      description: 'Colonnes qui comptabilisent les voix des syndicats',
+      allowMultiple: true,
+    },
+  ],
+})
+
 grist.onRecord(async (record, mapping) => {
   // Le curseur a été déplacé.
   currentRecord = record
@@ -313,10 +277,17 @@ grist.onRecord(async (record, mapping) => {
 
 /* INIT */
 const initView = async () => {
-  await getTableColumnsInfos()
+  await needsColumnInfos()
   generateForm()
   prefillForm()
   generateAbsence()
 }
 
 initView()
+
+/* COLUMNS INFOS */
+const needsColumnInfos = async () => {
+  if (tableColumnsInfos.length === 0) {
+    tableColumnsInfos = await gristUtils.getTableColumnsInfos()
+  }
+}
