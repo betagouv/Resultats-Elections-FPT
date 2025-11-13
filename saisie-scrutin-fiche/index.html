@@ -99,6 +99,49 @@
           </div>
         </div>
       </section>
+      <section id="modal" class="fr-hidden">
+        <button
+          data-fr-opened="false"
+          aria-controls="modal"
+          class="fr-btn fr-mt-2w"
+          type="button"
+          data-js-modal="open"
+          id="action-name"
+        ></button>
+
+        <dialog
+          data-js-modal="dialog"
+          class="fr-modal"
+          aria-labelledby="modal-title"
+          aria-modal="true"
+        >
+          <div class="fr-container fr-container--fluid fr-container-md">
+            <div class="fr-grid-row fr-grid-row--center">
+              <div class="fr-col-12 fr-col-md-8 fr-col-lg-6">
+                <div class="fr-modal__body">
+                  <div class="fr-modal__header">
+                    <button
+                      aria-controls="modal"
+                      title="Fermer"
+                      type="button"
+                      class="fr-btn--close fr-btn"
+                      data-js-modal="close"
+                    >
+                      Fermer
+                    </button>
+                  </div>
+                  <div class="fr-modal__content">
+                    <h2 id="action-title" class="fr-modal__title"></h2>
+                    <button class="fr-btn" type="button" id="submit">
+                      Oui
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </dialog>
+      </section>
     </main>
     <script type="module" src="main.js"></script>
   </body>

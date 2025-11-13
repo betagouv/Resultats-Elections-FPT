@@ -1,6 +1,7 @@
 /* IMPORTS */
 import gristUtils from '../scripts/utils/grist.js'
 import valuesUtils from '../scripts/utils/values.js'
+import Modal from '../scripts/classes/Modal.js'
 
 /* VAR */
 const emptyElement = document.querySelector('#empty')
@@ -9,13 +10,17 @@ const titleElement = document.querySelector('#title')
 const badgeElement = document.querySelector('#badge')
 const dataElement = document.querySelector('#data')
 const errorsElement = document.querySelector('#errors')
+const modalElement = document.querySelector('#modal')
 
 let titleMapped = null
 let badgeMapped = null
 let dataMapped = null
 let errorsMapped = null
+let actionMapped = null
 let currentRecord = null
 let tableColumnsInfos = []
+let modal = null
+let actionSubmit = null
 
 /* GRIST */
 grist.ready({
@@ -41,6 +46,11 @@ grist.ready({
       allowMultiple: true,
       optional: true,
     },
+    {
+      name: 'action',
+      description: 'Action',
+      optional: true,
+    },
   ],
 })
 
@@ -58,6 +68,7 @@ grist.onRecords(async (table, mapping) => {
   badgeMapped = mapping['badge']
   dataMapped = mapping['data']
   errorsMapped = mapping['errors']
+  actionMapped = mapping['action']
   await needsColumnInfos()
 })
 
@@ -117,6 +128,36 @@ const fillCard = () => {
     const alertError = generateAlertError(error)
     errorsElement.appendChild(alertError)
   }
+
+  // Action
+  if (actionMapped) {
+    // Créer un bouton
+    const actionButton = modalElement.querySelector('#action-name')
+    const actionDescription = modalElement.querySelector('#action-title')
+    actionButton.textContent = currentRecord[actionMapped].button
+    actionDescription.textContent = currentRecord[actionMapped].description
+    modalElement.classList.remove('fr-hidden')
+    // Créer la modale
+    modal = new Modal({
+      container: modalElement,
+    })
+    actionSubmit = modalElement.querySelector('#submit')
+    // Active un bouton ou non
+    if (currentRecord[actionMapped].isDisabled) {
+      actionSubmit.classList.add('fr-hidden')
+    } else {
+      actionSubmit.classList.remove('fr-hidden')
+      actionSubmit.addEventListener('click', () => {
+        submitAction([currentRecord[actionMapped].action])
+      })
+    }
+  }
+}
+
+/* ACTION */
+const submitAction = async (actions) => {
+  const updatedRecord = await grist.docApi.applyUserActions(actions)
+  if (updatedRecord) modal.closeDialog()
 }
 
 /* ERROR */
