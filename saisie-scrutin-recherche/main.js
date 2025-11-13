@@ -12,7 +12,6 @@ let columnSearchMapped = null
 let columnBadgeMapped = null
 let columnDescriptionMapped = null
 let currentRecord = null
-let tableColumnsInfos = []
 
 /* GRIST */
 grist.ready({
