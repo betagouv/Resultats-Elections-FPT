@@ -22,8 +22,8 @@ const getTableColumnsInfos = async () => {
   return columnsInfos
 }
 
-const getColumnsInfos = (column, table) => {
-  return table.filter((col) => column.includes(col.colId))
+const getColumnsInfos = (columns, table) => {
+  return table.filter((col) => columns.includes(col.colId))
 }
 
 const getColumnInfos = (column, table) => {
