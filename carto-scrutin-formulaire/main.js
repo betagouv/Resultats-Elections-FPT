@@ -2,6 +2,9 @@
 import valuesUtils from '../scripts/utils/values.js'
 import gristUtils from '../scripts/utils/grist.js'
 
+/* CONST */
+const COLLECTIVITE_SEARCH_NAME = 'Nom_complet'
+
 /* VAR */
 const namesElement = document.querySelectorAll('[data-name="collectivite"]')
 const formElement = document.querySelector('#form')
@@ -60,7 +63,7 @@ const addSelectedCheckboxe = (props) => {
   const checkbox = getCheckbox(props)
   const input = checkbox.querySelector('input')
   input.addEventListener('change', () => {
-    const index = refListAll.Nom_complet.indexOf(input.value)
+    const index = refListAll[COLLECTIVITE_SEARCH_NAME].indexOf(input.value)
     const id = refListAll.id[index]
     if (input.checked) refListSelectedIds.push(id)
     else refListSelectedIds = refListSelectedIds.filter((refId) => refId !== id)
@@ -154,12 +157,14 @@ buttonSearch.addEventListener('click', async (event) => {
     refListAll = await grist.docApi.fetchTable('Collectivites')
   }
 
-  const foundRefs = refListAll.Nom_complet.filter((name, index) => {
-    let isFound = valuesUtils.isInString(name, searchValue)
-    if (isFound && refListSelectedIds)
-      isFound = !refListSelectedIds.includes(refListAll.id[index])
-    return isFound
-  })
+  const foundRefs = refListAll[COLLECTIVITE_SEARCH_NAME].filter(
+    (name, index) => {
+      let isFound = valuesUtils.isInString(name, searchValue)
+      if (isFound && refListSelectedIds)
+        isFound = !refListSelectedIds.includes(refListAll.id[index])
+      return isFound
+    }
+  )
 
   if (foundRefs.length === 0) {
     emptySearch.textContent = `Aucun résultat trouvé pour la recherche « ${searchValue} »`
@@ -170,7 +175,7 @@ buttonSearch.addEventListener('click', async (event) => {
 
   for (let i = 0; i < foundRefs.length; i++) {
     const columnName = `Scrutin_${scrutinName}`
-    const index = refListAll.Nom_complet.indexOf(foundRefs[i])
+    const index = refListAll[COLLECTIVITE_SEARCH_NAME].indexOf(foundRefs[i])
     const alreadyLinked =
       refListAll[columnName][index] !== null &&
       refListAll[columnName][index] !== ''
