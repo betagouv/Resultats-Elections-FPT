@@ -115,11 +115,11 @@ const resetCard = () => {
 
 const fillCard = () => {
   // Badge
-  const status = currentRecord[badgeMapped]
+  const status = currentRecord[badgeMapped].toLowerCase()
   badgeElement.classList.remove('fr-badge--error')
   badgeElement.classList.remove('fr-badge--success')
   badgeElement.textContent = currentRecord[badgeMapped]
-  badge.textContent = status.toLowerCase()
+  badge.textContent = status
   if (['complet', 'validé'].includes(status))
     badgeElement.classList.add('fr-badge--success')
   else if (['incomplet', 'doublon', 'à valider'].includes(status))
