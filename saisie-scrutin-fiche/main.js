@@ -119,12 +119,11 @@ const fillCard = () => {
   badgeElement.classList.remove('fr-badge--error')
   badgeElement.classList.remove('fr-badge--success')
   badgeElement.textContent = currentRecord[badgeMapped]
-  if (status === 'Complet' || status.indexOf('validé') >= 0)
+  badge.textContent = status.toLowerCase()
+  if (['complet', 'validé'].includes(status))
     badgeElement.classList.add('fr-badge--success')
-  else if (status === 'Incomplet' || status.indexOf('valider') >= 0)
+  else if (['incomplet', 'doublon', 'à valider'].includes(status))
     badgeElement.classList.add('fr-badge--error')
-
-  // Titre
   if (titleElement) {
     titleElement.textContent = currentRecord[titleMapped]
   }

@@ -107,14 +107,10 @@ const displayRows = (rows) => {
       const badge = document.createElement('p')
       const status = rows[i][columnBadgeMapped]
       badge.classList.add('fr-badge')
-      badge.textContent = status
-      if (status === 'Complet' || status.indexOf('validé') >= 0)
+      badge.textContent = status.toLowerCase()
+      if (['complet', 'validé'].includes(status))
         badge.classList.add('fr-badge--success')
-      else if (
-        status === 'Incomplet' ||
-        status === 'Doublon' ||
-        status.indexOf('valider') >= 0
-      )
+      else if (['incomplet', 'doublon', 'à valider'].includes(status))
         badge.classList.add('fr-badge--error')
       divBadge.appendChild(badge)
       divRow.appendChild(divBadge)
