@@ -1,5 +1,5 @@
-/* SETUP */
-grist.ready({ requiredAccess: 'full', allowSelectBy: true, columns: ['ColumnSearch', 'ColumnBadge']});
+/* IMPORTS */
+import valuesUtils from '../scripts/utils/values.js'
 
 /* VAR */
 const inputElement = document.querySelector('#search-input')
@@ -10,48 +10,37 @@ const errorElement = document.querySelector('#error')
 let allRecords = []
 let columnSearchMapped = null
 let columnBadgeMapped = null
+let columnDescriptionMapped = null
 let currentRecord = null
-let tableColumnsInfos = []
 
 /* GRIST */
+grist.ready({
+  requiredAccess: 'full',
+  allowSelectBy: true,
+  columns: [
+    'ColumnSearch',
+    'ColumnBadge',
+    {
+      name: 'ColumnDescription',
+      optional: true,
+    },
+  ],
+})
+
 grist.onRecords((table, mapping) => {
   // Les données dans la table ont changé.
   columnSearchMapped = mapping['ColumnSearch']
   columnBadgeMapped = mapping['ColumnBadge']
+  columnDescriptionMapped = mapping['ColumnDescription']
   allRecords = table
-  search()
-});
+  displayList()
+})
 
 grist.onRecord((record) => {
   // Le curseur a été déplacé.
   currentRecord = record
   selectRow(currentRecord.id)
-});
-
-/* COLUMNS */
-const getTableColumnsInfos = async () => {
-  const tableName = await grist.getSelectedTableId()
-  const allTables = await grist.docApi.fetchTable('_grist_Tables')
-  const tableId = allTables.id[allTables.tableId.indexOf(tableName)]
-  const allGristColumns = await grist.docApi.fetchTable('_grist_Tables_column')
-  let index = 0
-  const onlyCurrentTableColumnsInfos = allGristColumns.parentId.reduce(function (filtered, currentValue){
-    if (currentValue === tableId ) filtered.push({
-      label: allGristColumns.label[index],
-      description: allGristColumns.description[index],
-      colId: allGristColumns.colId[index],
-      type: allGristColumns.type[index],
-    })
-    index++
-    return filtered
-  }, [])
-  return onlyCurrentTableColumnsInfos;
-}
-
-const getColumnInfos = (column) => {
-  return tableColumnsInfos.filter(col => col.colId === column)[0]
-}
-
+})
 
 /* SELECT ROW */
 const selectRow = (id) => {
@@ -61,41 +50,40 @@ const selectRow = (id) => {
   if (newSelected) newSelected.classList.add('selected')
 }
 
-/* SEARCH */
-const search = () => {
-  listElement.innerHTML = ''
-  errorElement.innerHTML = ''
-  if (inputElement.value === '') {
+/* DOM */
+const displayList = () => {
+  listElement.replaceChildren()
+  errorElement.textContent = ''
+  const value = inputElement.value.trim()
+  if (value === '') {
     displayRows(allRecords)
-    selectRow(currentRecord.id)
-  }
-  else {
-    const recordsFound = allRecords.filter(record => {
-      const valueClean = inputElement.value.toLowerCase()
-      const name = record[columnSearchMapped].toLowerCase()
-      return name.indexOf(valueClean) >= 0
-    })
+  } else {
+    const recordsFound = allRecords.filter((record) =>
+      valuesUtils.isInString(record[columnSearchMapped], inputElement.value)
+    )
     if (recordsFound.length > 0) displayRows(recordsFound)
     else noResults()
   }
 }
 
 const noResults = () => {
-  errorElement.innerHTML = `Aucun résultat pour la recherche : "${inputElement.value}"`
+  errorElement.textContent = `Aucun résultat pour la recherche : "${inputElement.value}"`
 }
-
-inputElement.addEventListener('input', search)
-submitElement.addEventListener('click', search)
 
 /* DYNAMIC VIEW */
 const displayRows = (rows) => {
-  for(let i = 0; i<rows.length; i++) {
+  for (let i = 0; i < rows.length; i++) {
     const divRow = document.createElement('button')
     divRow.classList.add('fr-grid-row', 'fr-grid-row--gutters')
 
     const id = rows[i].id
     const divTop = document.createElement('div')
-    divTop.classList.add('fr-mb-1', 'fr-grid-row', 'fr-grid-row--gutters', 'fr-grid-row--top')
+    divTop.classList.add(
+      'fr-mb-1',
+      'fr-grid-row',
+      'fr-grid-row--gutters',
+      'fr-grid-row--top'
+    )
 
     const divName = document.createElement('div')
     divName.classList.add('fr-col-6')
@@ -104,18 +92,32 @@ const displayRows = (rows) => {
     p.classList.add('fr-mb-0')
     divName.appendChild(p)
 
-    const divBadge = document.createElement('div')
-    divBadge.classList.add('fr-col-6', 'fr-grid-row', 'fr-grid-row--right')
-    const badge = document.createElement('p')
-    const status = rows[i][columnBadgeMapped]
-    badge.classList.add('fr-badge')
-    badge.textContent = status
-    if (status === "Complet") badge.classList.add('fr-badge--success')
-    else if (status === "Incomplet") badge.classList.add('fr-badge--error')
-    divBadge.appendChild(badge)
+    if (rows[i][columnDescriptionMapped]) {
+      const description = document.createElement('p')
+      description.classList.add('fr-text--xs', 'fr-mb-0')
+      description.textContent = rows[i][columnDescriptionMapped]
+      divName.appendChild(description)
+    }
 
     divRow.appendChild(divName)
-    divRow.appendChild(divBadge)
+
+    if (columnBadgeMapped) {
+      const divBadge = document.createElement('div')
+      divBadge.classList.add('fr-col-6', 'fr-grid-row', 'fr-grid-row--right')
+      const badge = document.createElement('p')
+      const status = rows[i][columnBadgeMapped].toLowerCase()
+      badge.classList.add('fr-badge')
+      badge.textContent = status
+      if (['complet', 'validé'].includes(status))
+        badge.classList.add('fr-badge--success')
+      else if (['incomplet', 'doublon', 'à valider'].includes(status))
+        badge.classList.add('fr-badge--error')
+      divBadge.appendChild(badge)
+      divRow.appendChild(divBadge)
+    } else {
+      divName.classList.remove('fr-col-6')
+      divName.classList.add('fr-col-12')
+    }
 
     const li = document.createElement('li')
     li.classList.add('fr-card', 'fr-p-1w', 'fr-my-1w')
@@ -123,6 +125,14 @@ const displayRows = (rows) => {
     li.setAttribute('data-row-id', id)
 
     listElement.appendChild(li)
-    li.addEventListener('click', () => {grist.setCursorPos({rowId: id})})
+    li.addEventListener('click', () => {
+      grist.setCursorPos({ rowId: id })
+    })
   }
 }
+
+/* SEARCH */
+submitElement.addEventListener('click', () => {
+  displayList()
+  selectRow(currentRecord.id)
+})
