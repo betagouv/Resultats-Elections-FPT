@@ -153,9 +153,7 @@ buttonSearch.addEventListener('click', async (event) => {
   if (searchValue.length < 3) return
   loadingSearch.classList.remove('fr-hidden')
 
-  if (refListAll.length === 0) {
-    refListAll = await grist.docApi.fetchTable('Collectivites')
-  }
+  await getTableData()
 
   const foundRefs = refListAll[COLLECTIVITE_SEARCH_NAME].filter(
     (name, index) => {
@@ -221,6 +219,7 @@ buttonSave.addEventListener('click', async () => {
       id: rowIdSelected,
       fields,
     })
+    refListAll = []
     displayMessage('success')
   } catch (e) {
     displayMessage('error')
@@ -229,11 +228,10 @@ buttonSave.addEventListener('click', async () => {
 })
 
 /* TABLE */
-const setRefsListValues = () => {
-  // Todo dynamiser avec le champ et son type ?
-  grist.docApi.fetchTable('Collectivites').then((response) => {
-    refListAll = response
-  })
+const getTableData = async () => {
+  if (refListAll.length === 0) {
+    refListAll = await gristUtils.getTable('Collectivites')
+  }
 }
 
 const setScrutinName = async () => {
@@ -275,7 +273,7 @@ grist.onRecords(async (table, mapping) => {
     typeElement.classList.remove('fr-hidden')
   }
   await setScrutinName()
-  setRefsListValues()
+  await getTableData()
 })
 
 grist.onRecord((record) => {
