@@ -43,10 +43,15 @@ const getCurrentTableID = async () => {
   return await grist.getSelectedTableId()
 }
 
+const getTable = async (name) => {
+  return await grist.docApi.fetchTable(name)
+}
+
 export default {
   getTableColumnsInfos,
   getCurrentTableID,
   getColumnsInfos,
   getColumnInfos,
   getHtmlType,
+  getTable,
 }

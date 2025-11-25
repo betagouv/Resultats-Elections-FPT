@@ -55,6 +55,7 @@ grist.onRecord(async (record) => {
   await needsColumnInfos()
   displayContent()
   window.scrollTo(0, 0)
+  modal.closeDialog()
 })
 
 grist.onRecords(async (table, mapping) => {
@@ -65,7 +66,6 @@ grist.onRecords(async (table, mapping) => {
   errorsMapped = mapping['errors']
   await needsColumnInfos()
 })
-
 
 /* CONTENT */
 const displayContent = () => {
@@ -158,13 +158,12 @@ deleteElement.addEventListener('click', async () => {
   try {
     await grist.selectedTable.destroy(currentRecord.id)
     modal.closeDialog()
-    deleteElement.removeAttribute('disabled')
-    deleteElement.textContent = deleteElementContent
   } catch (e) {
     console.warn('error', e)
   }
+  deleteElement.removeAttribute('disabled')
+  deleteElement.textContent = deleteElementContent
 })
-
 
 /* COLUMNS INFOS */
 const needsColumnInfos = async () => {
