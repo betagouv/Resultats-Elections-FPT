@@ -55,6 +55,7 @@ grist.onRecord(async (record) => {
   await needsColumnInfos()
   displayContent()
   window.scrollTo(0, 0)
+  modal.closeDialog()
 })
 
 grist.onRecords(async (table, mapping) => {
