@@ -2,33 +2,16 @@
   <head>
     <script src="https://docs.getgrist.com/grist-plugin-api.js"></script>
     <link
-      href=" https://cdn.jsdelivr.net/npm/@gouvfr/dsfr@1.14.0/dist/dsfr.min.css "
+      href="https://cdn.jsdelivr.net/npm/@gouvfr/dsfr@1.14.0/dist/dsfr.min.css"
       rel="stylesheet"
     />
+    <link rel="stylesheet" href="../styles/app.css" />
   </head>
-  <body>
-    <style>
-      .selected.fr-card button {
-        background: #000091 !important;
-        color: white;
-        font-weight: bold !important;
-      }
-
-      li p {
-        text-align: left !important;
-      }
-      li {
-        cursor: pointer;
-      }
-      li:hover button {
-        background: #cacafb !important;
-        font-weight: bold;
-      }
-    </style>
+  <body class="app-cw-search">
     <main id="view" class="fr-container fr-p-3w">
       <section>
         <div class="fr-search-bar fr-search-bar--lg" role="search">
-          <label class="fr-label" for="search-input"> Rechercher </label>
+          <label class="fr-label" for="search-input">Rechercher</label>
           <input
             class="fr-input"
             aria-describedby="search-input-messages"
@@ -49,6 +32,6 @@
         <p id="error" class="fr-mt-2w"></p>
       </section>
     </main>
-    <script src="main.js"></script>
+    <script type="module" src="main.js"></script>
   </body>
 </html>

@@ -2,35 +2,26 @@
   <head>
     <script src="https://docs.getgrist.com/grist-plugin-api.js"></script>
     <link
-      href=" https://cdn.jsdelivr.net/npm/@gouvfr/dsfr@1.14.0/dist/dsfr.min.css "
+      href="https://cdn.jsdelivr.net/npm/@gouvfr/dsfr@1.14.0/dist/dsfr.min.css"
       rel="stylesheet"
     />
+    <link rel="stylesheet" href="../styles/app.css" />
   </head>
   <body>
-    <style>
-      .dgcl--tile {
-        pointer-events: none;
-      }
-
-      .dgcl--list-style-none {
-        list-style: none;
-      }
-    </style>
     <main class="fr-container fr-p-3w">
       <section id="filled" class="fr-hidden">
         <h1 class="fr-h6 fr-mb-1w" id="title">Nom de mon scrutin</h1>
         <p class="fr-badge fr-mb-1w" id="badge"></p>
-        <ul id="errors" class="fr-pl-0 fr-mb-3w dgcl--list-style-none"></ul>
-        <ul id="data" class="fr-pl-0 dgcl--list-style-none"></ul>
+        <ul id="errors" class="fr-pl-0 fr-mb-3w app-list--unstyled"></ul>
+        <ul id="data" class="fr-pl-0 app-list--unstyled"></ul>
       </section>
       <section id="empty" class="fr-hidden">
-        <div class="fr-tile fr-enlarge-link dgcl--tile">
+        <div class="fr-tile fr-enlarge-link app-tile--no-cursor">
           <div class="fr-tile__body">
             <div class="fr-tile__content">
               <h3 class="fr-tile__title"><a href="#" id="collectivite"></a></h3>
               <p class="fr-tile__desc">
-                Scrutin à renseigner <br />
-                dans le formulaire à droite
+                À renseigner dans le formulaire à droite
               </p>
             </div>
           </div>
@@ -108,7 +99,50 @@
           </div>
         </div>
       </section>
+      <section id="modal" class="fr-hidden">
+        <button
+          data-fr-opened="false"
+          aria-controls="modal"
+          class="fr-btn fr-mt-2w"
+          type="button"
+          data-js-modal="open"
+          id="action-name"
+        ></button>
+
+        <dialog
+          data-js-modal="dialog"
+          class="fr-modal"
+          aria-labelledby="modal-title"
+          aria-modal="true"
+        >
+          <div class="fr-container fr-container--fluid fr-container-md">
+            <div class="fr-grid-row fr-grid-row--center">
+              <div class="fr-col-12 fr-col-md-8 fr-col-lg-6">
+                <div class="fr-modal__body">
+                  <div class="fr-modal__header">
+                    <button
+                      aria-controls="modal"
+                      title="Fermer"
+                      type="button"
+                      class="fr-btn--close fr-btn"
+                      data-js-modal="close"
+                    >
+                      Fermer
+                    </button>
+                  </div>
+                  <div class="fr-modal__content">
+                    <h2 id="action-title" class="fr-modal__title"></h2>
+                    <button class="fr-btn" type="button" id="submit">
+                      Oui
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </dialog>
+      </section>
     </main>
-    <script src="main.js"></script>
+    <script type="module" src="main.js"></script>
   </body>
 </html>

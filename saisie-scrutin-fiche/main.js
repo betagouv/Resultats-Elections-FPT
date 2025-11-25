@@ -1,118 +1,144 @@
-/* SETUP */
-grist.ready({ requiredAccess: 'full', columns: [
-  {
-    name: "title",
-    description: "Titre de ma carte",
-  },
-  {
-    name: "badge",
-    description: "Badge",
-  },
-  {
-    name: "data",
-    description: "Données saisies",
-    allowMultiple: true
-  },
-  {
-    name: "errors",
-    description: "Contrôles de cohérences",
-    allowMultiple: true
-  }
-]});
+/* IMPORTS */
+import gristUtils from '../scripts/utils/grist.js'
+import valuesUtils from '../scripts/utils/values.js'
+import Modal from '../scripts/classes/Modal.js'
 
 /* VAR */
 const emptyElement = document.querySelector('#empty')
 const filledElement = document.querySelector('#filled')
 const titleElement = document.querySelector('#title')
-const titleTileElement = document.querySelector('#collectivite')
 const badgeElement = document.querySelector('#badge')
 const dataElement = document.querySelector('#data')
 const errorsElement = document.querySelector('#errors')
-
+const modalElement = document.querySelector('#modal')
+const actionButton = modalElement.querySelector('#action-name')
+const actionDescription = modalElement.querySelector('#action-title')
+const modal = new Modal({
+  container: modalElement,
+})
 
 let titleMapped = null
 let badgeMapped = null
 let dataMapped = null
 let errorsMapped = null
+let actionMapped = null
 let currentRecord = null
 let tableColumnsInfos = []
+let actionSubmit = null
 
 /* GRIST */
-grist.onRecord(async (record, mapping) => {
+grist.ready({
+  requiredAccess: 'full',
+  columns: [
+    {
+      name: 'title',
+      description: 'Titre de ma carte',
+    },
+    {
+      name: 'badge',
+      description: 'Badge',
+      optional: true,
+    },
+    {
+      name: 'data',
+      description: 'Données saisies',
+      allowMultiple: true,
+    },
+    {
+      name: 'errors',
+      description: 'Contrôles de cohérences',
+      allowMultiple: true,
+      optional: true,
+    },
+    {
+      name: 'action',
+      description: 'Action',
+      optional: true,
+    },
+  ],
+})
+
+grist.onRecord(async (record) => {
   // Le curseur s'est déplacé
   currentRecord = record
+  await needsColumnInfos()
+  displayContent()
+  window.scrollTo(0, 0)
+})
+
+grist.onRecords(async (table, mapping) => {
+  // Les données dans la table ont changé.
   titleMapped = mapping['title']
   badgeMapped = mapping['badge']
   dataMapped = mapping['data']
   errorsMapped = mapping['errors']
-  await getTableColumnsInfos()
-  displayContent()
-  window.scrollTo(0, 0)
-});
-
-/* COLUMNS */
-const getTableColumnsInfos = async () => {
-  if (tableColumnsInfos.length > 0) return 
-  const tableName = await grist.getSelectedTableId()
-  const allTables = await grist.docApi.fetchTable('_grist_Tables')
-  const tableId = allTables.id[allTables.tableId.indexOf(tableName)]
-  const allGristColumns = await grist.docApi.fetchTable('_grist_Tables_column')
-  let index = 0
-  tableColumnsInfos = allGristColumns.parentId.reduce(function (filtered, currentValue){
-    if (currentValue === tableId ) filtered.push({
-      label: allGristColumns.label[index],
-      description: allGristColumns.description[index],
-      colId: allGristColumns.colId[index],
-      type: allGristColumns.type[index],
-    })
-    index++
-    return filtered
-  }, [])
-}
-
-const getColumnInfos = (column) => {
-  return tableColumnsInfos.filter(col => col.colId === column)[0]
-}
+  actionMapped = mapping['action']
+  await needsColumnInfos()
+})
 
 /* CONTENT */
 const displayContent = () => {
+  resetCard()
   const status = currentRecord[badgeMapped]
-  if (status === "À renseigner") {
+  if (status === 'À renseigner') {
     filledElement.classList.add('fr-hidden')
     emptyElement.classList.remove('fr-hidden')
-    titleTileElement.textContent = currentRecord[titleMapped]
   } else {
-    resetCard()
     fillCard()
     filledElement.classList.remove('fr-hidden')
     emptyElement.classList.add('fr-hidden')
   }
+
+  // Action
+  if (actionMapped) {
+    // Créer un bouton
+    actionButton.textContent = currentRecord[actionMapped].button
+    actionDescription.textContent = currentRecord[actionMapped].description
+    modalElement.classList.remove('fr-hidden')
+    actionSubmit = modalElement.querySelector('#submit')
+    // Active un bouton ou non
+    if (currentRecord[actionMapped].isDisabled) {
+      actionSubmit.classList.add('fr-hidden')
+    } else {
+      actionSubmit.classList.remove('fr-hidden')
+      actionSubmit.addEventListener('click', () => {
+        submitAction([currentRecord[actionMapped].action])
+      })
+    }
+  }
 }
 
 const resetCard = () => {
-  dataElement.innerHTML = ''
-  errorsElement.innerHTML = ''
+  dataElement.replaceChildren()
+  errorsElement.replaceChildren()
 }
 
 const fillCard = () => {
   // Badge
-  const status = currentRecord[badgeMapped]
+  const status = currentRecord[badgeMapped].toLowerCase()
   badgeElement.classList.remove('fr-badge--error')
   badgeElement.classList.remove('fr-badge--success')
   badgeElement.textContent = currentRecord[badgeMapped]
-  if (status === "Complet") badgeElement.classList.add('fr-badge--success')
-  else if (status === "Incomplet") badgeElement.classList.add('fr-badge--error')
-
-  // Titre
-  titleElement.textContent = currentRecord[titleMapped]
+  badge.textContent = status
+  if (['complet', 'validé'].includes(status))
+    badgeElement.classList.add('fr-badge--success')
+  else if (['incomplet', 'doublon', 'à valider'].includes(status))
+    badgeElement.classList.add('fr-badge--error')
+  if (titleElement) {
+    titleElement.textContent = currentRecord[titleMapped]
+  }
 
   // Informations
   for (let i = 0; i < dataMapped.length; i++) {
     const li = document.createElement('li')
     const p = document.createElement('p')
     p.classList.add('fr-mb-1v')
-    const prettyValue = prettifyValue(currentRecord[dataMapped[i]])
-    const prettyLabel = getColumnInfos(dataMapped[i]).label
+    const columnInfos = gristUtils.getColumnInfos(
+      dataMapped[i],
+      tableColumnsInfos
+    )
+    const prettyValue = valuesUtils.prettify(currentRecord[dataMapped[i]])
+    const prettyLabel = columnInfos.label
     p.textContent = `${prettyLabel} : ${prettyValue}`
     li.appendChild(p)
     dataElement.appendChild(li)
@@ -127,19 +153,26 @@ const fillCard = () => {
   }
 }
 
-const prettifyValue = (value) => {
-  if (value === true ) return 'oui'
-  if (value === false) return 'non'
-  if (value === null) return 'non renseigné'
-  return value
+/* ACTION */
+const submitAction = async (actions) => {
+  const updatedRecord = await grist.docApi.applyUserActions(actions)
+  if (updatedRecord) modal.closeDialog()
 }
 
+/* ERROR */
 const generateAlertError = (content) => {
   const li = document.createElement('li')
-  li.classList.add("fr-alert", "fr-alert--error")
+  li.classList.add('fr-alert', 'fr-alert--error')
   const p = document.createElement('p')
   p.classList.add('fr-alert__title')
   p.textContent = content
   li.appendChild(p)
   return li
+}
+
+/* COLUMNS INFOS */
+const needsColumnInfos = async () => {
+  if (tableColumnsInfos.length === 0) {
+    tableColumnsInfos = await gristUtils.getTableColumnsInfos()
+  }
 }

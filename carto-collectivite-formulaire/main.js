@@ -199,7 +199,7 @@ formElement.addEventListener('submit', async (event) => {
   const formValues = getFormValues()
   isSaving = true
   try {
-    grist.selectedTable.update({
+    await grist.selectedTable.update({
       id: rowIdSelected,
       fields: formValues,
     })
