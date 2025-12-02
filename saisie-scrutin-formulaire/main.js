@@ -168,7 +168,7 @@ const resetView = () => {
   messageElement.classList.add('fr-hidden')
   formElement.reset()
   prefillForm()
-  checkAbsence()
+  if (absenceCandidatMapped) checkAbsence()
 }
 
 /* DISABLED FIELDS */
