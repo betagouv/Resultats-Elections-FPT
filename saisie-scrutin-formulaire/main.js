@@ -26,25 +26,33 @@ let isSaving = false
 
 /* COLUMNS */
 const generateForm = () => {
-  const inscrits = gristUtils.getColumnsInfos(
-    nombreInscritsMapped,
-    tableColumnsInfos
-  )
-  const inscritInput = generateInputText(
-    inscrits[0],
-    gristUtils.getHtmlType(inscrits[0].type)
-  )
-  inscritInput.setAttribute('id', 'inscrits')
-  requiredInputs.appendChild(inscritInput)
 
-  const absence = gristUtils.getColumnsInfos(
-    absenceCandidatMapped,
-    tableColumnsInfos
-  )
-  const absenceInput = generateInputCheckbox(absence[0])
-  absenceInput.setAttribute('id', 'absence')
-  requiredInputs.appendChild(absenceInput)
+  // Nombre d'inscrits
+  if (nombreInscritsMapped) {
+    const inscrits = gristUtils.getColumnsInfos(
+      nombreInscritsMapped,
+      tableColumnsInfos
+    )
+    const inscritInput = generateInputText(
+      inscrits[0],
+      gristUtils.getHtmlType(inscrits[0].type)
+    )
+    inscritInput.setAttribute('id', 'inscrits')
+    requiredInputs.appendChild(inscritInput)
+  }
 
+  // Absence candidat
+  if (absenceCandidatMapped) {
+    const absence = gristUtils.getColumnsInfos(
+      absenceCandidatMapped,
+      tableColumnsInfos
+    )
+    const absenceInput = generateInputCheckbox(absence[0])
+    absenceInput.setAttribute('id', 'absence')
+    requiredInputs.appendChild(absenceInput)
+  }
+
+  // Résultats (1 colonne)
   for (let i = 0; i < resultatsMapped.length; i++) {
     const coloneInfo = gristUtils.getColumnInfos(
       resultatsMapped[i],
@@ -58,6 +66,7 @@ const generateForm = () => {
     votesInputs.appendChild(input)
   }
 
+  // Voix des syndicats (2 colonnes)
   const syndicats = gristUtils.getColumnsInfos(
     syndicatsMapped,
     tableColumnsInfos
@@ -239,10 +248,12 @@ grist.ready({
     {
       name: 'NombreInscrits',
       description: "Nombre d'inscrit",
+      optional: true,
     },
     {
       name: 'AbsenceCandidat',
       description: "Colonne s'il n'y a pas de candidat",
+      optional: true,
     },
     {
       name: 'Resultats',
@@ -287,7 +298,7 @@ const initView = async () => {
   await needsColumnInfos()
   generateForm()
   prefillForm()
-  generateAbsence()
+  if (absenceCandidatMapped) generateAbsence()
 }
 
 initView()
