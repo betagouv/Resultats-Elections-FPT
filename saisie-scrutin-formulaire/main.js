@@ -13,6 +13,8 @@ const errorElement = document.querySelector('#error')
 const messageElement = document.querySelector('#message')
 const backToForm = document.querySelector('#backToForm')
 const fieldsetsNameElement = document.querySelectorAll('[data-name="js-fieldset-name"]')
+const notEditableMessage = document.querySelector('[data-name="js-form-not-editable-message"]')
+const notEditableAlert = document.querySelector('[data-name="js-form-not-editable-alert"]')
 
 let rowIdSelected = null
 let columnNameMapped = null
@@ -30,7 +32,6 @@ let configuration = null
 
 /* COLUMNS */
 const generateForm = () => {
-
   // Nombre d'inscrits
   if (nombreInscritsMapped) {
     const inscrits = gristUtils.getColumnsInfos(
@@ -154,14 +155,23 @@ const getFormValues = () => {
   return values
 }
 
+const hideForm = () => {
+  notEditableMessage.textContent = currentRecord[nonModifiableMapped]
+  notEditableAlert.classList.remove('fr-hidden')
+  formElement.classList.add('fr-hidden')
+}
+
 const prefillForm = () => {
-  const inputs = formElement.querySelectorAll('input')
-  for (let i = 0; i < inputs.length; i++) {
-    const input = inputs[i]
-    const name = input.getAttribute('name')
-    const value = currentRecord[name]
-    if (typeof value === 'boolean') input.checked = value
-    else input.setAttribute('value', value)
+  if (currentRecord[nonModifiableMapped]) hideForm()
+  else {
+    const inputs = formElement.querySelectorAll('input')
+    for (let i = 0; i < inputs.length; i++) {
+      const input = inputs[i]
+      const name = input.getAttribute('name')
+      const value = currentRecord[name]
+      if (typeof value === 'boolean') input.checked = value
+      else input.setAttribute('value', value)
+    }
   }
 }
 
@@ -170,6 +180,7 @@ const resetView = () => {
   successElement.classList.add('fr-hidden')
   errorElement.classList.add('fr-hidden')
   messageElement.classList.add('fr-hidden')
+  notEditableAlert.classList.add('fr-hidden')
   formElement.reset()
   prefillForm()
   if (absenceCandidatMapped) checkAbsence()
