@@ -230,7 +230,7 @@ buttonSave.addEventListener('click', async () => {
 /* TABLE */
 const getTableData = async () => {
   if (refListAll.length === 0) {
-    refListAll = await gristUtils.getTable('Collectivites')
+    refListAll = await gristUtils.getTable('Table_collectivites')
   }
 }
 
