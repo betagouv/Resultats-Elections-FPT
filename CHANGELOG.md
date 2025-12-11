@@ -1,5 +1,6 @@
 # Changelog
 
+- feat(Données genrées): intégration du code spécifique des données genrées au custom widget [#11](https://github.com/betagouv/Resultats-Elections-FPT/pull/11)
 - fix(Cartographie): recettage [#10](https://github.com/betagouv/Resultats-Elections-FPT/pull/10)
 - feat(Saisie de resultats): création du custom widget [#9](https://github.com/betagouv/Resultats-Elections-FPT/pull/9)
 - fix(Cartographie scrutins): corrige les valeurs censurées et amélioration du code [#8](https://github.com/betagouv/Resultats-Elections-FPT/pull/8)

@@ -1,5 +1,6 @@
 /* IMPORTS */
 import gristUtils from '../scripts/utils/grist.js'
+import Configuration from '../scripts/classes/Configuration.js'
 
 /* VAR */
 const namesElement = document.querySelectorAll('[data-name="collectivite"]')
@@ -11,6 +12,7 @@ const successElement = document.querySelector('#success')
 const errorElement = document.querySelector('#error')
 const messageElement = document.querySelector('#message')
 const backToForm = document.querySelector('#backToForm')
+const fieldsetsNameElement = document.querySelectorAll('[data-name="js-fieldset-name"]')
 
 let rowIdSelected = null
 let columnNameMapped = null
@@ -23,28 +25,37 @@ let inputsToUpdate = []
 let abscenceInput = null
 let currentRecord = null
 let isSaving = false
+let configuration = null
 
 /* COLUMNS */
 const generateForm = () => {
-  const inscrits = gristUtils.getColumnsInfos(
-    nombreInscritsMapped,
-    tableColumnsInfos
-  )
-  const inscritInput = generateInputText(
-    inscrits[0],
-    gristUtils.getHtmlType(inscrits[0].type)
-  )
-  inscritInput.setAttribute('id', 'inscrits')
-  requiredInputs.appendChild(inscritInput)
 
-  const absence = gristUtils.getColumnsInfos(
-    absenceCandidatMapped,
-    tableColumnsInfos
-  )
-  const absenceInput = generateInputCheckbox(absence[0])
-  absenceInput.setAttribute('id', 'absence')
-  requiredInputs.appendChild(absenceInput)
+  // Nombre d'inscrits
+  if (nombreInscritsMapped) {
+    const inscrits = gristUtils.getColumnsInfos(
+      nombreInscritsMapped,
+      tableColumnsInfos
+    )
+    const inscritInput = generateInputText(
+      inscrits[0],
+      gristUtils.getHtmlType(inscrits[0].type)
+    )
+    inscritInput.setAttribute('id', 'inscrits')
+    requiredInputs.appendChild(inscritInput)
+  }
 
+  // Absence candidat
+  if (absenceCandidatMapped) {
+    const absence = gristUtils.getColumnsInfos(
+      absenceCandidatMapped,
+      tableColumnsInfos
+    )
+    const absenceInput = generateInputCheckbox(absence[0])
+    absenceInput.setAttribute('id', 'absence')
+    requiredInputs.appendChild(absenceInput)
+  }
+
+  // Résultats (1 colonne)
   for (let i = 0; i < resultatsMapped.length; i++) {
     const coloneInfo = gristUtils.getColumnInfos(
       resultatsMapped[i],
@@ -58,6 +69,7 @@ const generateForm = () => {
     votesInputs.appendChild(input)
   }
 
+  // Voix des syndicats (2 colonnes)
   const syndicats = gristUtils.getColumnsInfos(
     syndicatsMapped,
     tableColumnsInfos
@@ -159,7 +171,7 @@ const resetView = () => {
   messageElement.classList.add('fr-hidden')
   formElement.reset()
   prefillForm()
-  checkAbsence()
+  if (absenceCandidatMapped) checkAbsence()
 }
 
 /* DISABLED FIELDS */
@@ -239,10 +251,12 @@ grist.ready({
     {
       name: 'NombreInscrits',
       description: "Nombre d'inscrit",
+      optional: true,
     },
     {
       name: 'AbsenceCandidat',
       description: "Colonne s'il n'y a pas de candidat",
+      optional: true,
     },
     {
       name: 'Resultats',
@@ -255,6 +269,10 @@ grist.ready({
       allowMultiple: true,
     },
   ],
+  onEditOptions: () => {
+    // On clic sur "Ouvrir la configuration"
+    if (configuration) configuration.open()
+  },
 })
 
 grist.onRecord(async (record, mapping) => {
@@ -282,12 +300,33 @@ const needsColumnInfos = async () => {
   }
 }
 
+/* CONFIGURATION */
+const setupConfiguration = () => {
+  configuration = new Configuration({
+    name: 'fieldsets-names',
+    label: 'Noms de groupes de champs à remplir, séparer d\'un point-virgule',
+    onClose: () => {
+      updateFieldsetsName()
+    },
+  })
+  updateFieldsetsName()
+}
+
+const updateFieldsetsName = async () => {
+  const names = await configuration.getValue()
+  const namesArray = names.split(';')
+  for (let i = 0; i < namesArray.length; i++) {
+    fieldsetsNameElement[i].textContent = `${namesArray[i]} :`
+  }
+}
+
 /* INIT */
 const initView = async () => {
+  setupConfiguration()
   await needsColumnInfos()
   generateForm()
   prefillForm()
-  generateAbsence()
+  if (absenceCandidatMapped) generateAbsence()
 }
 
 initView()
