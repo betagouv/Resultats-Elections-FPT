@@ -314,6 +314,7 @@ const setupConfiguration = () => {
 
 const updateFieldsetsName = async () => {
   const names = await configuration.getValue()
+  if (!names) return
   const namesArray = names.split(';')
   for (let i = 0; i < namesArray.length; i++) {
     fieldsetsNameElement[i].textContent = `${namesArray[i]} :`
