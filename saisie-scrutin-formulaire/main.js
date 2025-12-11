@@ -20,6 +20,7 @@ let nombreInscritsMapped = []
 let absenceCandidatMapped = []
 let resultatsMapped = []
 let syndicatsMapped = []
+let nonModifiableMapped = []
 let tableColumnsInfos = []
 let inputsToUpdate = []
 let abscenceInput = null
@@ -247,6 +248,11 @@ formElement.addEventListener('submit', async (event) => {
 grist.ready({
   requiredAccess: 'full',
   columns: [
+    {
+      name: 'NonModifiable',
+      description: 'Colonne qui permet de cacher le formulaire',
+      optional: true,
+    },
     'ColumnName',
     {
       name: 'NombreInscrits',
@@ -285,6 +291,7 @@ grist.onRecord(async (record, mapping) => {
   absenceCandidatMapped = mapping['AbsenceCandidat']
   resultatsMapped = mapping['Resultats']
   syndicatsMapped = mapping['Syndicats']
+  nonModifiableMapped = mapping['NonModifiable']
   namesElement.forEach((name) => {
     name.textContent = record[columnNameMapped]
   })
