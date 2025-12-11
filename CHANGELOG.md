@@ -1,5 +1,6 @@
 # Changelog
 
+- feat(Validation de scrutin): ajoute une option pour permettre de cacher le formulaire [#12](https://github.com/betagouv/Resultats-Elections-FPT/pull/12)
 - feat(Données genrées): intégration du code spécifique des données genrées au custom widget [#11](https://github.com/betagouv/Resultats-Elections-FPT/pull/11)
 - fix(Cartographie): recettage [#10](https://github.com/betagouv/Resultats-Elections-FPT/pull/10)
 - feat(Saisie de resultats): création du custom widget [#9](https://github.com/betagouv/Resultats-Elections-FPT/pull/9)
