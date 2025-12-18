@@ -186,14 +186,14 @@ const displaySearchResults = (results) => {
 }
 
 const getCollectiviteInfos = (name) => {
-  const index = allCollectivites.Nom_complet.indexOf(name)
-  const organisateurColumnName = `${scrutinName}_Organisateur`
-  const scrutinColumnName = `Scrutin_${scrutinName}`
+  const index = allCollectivites.Nom_de_collectivite_AFFICHE.indexOf(name)
+  const scrutinColumn = `Scrutin_${scrutinName}`
+  const scrutinColumnName = `${scrutinColumn}_AFFICHE`
   const scrutinAlreadyLinked = allCollectivites[scrutinColumnName][index]
   return {
     value: allCollectivites.id[index],
-    name: allCollectivites.Nom_complet[index],
-    isOrganisor: allCollectivites[organisateurColumnName][index],
+    name: allCollectivites.Nom_de_collectivite_AFFICHE[index],
+    isOrganisor: allCollectivites[scrutinColumn][index],
     scrutinAlreadyLinked:
       typeof scrutinAlreadyLinked === 'string' && scrutinAlreadyLinked !== ''
         ? [scrutinAlreadyLinked]
@@ -252,8 +252,8 @@ searchAddButton.addEventListener('click', async () => {
   const searchValue = searchAddInput.value.toLowerCase().trim()
   if (searchValue.length === 0) return
   searchAddLoading.classList.remove('fr-hidden')
-  allCollectivites = await grist.docApi.fetchTable('Collectivites')
-  const filteredCollectivites = allCollectivites.Nom_complet.filter((name) => valuesUtils.isInString(name, searchValue))
+  allCollectivites = await grist.docApi.fetchTable('Table_collectivites')
+  const filteredCollectivites = allCollectivites.Nom_de_collectivite_AFFICHE.filter((name) => valuesUtils.isInString(name, searchValue))
   searchAddLoading.classList.add('fr-hidden')
   if (filteredCollectivites.length === 0)
     searchAddEmpty.classList.remove('fr-hidden')
@@ -279,7 +279,7 @@ searchCreateButton.addEventListener('click', async () => {
   const id = Number(organisateurId)
   const action = [
     'AddRecord',
-    `Scrutins_${scrutinName}`,
+    `Table_scrutins_${scrutinName}`,
     null,
     {
       [columnOrganisateurMapped]: id,

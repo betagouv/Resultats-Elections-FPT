@@ -3,7 +3,7 @@ import valuesUtils from '../scripts/utils/values.js'
 import gristUtils from '../scripts/utils/grist.js'
 
 /* CONST */
-const COLLECTIVITE_SEARCH_NAME = 'Nom_complet'
+const COLLECTIVITE_SEARCH_NAME = 'Nom_de_collectivite_AFFICHE'
 
 /* VAR */
 const namesElement = document.querySelectorAll('[data-name="collectivite"]')
@@ -172,19 +172,19 @@ buttonSearch.addEventListener('click', async (event) => {
   }
 
   for (let i = 0; i < foundRefs.length; i++) {
-    const columnName = `Scrutin_${scrutinName}`
+    const columnScrutinName = `Scrutin_${scrutinName}_AFFICHE`
     const index = refListAll[COLLECTIVITE_SEARCH_NAME].indexOf(foundRefs[i])
     const alreadyLinked =
-      refListAll[columnName][index] !== null &&
-      refListAll[columnName][index] !== ''
+      refListAll[columnScrutinName][index] !== null &&
+      refListAll[columnScrutinName][index] !== ''
     const disabledIfRelated = alreadyLinked
-      ? `Est déjà rattachée au scrutin ${scrutinName} ${refListAll[columnName][index]}`
+      ? `Est déjà rattachée au scrutin ${scrutinName} ${refListAll[columnScrutinName][index]}`
       : false
     const props = {
       name: foundRefs[i],
       disabled: columnTypeMapped !== null ? false : disabledIfRelated,
       checked: false,
-      scrutins: refListAll[columnName][index],
+      scrutins: refListAll[columnScrutinName][index],
     }
 
     const checkbox = getCheckbox(props)
@@ -230,7 +230,7 @@ buttonSave.addEventListener('click', async () => {
 /* TABLE */
 const getTableData = async () => {
   if (refListAll.length === 0) {
-    refListAll = await gristUtils.getTable('Collectivites')
+    refListAll = await gristUtils.getTable('Table_collectivites') // Dynamiser avec une configuration ? 
   }
 }
 
