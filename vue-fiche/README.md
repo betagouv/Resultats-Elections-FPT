@@ -6,7 +6,6 @@ A faire :
 - [x] Passer tous les sélecteurs avec des data-attribute  
 - [ ] Passer la suppression en action
 
-
 À intégrer : 
 - [ ] Saisie de résultats  
 - [ ] Saisie de données genrées  
@@ -24,3 +23,7 @@ Améliorations :
 - [ ] Récupérer le nom des colonnes avec un autre endpoint api
 - [ ] Passer le badge à l'intérieur des "data" en mode DSFR
 - [ ] Changer la colonne du badge pour avoir un objet "DSFR" qui intègre le type du badge
+
+Idées dev : 
+- [ ] Charger uniquement le style minimum pour le DSFR ?
+- [ ] Créer des composats pour la tuile et la modale ? 
