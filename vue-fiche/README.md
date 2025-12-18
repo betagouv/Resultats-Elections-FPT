@@ -17,9 +17,10 @@ Vérifications :
 - [ ] Sémantique 
 - [ ] Accessibilité  
 - [ ] Responsive
-- [ ] Renommer les colonnes pour les rendre génériques
+- [ ] Renommer la configuration Grist pour la rendre générique
 
 Améliorations : 
+- [ ] Créer un colonne qui gère l'affiche de la carte et ne plus utiliser le statut "à renseigner"
 - [ ] Récupérer le nom des colonnes avec un autre endpoint api
 - [ ] Passer le badge à l'intérieur des "data" en mode DSFR
 - [ ] Changer la colonne du badge pour avoir un objet "DSFR" qui intègre le type du badge
