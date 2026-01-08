@@ -6,12 +6,12 @@ A faire :
 - [x] Passer tous les sélecteurs avec des data-attribute  
 - [x] Passer la suppression en action
 
-À intégrer : 
-- [ ] Saisie de résultats  
-- [ ] Saisie de données genrées  
-- [ ] Validation de résultats  
-- [ ] Carto collectivité  
-- [ ] Carto scrutin  
+À mettre dans l'app : 
+- [x] Saisie de résultats  
+- [x] Saisie de données genrées  
+- [x] Validation de résultats  
+- [x] Carto collectivité  
+- [x] Carto scrutin  
 
 Vérifications :
 - [ ] Sémantique 
