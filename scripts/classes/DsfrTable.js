@@ -58,19 +58,27 @@ class DsfrTable {
       cell.classList.add('fr-col--sm')
       cell.classList.add('fr-cell--fixed')
     }
-    if (column.infos.type === 'Bool') this.addBadge(cell, column.value)
+    if (column.infos.type === 'Bool') cell.appendChild(this.addBadge(column.value))
     else if (!column.value) cell.textContent = ''
     else if (typeof column.value !== 'string') cell.innerHTML = valuesUtils.prettifyList(column.value)
+    else if (column.infos.type.indexOf('Ref:') >= 0) cell.appendChild(this.addTag(column.value))
     else cell.textContent = valuesUtils.prettify(column.value)
     tr.appendChild(cell)
   }
 
-  addBadge(cell, value){
+  addBadge(value){
     const type = value ? 'success' : 'error'
     const badge = document.createElement('p')
     badge.classList.add('fr-badge', `fr-badge--${type}`)
     badge.textContent = value ? 'Oui' : 'Non'
-    cell.appendChild(badge)
+    return badge
+  }
+
+  addTag(value){
+    const tag = document.createElement('span')
+    tag.classList.add('fr-tag', 'fr-tag--sm')
+    tag.textContent = value
+    return tag
   }
 
   addClasses() {
