@@ -8,7 +8,6 @@ const __dirname = fileURLToPath(new URL('.', import.meta.url))
 const portMap = {
   'vue-fiche': 5173,
   'vue-tableau': 5174,
-  'vue-recherche': 5175
 }
 
 // Détection du mode pour choisir l'app
