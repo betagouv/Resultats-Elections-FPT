@@ -2,9 +2,18 @@
   "name": "resultats-elections-fpt",
   "version": "1.0.0",
   "description": "Saisir et centraliser les résultats des élections professionnelles dans la fonction publique territoriale",
-  "main": "index.js",
+  "type": "module",
   "scripts": {
-    "serve": "http-server"
+    "dev:fiche": "vite --mode vue-fiche",
+    "dev:tableau": "vite --mode vue-tableau",
+    "dev:recherche": "vite --mode vue-recherche",
+    "build:fiche": "vite build --mode vue-fiche",
+    "build:tableau": "vite build --mode vue-tableau",
+    "build:recherche": "vite build --mode vue-recherche",
+    "build": "npm-run-all --parallel build:fiche build:tableau build:recherche",
+    "preview:fiche": "vite preview --mode vue-fiche",
+    "preview:tableau": "vite preview --mode vue-tableau",
+    "preview:recherche": "vite preview --mode vue-recherche"
   },
   "repository": {
     "type": "git",
@@ -17,6 +26,14 @@
   },
   "homepage": "https://github.com/betagouv/Resultats-Elections-FPT#readme",
   "dependencies": {
-    "http-server": "^14.1.1"
+    "vue": "^3.4.21",
+    "vue-dsfr": "^1.8.7",
+    "@gouvfr/dsfr": "^1.11.2"
+  },
+  "devDependencies": {
+    "vite": "^5.2.0",
+    "@vitejs/plugin-vue": "^5.0.4",
+    "npm-run-all": "^4.1.5"
   }
 }
+
