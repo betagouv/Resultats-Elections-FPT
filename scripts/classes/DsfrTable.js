@@ -59,8 +59,9 @@ class DsfrTable {
       cell.classList.add('fr-cell--fixed')
     }
     if (column.infos.type === 'Bool') this.addBadge(cell, column.value)
-    else if (column.value !== '') cell.textContent = valuesUtils.prettify(column.value)
-    else cell.textContent = ''
+    else if (!column.value) cell.textContent = ''
+    else if (typeof column.value !== 'string') cell.innerHTML = valuesUtils.prettifyList(column.value)
+    else cell.textContent = valuesUtils.prettify(column.value)
     tr.appendChild(cell)
   }
 

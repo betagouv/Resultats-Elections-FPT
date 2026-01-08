@@ -12,4 +12,11 @@ const prettify = (value) => {
   return value
 }
 
-export default { isInString, prettify }
+const prettifyList = (list) => {
+  let listMultiLines = ""
+  if (list.length === 0) return listMultiLines
+  for (const item of list) listMultiLines += `${item} <br/>`
+  return listMultiLines
+}
+
+export default { isInString, prettify, prettifyList }
