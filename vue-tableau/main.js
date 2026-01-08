@@ -46,13 +46,18 @@ const getTableHeaders = () => {
 }
 
 const getTableRows = (table) => {
-  const records = []
+  const rows = []
   table.forEach(record => {
     const row = []
-    for (const data of columnsMapped) row.push(record[data])
-    records.push(row)
+    for (const column of columnsMapped) {
+      row.push({
+        value: record[column],
+        infos: gristUtils.getColumnInfos(column, tableColumnsInfos),
+      })
+    }
+    rows.push(row)
   })
-  return records
+  return rows
 }
 
 /* COLUMNS INFOS */
