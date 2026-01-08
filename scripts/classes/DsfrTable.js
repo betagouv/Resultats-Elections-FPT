@@ -1,3 +1,5 @@
+import valuesUtils from '../utils/values.js'
+
 class DsfrTable {
   constructor(props) {
     const { headers, rows, customClasses, tableDom } = props
@@ -43,19 +45,31 @@ class DsfrTable {
     const fragment = document.createDocumentFragment()
     rowsToDisplay.forEach(record => {
       const tr = document.createElement('tr')
-      record.forEach((content, index)=> {
-        const isFirst = index === 0
-        const cell = document.createElement(isFirst ? 'th' : 'td')
-        if (isFirst) {
-          cell.classList.add('fr-col--sm')
-          cell.classList.add('fr-cell--fixed')
-        }
-        cell.textContent = content
-        tr.appendChild(cell)
-      })
+      record.forEach((column, index) => this.addCell(column, index, tr))
       fragment.appendChild(tr)
     })
     this.rowsContainer.appendChild(fragment)
+  }
+
+  addCell(column, index, tr) {
+    const isFirst = index === 0
+    const cell = document.createElement(isFirst ? 'th' : 'td')
+    if (isFirst) {
+      cell.classList.add('fr-col--sm')
+      cell.classList.add('fr-cell--fixed')
+    }
+    if (column.infos.type === 'Bool') this.addBadge(cell, column.value)
+    else if (column.value !== '') cell.textContent = valuesUtils.prettify(column.value)
+    else cell.textContent = ''
+    tr.appendChild(cell)
+  }
+
+  addBadge(cell, value){
+    const type = value ? 'success' : 'error'
+    const badge = document.createElement('p')
+    badge.classList.add('fr-badge', `fr-badge--${type}`)
+    badge.textContent = value ? 'Oui' : 'Non'
+    cell.appendChild(badge)
   }
 
   addClasses() {
