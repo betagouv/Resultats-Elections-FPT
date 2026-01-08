@@ -51,7 +51,7 @@ class DsfrTable {
     const isFirst = index === 0
     const cell = document.createElement(isFirst ? 'th' : 'td')
     if (isFirst) {
-      cell.classList.add('fr-col--sm')
+      cell.classList.add('fr-col--xs')
       cell.classList.add('fr-cell--fixed')
     }
     if (column.infos.type === 'Bool') cell.appendChild(this.addBadge(column.value))
@@ -78,7 +78,7 @@ class DsfrTable {
   }
 
   addClasses() {
-    this.tableDom.classList.add('fr-table--bordered')
+    this.tableDom.classList.add('fr-table--bordered', 'fr-table--multiline')
     this.tableDom.classList.add(...this.customClasses)
   }
 }
