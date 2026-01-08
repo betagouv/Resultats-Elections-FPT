@@ -17,14 +17,16 @@ Vérifications :
 - [ ] Sémantique 
 - [ ] Accessibilité  
 - [ ] Responsive
-- [ ] Renommer la configuration Grist pour la rendre générique
+- [ ] Renommer la configuration des colonnes Grist pour la rendre générique
 
 Améliorations : 
-- [ ] Créer un colonne qui gère l'affiche de la carte et ne plus utiliser le statut "à renseigner"
+- [ ] Diminuer la taille des messages d'erreurs
+- [ ] Créer un colonne qui gère l'affiche de la vue et ne plus utiliser le statut "à renseigner"
 - [ ] Récupérer le nom des colonnes avec un autre endpoint api
-- [ ] Passer le badge à l'intérieur des "data" en mode DSFR
-- [ ] Changer la colonne du badge pour avoir un objet "DSFR" qui intègre le type du badge
+- [ ] Changer la colonne du statut pour avoir un objet "DSFR" qui intègre le type du badge
+- [ ] Afficher les statuts à l'intérieur des "data" en mode DSFR
 
-Idées dev : 
+Pistes dev à creuser : 
 - [ ] Charger uniquement le style minimum pour le DSFR ?
-- [ ] Créer des composats pour la tuile et la modale ? 
+- [ ] Créer des composants pour la tuile et la modale ? 
+- [ ] Créer les élements du DOM via des constructeur type Class en js ?
