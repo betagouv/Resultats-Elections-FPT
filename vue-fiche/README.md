@@ -4,7 +4,7 @@ A faire :
 - [x] Création de la nouvelle vue
 - [x] Corriger l'affichage du titre la vue  
 - [x] Passer tous les sélecteurs avec des data-attribute  
-- [ ] Passer la suppression en action
+- [x] Passer la suppression en action
 
 À intégrer : 
 - [ ] Saisie de résultats  
