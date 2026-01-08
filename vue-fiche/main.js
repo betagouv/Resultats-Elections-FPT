@@ -11,6 +11,7 @@ const badgeElement = document.querySelector('[data-js="badge"]')
 const dataElement = document.querySelector('[data-js="data"]')
 const errorsElement = document.querySelector('[data-js="errors"]')
 const modalElement = document.querySelector('[data-js="modal"]')
+const modalSubmitElement = modalElement.querySelector('#submit')
 const modalButtonElement = modalElement.querySelector('[data-js="modal-button"]')
 const modalTitleElement = modalElement.querySelector('[data-js="modal-title"]')
 const modal = new Modal({
@@ -24,7 +25,6 @@ let errorsMapped = null
 let actionMapped = null
 let currentRecord = null
 let tableColumnsInfos = []
-let actionSubmit = null
 
 /* GRIST */
 grist.ready({
@@ -96,15 +96,11 @@ const displayContent = () => {
     modalButtonElement.textContent = currentRecord[actionMapped].button
     modalTitleElement.textContent = currentRecord[actionMapped].description
     modalElement.classList.remove('fr-hidden')
-    actionSubmit = modalElement.querySelector('#submit')
     // Active un bouton ou non
     if (currentRecord[actionMapped].isDisabled) {
-      actionSubmit.classList.add('fr-hidden')
+      modalSubmitElement.classList.add('fr-hidden')
     } else {
-      actionSubmit.classList.remove('fr-hidden')
-      actionSubmit.addEventListener('click', () => {
-        submitAction([currentRecord[actionMapped].action])
-      })
+      modalSubmitElement.classList.remove('fr-hidden')
     }
   }
 }
@@ -163,6 +159,10 @@ const submitAction = async (actions) => {
   const updatedRecord = await grist.docApi.applyUserActions(actions)
   if (updatedRecord) modal.closeDialog()
 }
+
+modalSubmitElement.addEventListener('click', () => {
+  submitAction([currentRecord[actionMapped].action])
+})
 
 /* ERROR */
 const generateAlertError = (content) => {
