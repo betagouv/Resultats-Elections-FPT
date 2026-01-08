@@ -1,8 +1,9 @@
 class DsfrTable {
   constructor(props) {
-    const { headers, customClasses, tableDom } = props
+    const { headers, rows, customClasses, tableDom } = props
   
     this.headers = headers
+    this.rows = rows
     this.customClasses = customClasses
     this.tableDom = tableDom
 
@@ -13,6 +14,7 @@ class DsfrTable {
     this.getDomElements()
     this.addClasses()
     this.addHeaders()
+    this.addRows()
   }
 
   getDomElements() {
@@ -33,25 +35,27 @@ class DsfrTable {
     this.headersContainer.appendChild(tr)
   }
 
-  displayRows(rows) {
+  addRows() {
+    // TODO START DEBUG 
+    const rowsToDisplay = this.rows.slice(0, 10)
+    // END DEBUG
+    
     const fragment = document.createDocumentFragment()
-    rows.forEach(record => {
+    rowsToDisplay.forEach(record => {
       const tr = document.createElement('tr')
       record.forEach((content, index)=> {
         const isFirst = index === 0
         const cell = document.createElement(isFirst ? 'th' : 'td')
-        cell.classList.add('fr-col--sm')
-        if (isFirst) cell.classList.add('fr-cell--fixed')
+        if (isFirst) {
+          cell.classList.add('fr-col--sm')
+          cell.classList.add('fr-cell--fixed')
+        }
         cell.textContent = content
         tr.appendChild(cell)
       })
       fragment.appendChild(tr)
     })
     this.rowsContainer.appendChild(fragment)
-  }
-
-  removeRows() {
-    this.rowsContainer.replaceChildren()
   }
 
   addClasses() {

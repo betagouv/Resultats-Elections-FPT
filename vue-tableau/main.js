@@ -1,17 +1,12 @@
 /* IMPORTS */
 import DsfrTable from '../scripts/classes/DsfrTable.js'
+import gristUtils from '../scripts/utils/grist.js'
 
 /* VAR */
 const tableElement = document.querySelector('[data-js="dsfr-table"]')
 let columnsMapped = null
-
-/* TABLE */
-const tableHeaders = ["Nom de la collectivité", "Type de collectivité", "Scrutin CST", "Scrutin CCP", "Scrutin CAP", "Scrutins_Absence", "Prefecture__Validation_Carto_DGCL", "Prefecture__Validation_Carto_PREF", "Derniere_modification"]
-const dsfrTable = new DsfrTable({
-  headers: tableHeaders,
-  customClasses: ['fr-mt-0'],
-  tableDom: tableElement,
-})
+let tableColumnsInfos = []
+let dsfrTable = null
 
 /* GRIST */
 grist.ready({
@@ -27,14 +22,30 @@ grist.ready({
 
 grist.onRecords(async (table, mapping) => {
   columnsMapped = mapping['columns']
-  if (table.length > 0) {
-    dsfrTable.removeRows()
-    const rows = getColumnMappedRow(table)
-    dsfrTable.displayRows(rows)
-  }
+  await needsColumnInfos()
+  if (table.length > 0) generateTable(table)
 })
 
-const getColumnMappedRow = (table) => {
+/* TABLE */
+const generateTable = (table) => {
+  dsfrTable = new DsfrTable({
+    headers: getTableHeaders(),
+    rows: getTableRows(table),
+    customClasses: ['fr-mt-0'],
+    tableDom: tableElement,
+  })
+}
+
+const getTableHeaders = () => {
+  const headers = []
+  for (const column of columnsMapped) {
+    const columnInfo = gristUtils.getColumnInfos(column, tableColumnsInfos)
+    headers.push(columnInfo.label)
+  }
+  return headers
+}
+
+const getTableRows = (table) => {
   const records = []
   table.forEach(record => {
     const row = []
@@ -42,4 +53,11 @@ const getColumnMappedRow = (table) => {
     records.push(row)
   })
   return records
+}
+
+/* COLUMNS INFOS */
+const needsColumnInfos = async () => {
+  if (tableColumnsInfos.length === 0) {
+    tableColumnsInfos = await gristUtils.getTableColumnsInfos()
+  }
 }
