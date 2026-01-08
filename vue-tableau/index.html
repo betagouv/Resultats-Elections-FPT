@@ -1,0 +1,28 @@
+<html>
+  <head>
+    <script src="https://docs.getgrist.com/grist-plugin-api.js"></script>
+    <link
+      href="https://cdn.jsdelivr.net/npm/@gouvfr/dsfr@1.14.0/dist/dsfr.min.css"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../styles/app.css" />
+    <style>
+      .fr-table__content .fr-cell--fixed {
+        z-index: 0 !important; /* Fix overlay with sticky header */
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <div class="fr-table app-table--sticky" data-js="dsfr-table">
+        <div class="fr-table__content">
+          <table>
+            <thead class="fr-thead"></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+    </main>
+    <script type="module" src="main.js"></script>
+  </body>
+</html>

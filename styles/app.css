@@ -36,3 +36,14 @@
 .app-cw-search li p {
 	text-align: left !important;
 }
+
+.app-table--sticky table {
+	position: relative !important;
+	overflow: initial !important;
+}
+
+.app-table--sticky thead {
+	position: sticky !important;
+	top: 0px;
+	z-index: 1;
+}
