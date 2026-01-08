@@ -38,12 +38,8 @@ class DsfrTable {
   }
 
   addRows() {
-    // TODO START DEBUG 
-    const rowsToDisplay = this.rows.slice(0, 10)
-    // END DEBUG
-    
     const fragment = document.createDocumentFragment()
-    rowsToDisplay.forEach(record => {
+    this.rows.forEach(record => {
       const tr = document.createElement('tr')
       record.forEach((column, index) => this.addCell(column, index, tr))
       fragment.appendChild(tr)
