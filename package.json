@@ -26,14 +26,13 @@
   },
   "homepage": "https://github.com/betagouv/Resultats-Elections-FPT#readme",
   "dependencies": {
-    "vue": "^3.4.21",
-    "vue-dsfr": "^1.8.7",
-    "@gouvfr/dsfr": "^1.11.2"
+    "@gouvfr/dsfr": "^1.14.3",
+    "@gouvminint/vue-dsfr": "^8.13.1",
+    "vue": "^3.4.21"
   },
   "devDependencies": {
-    "vite": "^5.2.0",
     "@vitejs/plugin-vue": "^5.0.4",
-    "npm-run-all": "^4.1.5"
+    "npm-run-all": "^4.1.5",
+    "vite": "^5.2.0"
   }
 }
-
