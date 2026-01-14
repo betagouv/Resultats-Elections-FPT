@@ -77,7 +77,15 @@ const onRecords = (params) => {
 </script>
 <template>
   <GristContainer @update:record="onRecord" @update:records="onRecords" :columns="gristColumns">
-    <div class="fr-p-3w">
+    <div class="vue-tableau">
+      <div class="fr-p-3w fr-col-12 fr-grid-row fr-grid-row--middle">
+        <div class="fr-col-12 fr-col-md-6">
+          <p class="fr-mb-0">{{ tableRows.length }} {{ tableRows.length > 1 ? 'collectivités' : 'collectivité' }}</p>
+        </div>
+        <div class="fr-col-12 fr-col-md-6">
+          <DsfrSearchBar v-model="search" button-text="Rechercher" placeholder="Rechercher une collectivité par son nom" :large="true" @search="onSearch()" />
+        </div>
+      </div>
       <DsfrDataTable 
         v-if="displayTable"
         class="vue-tableau__table fr-table--bordered"
