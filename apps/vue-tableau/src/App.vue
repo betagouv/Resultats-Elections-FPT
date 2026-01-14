@@ -88,7 +88,7 @@ const onRecords = (params) => {
       >
         <template #cell="{ cell }">
           <DsfrBadge v-if="cell.type === 'Bool'" :type="cell.value ? 'success' : 'error'" :label="cell.value ? 'Oui' : 'Non'" />
-          <DsfrTag v-else-if="cell.type.indexOf('Ref') > -1" :label="cell.value" />
+          <DsfrTag v-else-if="cell.type.indexOf('Ref:') > -1" :label="cell.value" />
           <ul v-else-if="cell.hasMultipleValues">
             <li v-for="value in cell.value">
               <p class="fr-mb-0">{{ value }}</p>
