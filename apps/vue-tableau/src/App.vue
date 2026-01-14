@@ -1,16 +1,4 @@
+<script setup></script>
 <template>
-  <div id="app">
-    <h1>Vue Tableau</h1>
-  </div>
+  <h1>Vue Tableau</h1>
 </template>
-
-<script setup>
-// Votre logique ici
-</script>
-
-<style scoped>
-#app {
-  padding: 2rem;
-}
-</style>
-
