@@ -27,7 +27,7 @@ const tableHeader = computed(() => {
   const columnsNames = []
   allColumnsMapped.value.forEach(column => {
     const columnName = gristUtils.getColumnName(column, tableColumnsInfos)
-    columnsNames.push(columnName)
+    columnsNames.push({key: column, label: columnName})
   })
   return columnsNames
 })
@@ -38,7 +38,13 @@ const tableRows = computed(() => {
   tableData.value.forEach(record => {
     const row = []
     allColumnsMapped.value.forEach(column => {
-      row.push(record[column])
+      const infos = gristUtils.getColumnInfos(column, tableColumnsInfos.value)
+      const rowValue = {
+        type: infos.type,
+        hasMultipleValues: record[column] && typeof record[column] !== 'string' && record[column].length > 1,
+        value: record[column],
+      }
+      row.push(rowValue)
     })
     rows.push(row)
   })
@@ -79,7 +85,18 @@ const onRecords = (params) => {
         :pagination="true"
         :pagination-options="['100', '200', '500']"
         :rows-per-page="100"
-      />
+      >
+        <template #cell="{ cell }">
+          <DsfrBadge v-if="cell.type === 'Bool'" :type="cell.value ? 'success' : 'error'" :label="cell.value ? 'Oui' : 'Non'" />
+          <DsfrTag v-else-if="cell.type.indexOf('Ref') > -1" :label="cell.value" />
+          <ul v-else-if="cell.hasMultipleValues">
+            <li v-for="value in cell.value">
+              <p class="fr-mb-0">{{ value }}</p>
+            </li>
+          </ul>
+          <span v-else>{{ cell.value }}</span>
+        </template>
+      </DsfrDataTable>
       <p v-else>Chargement en cours...</p>
     </div>
   </GristContainer>
