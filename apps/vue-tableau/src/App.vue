@@ -95,7 +95,7 @@ const onRecords = (params) => {
               <p class="fr-mb-0">{{ value }}</p>
             </li>
           </ul>
-          <span v-else>{{ cell.value }}</span>
+          <p class="fr-mb-0" v-else>{{ cell.value }}</p>
         </template>
       </DsfrDataTable>
       <p v-else>Chargement en cours...</p>
@@ -105,6 +105,15 @@ const onRecords = (params) => {
 
 <style lang="css">
 .vue-tableau__table table tbody td:first-child{
-  background-color: var(--background-alt-grey) !important;
+  background-color: var(--background-alt-grey) !important; 
+  min-width: 20rem !important;
+}
+
+.vue-tableau__table table tbody td{
+  white-space: break-spaces !important;
+}
+
+.vue-tableau__table table tbody td * {
+  width: max-content;
 }
 </style>
