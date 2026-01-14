@@ -29,7 +29,8 @@
     "@gouvminint/vue-dsfr": "^8.13.1",
     "@vueuse/core": "^14.1.0",
     "http-server": "^14.1.1",
-    "vue": "^3.4.21"
+    "vue": "^3.4.21",
+    "write-excel-file": "^2.3.10"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^5.0.4",
