@@ -12,12 +12,26 @@ const otherColumnsMapped = ref()
 
 /* SEARCH */
 const search = ref()
+const isSearching = ref(false)
+const trimSearch = ref('')
 
 const onSearch = () => {
-  const valueTrim = search.value.trim()
-  tableDataFiltered.value = valueTrim === '' ? tableData.value : tableData.value.filter(record => {
-    return record[firstColumnMapped.value].toLowerCase().includes(valueTrim.toLowerCase())
+  trimSearch.value = search.value.trim()
+  isSearching.value = true
+  tableDataFiltered.value = tableData.value.filter(record => {
+    return record[firstColumnMapped.value].toLowerCase().includes(trimSearch.value.toLowerCase())
   })
+}
+
+const onSearchUpdate = () => {
+  if(search.value.trim() === '') deleteSearch()
+}
+
+const deleteSearch = () => {
+  isSearching.value = false
+  trimSearch.value = ''
+  search.value = ''
+  tableDataFiltered.value = tableData.value
 }
 
 /* TABLE */
@@ -92,11 +106,27 @@ const onRecords = (params) => {
     <div class="vue-tableau">
       <div class="fr-p-3w fr-col-12 fr-grid-row fr-grid-row--middle">
         <div class="fr-col-12 fr-col-md-6">
-          <p class="fr-mb-0">{{ tableRows.length }} {{ tableRows.length > 1 ? 'collectivités' : 'collectivité' }}</p>
+          <p class="fr-mb-0">{{ tableRows.length }} {{ tableRows.length > 1 ? 'collectivités' : 'collectivité' }}
+            <span v-if="isSearching">pour la recherche : "{{ trimSearch }}"</span>
+          </p>
+          <DsfrButton 
+            v-if="isSearching"
+            label="Effacer la recherche" 
+            size="small" 
+            icon="ri-delete-bin-line"
+            @click="deleteSearch" 
+            :tertiary="true" 
+            class="fr-mt-1w" />
         </div>
-        <div class="fr-col-12 fr-col-md-6">
-          <DsfrSearchBar v-model="search" button-text="Rechercher" placeholder="Rechercher une collectivité par son nom" :large="true" @search="onSearch()" />
-        </div>
+        <DsfrSearchBar 
+          class="fr-col-12 fr-col-md-6"
+          v-model="search" 
+          button-text="Rechercher" 
+          placeholder="Rechercher une collectivité par son nom" 
+          :large="true" 
+          @search="onSearch()" 
+          @update:modelValue="onSearchUpdate()"
+        />
       </div>
       <DsfrDataTable 
         v-if="displayTable"
@@ -118,7 +148,7 @@ const onRecords = (params) => {
           <p class="fr-mb-0" v-else>{{ cell.value }}</p>
         </template>
       </DsfrDataTable>
-      <p class="fr-p-3w" v-else>Chargement en cours...</p>
+      <p class="fr-p-3w" v-else-if="!displayTable && !search">Chargement en cours...</p>
     </div>
   </GristContainer>
 </template>
