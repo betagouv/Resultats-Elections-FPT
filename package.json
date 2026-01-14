@@ -6,15 +6,9 @@
   "scripts": {
     "dev:serve-html": "http-server --port 5173 ./apps-html",
     "dev:fiche": "vite --mode vue-fiche",
-    "dev:tableau": "vite --mode vue-tableau",
-    "dev:recherche": "vite --mode vue-recherche",
     "build:fiche": "vite build --mode vue-fiche",
-    "build:tableau": "vite build --mode vue-tableau",
-    "build:recherche": "vite build --mode vue-recherche",
-    "build": "npm-run-all --parallel build:fiche build:tableau build:recherche",
-    "preview:fiche": "vite preview --mode vue-fiche",
-    "preview:tableau": "vite preview --mode vue-tableau",
-    "preview:recherche": "vite preview --mode vue-recherche"
+    "build": "npm-run-all --parallel build:fiche",
+    "preview:fiche": "vite preview --mode vue-fiche"
   },
   "repository": {
     "type": "git",
