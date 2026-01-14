@@ -80,6 +80,7 @@ const onRecords = (params) => {
     <div class="fr-p-3w">
       <DsfrDataTable 
         v-if="displayTable"
+        class="vue-tableau__table fr-table--bordered"
         :headers-row="tableHeader"
         :rows="tableRows"
         :pagination="true"
@@ -101,3 +102,9 @@ const onRecords = (params) => {
     </div>
   </GristContainer>
 </template>
+
+<style lang="css">
+.vue-tableau__table table tbody td:first-child{
+  background-color: var(--background-alt-grey) !important;
+}
+</style>
