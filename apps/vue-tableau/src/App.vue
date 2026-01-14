@@ -3,12 +3,52 @@ import { ref, computed } from 'vue'
 import { computedAsync } from '@vueuse/core'
 import gristUtils from '@shared/utils/grist.js'
 import GristContainer from '@shared/components/GristContainer.vue'
+import writeXlsxFile from 'write-excel-file'
 
 const currentRecord = ref()
 const tableData = ref([])
 const tableDataFiltered = ref([])
 const firstColumnMapped = ref()
 const otherColumnsMapped = ref()
+
+/* EXPORT */
+const isGeneratingFile = ref(false)
+const downloadExcel = async () => {
+  const data = generateExcelData()
+  isGeneratingFile.value = true
+  await writeXlsxFile(data, {
+    // TODO: rendre le nom du fichier dynamique
+    fileName: 'liste-collectivites.xlsx'
+  })
+  isGeneratingFile.value = false
+}
+
+const generateExcelData = () => {
+  const data = []
+  const headers = []
+  for(const header of tableHeader.value) {
+    headers.push({value: header.label})
+  }
+  data.push(headers)
+  for(const row of tableRows.value) {
+    const rowFormatted = []
+    for(const cell of row) {
+      rowFormatted.push({
+        type: String,
+        value: formatCellValue(cell),
+      })
+    }
+    data.push(rowFormatted)
+  }
+  return data
+}
+
+const formatCellValue = (cell) => {
+  if(cell.type === 'Bool') return cell.value ? 'Oui' : 'Non'
+  else if(!cell.value) return ''
+  else return cell.value.toString()
+}
+
 
 /* SEARCH */
 const search = ref()
@@ -104,22 +144,8 @@ const onRecords = (params) => {
 <template>
   <GristContainer @update:record="onRecord" @update:records="onRecords" :columns="gristColumns">
     <div class="vue-tableau">
-      <div class="fr-p-3w fr-col-12 fr-grid-row fr-grid-row--middle">
-        <div class="fr-col-12 fr-col-md-6">
-          <p class="fr-mb-0">{{ tableRows.length }} {{ tableRows.length > 1 ? 'collectivités' : 'collectivité' }}
-            <span v-if="isSearching">pour la recherche : "{{ trimSearch }}"</span>
-          </p>
-          <DsfrButton 
-            v-if="isSearching"
-            label="Effacer la recherche" 
-            size="small" 
-            icon="ri-delete-bin-line"
-            @click="deleteSearch" 
-            :tertiary="true" 
-            class="fr-mt-1w" />
-        </div>
-        <DsfrSearchBar 
-          class="fr-col-12 fr-col-md-6"
+      <div class="fr-pt-3w fr-px-3w">
+        <DsfrSearchBar
           v-model="search" 
           button-text="Rechercher" 
           placeholder="Rechercher une collectivité par son nom" 
@@ -127,6 +153,25 @@ const onRecords = (params) => {
           @search="onSearch()" 
           @update:modelValue="onSearchUpdate()"
         />
+        <div class="fr-grid-row fr-grid-row--middle fr-my-2w">
+          <div class="fr-col-8">
+            <p class="fr-mb-0">
+              {{ tableRows.length }} {{ tableRows.length > 1 ? 'collectivités' : 'collectivité' }}
+              <span v-if="isSearching">pour la recherche : "{{ trimSearch }}"</span>
+            </p>
+          </div>
+          <div class="fr-col-4 fr-grid-row fr-grid-row--right">
+            <DsfrButton 
+              v-if="displayTable"
+              :label="isGeneratingFile ? 'Enregistrement en cours...' : 'Enregistrer au format Excel'" 
+              icon="ri-file-excel-line" 
+              size="medium"
+              secondary
+              class="fr-mr-0"
+              :disabled="isGeneratingFile"
+              @click="downloadExcel" />
+          </div>
+        </div>
       </div>
       <DsfrDataTable 
         v-if="displayTable"
