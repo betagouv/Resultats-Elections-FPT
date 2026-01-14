@@ -6,8 +6,19 @@ import GristContainer from '@shared/components/GristContainer.vue'
 
 const currentRecord = ref()
 const tableData = ref([])
+const tableDataFiltered = ref([])
 const firstColumnMapped = ref()
 const otherColumnsMapped = ref()
+
+/* SEARCH */
+const search = ref()
+
+const onSearch = () => {
+  const valueTrim = search.value.trim()
+  tableDataFiltered.value = valueTrim === '' ? tableData.value : tableData.value.filter(record => {
+    return record[firstColumnMapped.value].toLowerCase().includes(valueTrim.toLowerCase())
+  })
+}
 
 /* TABLE */
 const displayTable = computed(() => {
@@ -35,7 +46,7 @@ const tableHeader = computed(() => {
 const tableRows = computed(() => {
   if(tableHeader.value.length === 0) return []
   const rows = []
-  tableData.value.forEach(record => {
+  tableDataFiltered.value.forEach(record => {
     const row = []
     allColumnsMapped.value.forEach(column => {
       const infos = gristUtils.getColumnInfos(column, tableColumnsInfos.value)
@@ -71,6 +82,7 @@ const onRecord = (record) => {
 const onRecords = (params) => {
   const { table, mapping } = params
   tableData.value = table
+  tableDataFiltered.value = table
   firstColumnMapped.value = mapping['Première_Colonne']
   otherColumnsMapped.value = mapping['Autres_Colonnes']
 }
@@ -106,7 +118,7 @@ const onRecords = (params) => {
           <p class="fr-mb-0" v-else>{{ cell.value }}</p>
         </template>
       </DsfrDataTable>
-      <p v-else>Chargement en cours...</p>
+      <p class="fr-p-3w" v-else>Chargement en cours...</p>
     </div>
   </GristContainer>
 </template>
