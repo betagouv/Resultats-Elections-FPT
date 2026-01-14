@@ -4,6 +4,7 @@
   "description": "Saisir et centraliser les résultats des élections professionnelles dans la fonction publique territoriale",
   "type": "module",
   "scripts": {
+    "dev:serve-html": "http-server --port 5173 ./apps-html",
     "dev:fiche": "vite --mode vue-fiche",
     "dev:tableau": "vite --mode vue-tableau",
     "dev:recherche": "vite --mode vue-recherche",
@@ -28,6 +29,7 @@
   "dependencies": {
     "@gouvfr/dsfr": "^1.14.3",
     "@gouvminint/vue-dsfr": "^8.13.1",
+    "http-server": "^14.1.1",
     "vue": "^3.4.21"
   },
   "devDependencies": {

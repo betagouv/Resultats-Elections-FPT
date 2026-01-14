@@ -5,9 +5,10 @@ import vue from '@vitejs/plugin-vue'
 const __dirname = fileURLToPath(new URL('.', import.meta.url))
 
 // Configuration des ports par app
+// port 5173 utilisé pour les anciennes applications html
 const portMap = {
-  'vue-fiche': 5173,
-  'vue-tableau': 5174,
+  'vue-fiche': 5174,
+  'vue-tableau': 5175,
 }
 
 // Détection du mode pour choisir l'app
