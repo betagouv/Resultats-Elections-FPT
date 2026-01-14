@@ -1,5 +1,6 @@
 # Changelog
 
+- chore: mise en place de vue.js pour remplacer les customs widget html [#15](https://github.com/betagouv/Resultats-Elections-FPT/pull/15) 
 - fix(Nettoyage données): mise à jour des valeurs en dur [#13](https://github.com/betagouv/Resultats-Elections-FPT/pull/13)
 - feat(Validation de scrutin): ajoute une option pour permettre de cacher le formulaire [#12](https://github.com/betagouv/Resultats-Elections-FPT/pull/12)
 - feat(Données genrées): intégration du code spécifique des données genrées au custom widget [#11](https://github.com/betagouv/Resultats-Elections-FPT/pull/11)
