@@ -29,6 +29,7 @@
   "dependencies": {
     "@gouvfr/dsfr": "^1.14.3",
     "@gouvminint/vue-dsfr": "^8.13.1",
+    "@vueuse/core": "^14.1.0",
     "http-server": "^14.1.1",
     "vue": "^3.4.21"
   },
