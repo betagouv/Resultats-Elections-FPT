@@ -41,7 +41,7 @@ const tableRows = computed(() => {
       const infos = gristUtils.getColumnInfos(column, tableColumnsInfos.value)
       const rowValue = {
         type: infos.type,
-        hasMultipleValues: record[column] && typeof record[column] !== 'string' && record[column].length > 1,
+        hasMultipleValues: record[column] && typeof record[column] === 'object',
         value: record[column],
       }
       row.push(rowValue)
