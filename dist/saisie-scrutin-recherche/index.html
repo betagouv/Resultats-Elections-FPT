@@ -1,0 +1,37 @@
+<html>
+  <head>
+    <script src="https://docs.getgrist.com/grist-plugin-api.js"></script>
+    <link
+      href="https://cdn.jsdelivr.net/npm/@gouvfr/dsfr@1.14.0/dist/dsfr.min.css"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../styles/app.css" />
+  </head>
+  <body class="app-cw-search">
+    <main id="view" class="fr-container fr-p-3w">
+      <section>
+        <div class="fr-search-bar fr-search-bar--lg" role="search">
+          <label class="fr-label" for="search-input">Rechercher</label>
+          <input
+            class="fr-input"
+            aria-describedby="search-input-messages"
+            placeholder="Rechercher"
+            id="search-input"
+            type="search"
+          />
+          <div
+            class="fr-messages-group"
+            id="search-input-messages"
+            aria-live="polite"
+          ></div>
+          <button title="Rechercher" type="button" class="fr-btn" id="submit">
+            Rechercher
+          </button>
+        </div>
+        <ul id="list" style="list-style: none" class="fr-pl-0"></ul>
+        <p id="error" class="fr-mt-2w"></p>
+      </section>
+    </main>
+    <script type="module" src="main.js"></script>
+  </body>
+</html>

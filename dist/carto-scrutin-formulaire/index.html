@@ -1,0 +1,136 @@
+<html>
+  <head>
+    <script src="https://docs.getgrist.com/grist-plugin-api.js"></script>
+    <link
+      href="https://cdn.jsdelivr.net/npm/@gouvfr/dsfr@1.14.0/dist/dsfr.min.css"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../styles/app.css" />
+    <script src="https://cdn.jsdelivr.net/npm/@gouvfr/dsfr@1.14.2/dist/dsfr.module.min.js"></script>
+  </head>
+  <body>
+    <main class="fr-container fr-p-3w">
+      <div id="form">
+        <fieldset class="fr-fieldset fr-mb-2w">
+          <legend class="fr-fieldset__legend">
+            Modifier le scrutin <span data-name="collectivite"></span> :
+          </legend>
+        </fieldset>
+
+        <fieldset
+          class="fr-fieldset fr-mb-2w fr-hidden"
+          aria-labelledby="checkboxes-legend checkboxes-messages"
+          id="type"
+        >
+          <div class="fr-fieldset__element fr-select-group">
+            <label class="fr-label" for="select-hint">
+              Type de scrutin :
+            </label>
+            <select
+              class="fr-select"
+              aria-describedby="select-hint-messages"
+              id="select"
+              name="select-hint"
+            >
+              <option value="" selected disabled hidden>
+                Sélectionner une option
+              </option>
+              <option value="CAP A">CAP A</option>
+              <option value="CAP B">CAP B</option>
+              <option value="CAP C">CAP C</option>
+              <option value="CAP (A+B)">CAP (A+B)</option>
+              <option value="CAP (A+C)">CAP (A+C)</option>
+              <option value="CAP (B+C)">CAP (B+C)</option>
+              <option value="CAP (A+B+C)">CAP (A+B+C)</option>
+            </select>
+          </div>
+        </fieldset>
+
+        <fieldset
+          class="fr-fieldset"
+          aria-labelledby="checkboxes-legend checkboxes-messages"
+        >
+          <legend
+            class="fr-fieldset__legend--regular fr-fieldset__legend"
+            id="checkboxes-legend"
+          >
+            <span id="number"></span> collectivité(s) rattachée(s) :
+          </legend>
+          <div id="checkboxes"></div>
+        </fieldset>
+
+        <fieldset
+          class="fr-fieldset"
+          aria-labelledby="checkboxes-legend checkboxes-messages"
+        >
+          <legend
+            class="fr-fieldset__legend--regular fr-fieldset__legend"
+            id="checkboxes-legend"
+          >
+            Ajouter une collectivité :
+            <span class="fr-hint-text"
+              >Indiquer (au minimum) les 3 premières lettres du nom</span
+            >
+          </legend>
+
+          <div
+            class="fr-fieldset__element fr-search-bar fr-search-bar--lg"
+            role="search"
+          >
+            <label class="fr-label" for="search-input">
+              Ajouter une collectivité :
+            </label>
+            <input
+              class="fr-input"
+              aria-describedby="search-input-messages"
+              placeholder="Rechercher par son nom"
+              id="search-input"
+              type="search"
+            />
+            <button
+              id="search-button"
+              title="Rechercher"
+              type="button"
+              class="fr-btn"
+            >
+              Rechercher
+            </button>
+          </div>
+
+          <div class="fr-fieldset__element fr-mb-0">
+            <p class="fr-hidden" id="search-loading">Recherche en cours...</p>
+            <p class="fr-hidden" id="search-empty"></p>
+          </div>
+
+          <div class="fr-hidden" id="search-result"></div>
+        </fieldset>
+
+        <button class="fr-btn fr-mt-2w" type="button" id="save">
+          Enregistrer les modifications
+        </button>
+      </div>
+
+      <section id="message" class="fr-hidden">
+        <div class="fr-hidden fr-alert fr-alert--success fr-mb-3w" id="success">
+          <h3 class="fr-alert__title">Modifications enregistrées</h3>
+          <p>Retrouver les informations du scrutin dans le résumé à gauche.</p>
+        </div>
+
+        <div class="fr-hidden fr-alert fr-alert--error fr-mb-3w" id="error">
+          <h3 class="fr-alert__title">Une erreur technique est survenue</h3>
+          <p>
+            Merci de recommencer votre saisie, nous nous excusons pour la gène
+            occasionnée.
+          </p>
+        </div>
+
+        <div class="fr-grid-row fr-grid-row--center">
+          <button class="fr-btn fr-btn--secondary" id="backToForm">
+            Revenir au formulaire
+          </button>
+        </div>
+      </section>
+    </main>
+    <script type="module" src="main.js"></script>
+  </body>
+</html>
