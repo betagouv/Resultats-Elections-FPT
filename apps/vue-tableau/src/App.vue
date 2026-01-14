@@ -140,6 +140,11 @@ const onRecords = (params) => {
   firstColumnMapped.value = mapping['Première_Colonne']
   otherColumnsMapped.value = mapping['Autres_Colonnes']
 }
+
+/* VUE */
+const backToTop = () => {
+  window.scrollTo(0, 0, 'smooth')
+}
 </script>
 <template>
   <GristContainer @update:record="onRecord" @update:records="onRecords" :columns="gristColumns">
@@ -181,6 +186,7 @@ const onRecords = (params) => {
         :pagination="true"
         :pagination-options="['100', '200', '500']"
         :rows-per-page="100"
+        @update:current-page="backToTop"
       >
         <template #cell="{ cell }" class="fr-col--sm">
           <DsfrBadge v-if="cell.type === 'Bool'" :type="cell.value ? 'success' : 'error'" :label="cell.value ? 'Oui' : 'Non'" />
