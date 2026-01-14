@@ -116,4 +116,23 @@ const onRecords = (params) => {
 .vue-tableau__table table tbody td * {
   width: max-content;
 }
+
+
+/* STICKY CELLS */
+.vue-tableau__table .fr-table__container {
+  overflow: initial !important;
+}
+
+.vue-tableau__table thead {
+  position: sticky !important;
+  top: 0px;
+  z-index: 4;
+}
+
+.vue-tableau__table td:first-child, .vue-tableau__table thead th:first-child {
+  position: sticky !important;
+  left: 0px;
+  z-index: 3;
+}
+
 </style>
