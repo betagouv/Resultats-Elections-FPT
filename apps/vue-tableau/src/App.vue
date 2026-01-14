@@ -159,13 +159,13 @@ const backToTop = () => {
           @update:modelValue="onSearchUpdate()"
         />
         <div class="fr-grid-row fr-grid-row--middle fr-my-2w">
-          <div class="fr-col-8">
+          <div class="fr-col-12 fr-col-md-6">
             <p class="fr-mb-0">
               {{ tableRows.length }} {{ tableRows.length > 1 ? 'collectivités' : 'collectivité' }}
               <span v-if="isSearching">pour la recherche : "{{ trimSearch }}"</span>
             </p>
           </div>
-          <div class="fr-col-4 fr-grid-row fr-grid-row--right">
+          <div class="fr-col-12 fr-col-md-6 fr-grid-row fr-grid-row--right">
             <DsfrButton 
               v-if="displayTable"
               :label="isGeneratingFile ? 'Enregistrement en cours...' : 'Enregistrer au format Excel'" 
