@@ -104,17 +104,11 @@ const onRecords = (params) => {
 </template>
 
 <style lang="css">
+/* TABLE */
 .vue-tableau__table table tbody td:first-child{
   background-color: var(--background-alt-grey) !important; 
-  min-width: 20rem !important;
-}
-
-.vue-tableau__table table tbody td{
-  white-space: break-spaces !important;
-}
-
-.vue-tableau__table table tbody td * {
-  width: max-content;
+  max-width: 20rem !important;
+  white-space: normal !important;
 }
 
 
