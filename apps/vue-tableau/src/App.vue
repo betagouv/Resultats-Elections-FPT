@@ -10,6 +10,9 @@ const firstColumnMapped = ref()
 const otherColumnsMapped = ref()
 
 /* TABLE */
+const displayTable = computed(() => {
+  return tableRows.value.length > 0 && tableHeader.value.length > 0
+})
 const tableColumnsInfos = computedAsync(async () => {
   return await gristUtils.getTableColumnsInfos()
 }, [])
@@ -69,11 +72,13 @@ const onRecords = (params) => {
 <template>
   <GristContainer @update:record="onRecord" @update:records="onRecords" :columns="gristColumns">
     <div class="fr-p-3w">
-      <DsfrTable 
-        v-if="tableRows.length > 0"
-        :headers="tableHeader"
+      <DsfrDataTable 
+        v-if="displayTable"
+        :headers-row="tableHeader"
         :rows="tableRows"
-        :no-caption="true"
+        :pagination="true"
+        :pagination-options="['100', '200', '500']"
+        :rows-per-page="100"
       />
       <p v-else>Chargement en cours...</p>
     </div>
