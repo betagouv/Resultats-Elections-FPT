@@ -105,6 +105,7 @@ const tableRows = computed(() => {
     allColumnsMapped.value.forEach(column => {
       const infos = gristUtils.getColumnInfos(column, tableColumnsInfos.value)
       const rowValue = {
+        id: record.id,
         type: infos.type,
         hasMultipleValues: record[column] && typeof record[column] === 'object',
         value: record[column],
@@ -181,8 +182,9 @@ const onRecords = (params) => {
         :pagination="true"
         :pagination-options="['100', '200', '500']"
         :rows-per-page="100"
+        row-key="id"
       >
-        <template #cell="{ cell }">
+        <template #cell="{ cell }" class="fr-col--sm">
           <DsfrBadge v-if="cell.type === 'Bool'" :type="cell.value ? 'success' : 'error'" :label="cell.value ? 'Oui' : 'Non'" />
           <DsfrTag v-else-if="cell.type.indexOf('Ref:') > -1" :label="cell.value" />
           <ul v-else-if="cell.hasMultipleValues">
