@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 const props = defineProps(['columns', 'configuration'])
 const emit = defineEmits(['update:record', 'update:records'])
 
@@ -25,28 +25,34 @@ grist.onRecords((table, mapping) => {
 const configurationIsOpened = ref(false)
 const configurationSaved = ref(false)
 const configurationInput = ref('')
+const configurationEmpty = computed(() => !props.configuration)
 
 const openConfiguration = async () => {
   configurationIsOpened.value = true
-  configurationSaved.value = await grist.getOption(props.configuration.name);
+  if (configurationEmpty.value) return
+  configurationSaved.value = await grist.getOption(props.configuration.name)
 }
 const closeConfiguration = () => {
+  configurationIsOpened.value = false
+  if(configurationEmpty.value) return
   const newConfiguration = {
     name: props.configuration.name,
     value: configurationInput.value,
   }
   emit('update:configuration', newConfiguration)
-  configurationIsOpened.value = false
 }
 </script>
 <template>
   <main class="grist-container">
     <aside v-if="configurationIsOpened" class="grist-container__configuration fr-p-2w">
       <p>Panneau de configuration</p>
-      <label>{{ configuration.label }} :
-        <input v-model="configurationInput" type="text" :name="configuration.name" />
-      </label>
-      <button @click="closeConfiguration">Enregistrer et fermer</button>
+      <p v-if="configurationEmpty">Aucune configuration disponible</p>
+      <div class="fr-mb-2w" v-else>
+        <label>{{ configuration.label }} :
+          <input v-model="configurationInput" type="text" :name="configuration.name" />
+        </label>
+      </div>
+      <button @click="closeConfiguration">Fermer</button>
     </aside>
     <slot />
   </main>  
