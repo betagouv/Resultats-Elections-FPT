@@ -5,7 +5,13 @@ import StatusBadge from '@shared/components/StatusBadge.vue'
 import valuesUtils from '@shared/utils/values.js'
 import gristUtils from '@shared/utils/grist.js'
 import pictoDocumentFill from '@shared/picto/document-fill.svg'
-import { DsfrButton } from '@gouvminint/vue-dsfr'
+import GristContainer from '@shared/components/GristContainer.vue'
+
+const titleMapped = ref()
+const badgeMapped = ref()
+const dataMapped = ref([])
+const errorsMapped = ref([])
+const actionMapped = ref()
 
 /* RECORD */
 const currentRecord = ref({})
@@ -19,14 +25,8 @@ const tableColumnsInfos = computedAsync(async () => {
   return await gristUtils.getTableColumnsInfos()
 }, [])
 
-/* COLUMNS */
-const titleMapped = ref()
-const badgeMapped = ref()
-const dataMapped = ref([])
-const errorsMapped = ref([])
-const actionMapped = ref()
-
-const columns = [
+/* GRIST */
+const gristColumns = [
   {
     name: 'title',
     description: 'Titre de ma carte',
@@ -54,23 +54,18 @@ const columns = [
   }
 ]
 
-/* GRIST */
-grist.ready({
-  requiredAccess: 'full',
-  columns: columns
-})
-
-grist.onRecord(async (record) => {
+const onRecord = (record) => {
   currentRecord.value = record
-})
+}
 
-grist.onRecords(async (table, mapping) => {
+const onRecords = (params) => {
+  const { mapping } = params
   titleMapped.value = mapping['title']
   badgeMapped.value = mapping['badge']
   dataMapped.value = mapping['data']
   errorsMapped.value = mapping['errors']
   actionMapped.value = mapping['action']
-})
+}
 
 /* FUNCTIONS */
 const getPrettyValue = (value) => {
@@ -92,49 +87,51 @@ const triggerAction = async () => {
 }
 </script>
 <template>
-  <main v-if="currentRecord.id" class="fr-p-3w">
-    <DsfrTile
-      v-if="isNotFilled"
-      :title="currentRecord[titleMapped]"
-      :img-src="pictoDocumentFill"
-      description="À renseigner dans le formulaire à droite"
-      title-tag="p"
-      to="/"
-    />
-    <div v-else-if="tableColumnsInfos.length > 0">
-      <h1 data-js="title" class="fr-h6 fr-mb-1w">{{ currentRecord[titleMapped] }}</h1>
-      <StatusBadge :label="currentRecord[badgeMapped]" />
-      <ul class="fr-pl-0 fr-mb-3w app-list--unstyled">
-        <li v-for="error in errorsMapped" :key="error" class="fr-pb-0 fr-mb-1w">
-          <DsfrAlert v-if="currentRecord[error]" type="error" titleTag="p" :description="currentRecord[error]" />
-        </li>
-      </ul>
-      <ul class="fr-pl-0 fr-mb-3w app-list--unstyled">
-        <li v-for="data in dataMapped" :key="data" class="fr-pb-0 fr-mb-1w">
-          <div v-if="currentRecord[data] && typeof currentRecord[data] === 'object' && currentRecord[data].length > 0">
-            <p class="fr-mb-0">{{ getPrettyLabel(data) }} :</p>
-            <ul v-if="currentRecord[data].length > 0" class="fr-pl-0 fr-mb-3w app-list--unstyled">
-              <li v-for="item in currentRecord[data]" :key="item">{{ getPrettyValue(item) }}</li>
-            </ul>
-          </div>
-          <p v-else class="fr-mb-0">{{ getPrettyLabel(data) }} : {{ getPrettyValue(currentRecord[data]) }}</p>
-        </li>
-      </ul>
-      <DsfrButton v-if="currentRecord[actionMapped]" :label="currentRecord[actionMapped].button" @click="opened = true" />
-    </div>
-    <div v-else>
-      <p>Chargement en cours...</p>
-    </div>
-    <DsfrModal
-      v-if="currentRecord[actionMapped]"
-      v-model:opened="opened"
-      :title="currentRecord[actionMapped].button"
-      @close="opened = false"
-    >
-      <template #default>
-        <p>{{ currentRecord[actionMapped].description }}</p>
-        <DsfrButton v-if="!currentRecord[actionMapped].isDisabled" label="Oui" @click="triggerAction" />
-      </template>
-    </DsfrModal>
-  </main>
+  <GristContainer @update:record="onRecord" @update:records="onRecords" :columns="gristColumns">
+    <main v-if="currentRecord.id" class="fr-p-3w">
+      <DsfrTile
+        v-if="isNotFilled"
+        :title="currentRecord[titleMapped]"
+        :img-src="pictoDocumentFill"
+        description="À renseigner dans le formulaire à droite"
+        title-tag="p"
+        to="/"
+      />
+      <div v-else-if="tableColumnsInfos.length > 0">
+        <h1 data-js="title" class="fr-h6 fr-mb-1w">{{ currentRecord[titleMapped] }}</h1>
+        <StatusBadge :label="currentRecord[badgeMapped]" />
+        <ul class="fr-pl-0 fr-mb-3w app-list--unstyled">
+          <li v-for="error in errorsMapped" :key="error" class="fr-pb-0 fr-mb-1w">
+            <DsfrAlert v-if="currentRecord[error]" type="error" titleTag="p" :description="currentRecord[error]" />
+          </li>
+        </ul>
+        <ul class="fr-pl-0 fr-mb-3w app-list--unstyled">
+          <li v-for="data in dataMapped" :key="data" class="fr-pb-0 fr-mb-1w">
+            <div v-if="currentRecord[data] && typeof currentRecord[data] === 'object' && currentRecord[data].length > 0">
+              <p class="fr-mb-0">{{ getPrettyLabel(data) }} :</p>
+              <ul v-if="currentRecord[data].length > 0" class="fr-pl-0 fr-mb-3w app-list--unstyled">
+                <li v-for="item in currentRecord[data]" :key="item">{{ getPrettyValue(item) }}</li>
+              </ul>
+            </div>
+            <p v-else class="fr-mb-0">{{ getPrettyLabel(data) }} : {{ getPrettyValue(currentRecord[data]) }}</p>
+          </li>
+        </ul>
+        <DsfrButton v-if="currentRecord[actionMapped]" :label="currentRecord[actionMapped].button" @click="opened = true" />
+      </div>
+      <div v-else>
+        <p>Chargement en cours...</p>
+      </div>
+      <DsfrModal
+        v-if="currentRecord[actionMapped]"
+        v-model:opened="opened"
+        :title="currentRecord[actionMapped].button"
+        @close="opened = false"
+      >
+        <template #default>
+          <p>{{ currentRecord[actionMapped].description }}</p>
+          <DsfrButton v-if="!currentRecord[actionMapped].isDisabled" label="Oui" @click="triggerAction" />
+        </template>
+      </DsfrModal>
+    </main>
+  </GristContainer>
 </template>
