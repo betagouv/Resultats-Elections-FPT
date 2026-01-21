@@ -12,7 +12,17 @@ const badgeMapped = ref()
 const dataMapped = ref([])
 const errorsMapped = ref([])
 const actionMapped = ref()
-const showDownloadButton = ref(false)
+
+/* CONFIGURATION */
+const configurationButtonName = 'save-button'
+const gristConfiguration = {
+  name: configurationButtonName,
+  label: 'Pour afficher le bouton pour "Enregister les données" de la fiche écrivez oui, sinon laissez vide',
+}
+const showDownloadButton = computedAsync(async () => {
+  const configuration = await grist.getOption(configurationButtonName)
+  return configuration === 'oui'
+}, false)
 
 /* RECORD */
 const currentRecord = ref({})
@@ -27,10 +37,6 @@ const tableColumnsInfos = computedAsync(async () => {
 }, [])
 
 /* GRIST */
-const gristConfiguration = {
-  name: 'save-button',
-  label: 'Pour afficher le bouton pour "Enregister les données" de la fiche écrivez oui, sinon laissez vide',
-}
 const gristColumns = [
   {
     name: 'title',
