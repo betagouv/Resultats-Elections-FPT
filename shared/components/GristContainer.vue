@@ -31,6 +31,7 @@ const openConfiguration = async () => {
   configurationIsOpened.value = true
   if (configurationEmpty.value) return
   configurationSaved.value = await grist.getOption(props.configuration.name)
+  if (configurationSaved.value) configurationInput.value = configurationSaved.value
 }
 const closeConfiguration = () => {
   configurationIsOpened.value = false
@@ -39,6 +40,7 @@ const closeConfiguration = () => {
     name: props.configuration.name,
     value: configurationInput.value,
   }
+  grist.setOption(props.configuration.name, configurationInput.value)
   emit('update:configuration', newConfiguration)
 }
 </script>
