@@ -1,0 +1,15 @@
+name: App CI
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build app
+        run: |
+          npm ci --ignore-scripts,
+          npm run build
