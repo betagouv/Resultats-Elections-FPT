@@ -12,6 +12,7 @@ const badgeMapped = ref()
 const dataMapped = ref([])
 const errorsMapped = ref([])
 const actionMapped = ref()
+const showDownloadButton = ref(false)
 
 /* RECORD */
 const currentRecord = ref({})
@@ -26,6 +27,10 @@ const tableColumnsInfos = computedAsync(async () => {
 }, [])
 
 /* GRIST */
+const gristConfiguration = {
+  name: 'save-button',
+  label: 'Pour afficher le bouton pour "Enregister les données" de la fiche écrivez oui, sinon laissez vide',
+}
 const gristColumns = [
   {
     name: 'title',
@@ -67,6 +72,10 @@ const onRecords = (params) => {
   actionMapped.value = mapping['action']
 }
 
+const onConfiguration = (configuration) => {
+  showDownloadButton.value = configuration.value === 'oui'
+}
+
 /* FUNCTIONS */
 const getPrettyValue = (value) => {
   return valuesUtils.prettify(value)
@@ -87,7 +96,7 @@ const triggerAction = async () => {
 }
 </script>
 <template>
-  <GristContainer @update:record="onRecord" @update:records="onRecords" :columns="gristColumns">
+  <GristContainer @update:record="onRecord" @update:records="onRecords" :columns="gristColumns" :configuration="gristConfiguration" @update:configuration="onConfiguration">
     <main v-if="currentRecord.id" class="fr-p-3w">
       <DsfrTile
         v-if="isNotFilled"
@@ -105,6 +114,7 @@ const triggerAction = async () => {
             <DsfrAlert v-if="currentRecord[error]" type="error" titleTag="p" :description="currentRecord[error]" />
           </li>
         </ul>
+        <p v-if="showDownloadButton">Le bouton pour "Enregister les données" est affiché</p>
         <ul class="fr-pl-0 fr-mb-3w app-list--unstyled">
           <li v-for="data in dataMapped" :key="data" class="fr-pb-0 fr-mb-1w">
             <div v-if="currentRecord[data] && typeof currentRecord[data] === 'object' && currentRecord[data].length > 0">
