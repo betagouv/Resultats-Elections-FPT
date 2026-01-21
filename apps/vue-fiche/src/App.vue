@@ -117,19 +117,43 @@ const downloadExcel = async () => {
 
 const generateExcelData = () => {
   const excelData = []
-  const headers = []
-  const row = []
-  for(const data of dataMapped.value) {
-    const columnInfo = gristUtils.getColumnInfos(data, tableColumnsInfos.value)
-    headers.push({value: getPrettyLabel(data)})
-    const isList = typeof currentRecord.value[data] === 'object' && currentRecord.value[data]
-    row.push({
-      type: getExcelType(columnInfo.type),
-      value: isList ? currentRecord.value[data].join(', ') : currentRecord.value[data], 
-    })
+  const headersColumns = dataMapped.value.map(data => {
+    return { value: getPrettyLabel(data) }
+  })
+  const rows = []
+  const cellToSplit = {
+    columnIndex: null,
+    list: []
   }
-  excelData.push(headers)
-  excelData.push(row)
+  const row = dataMapped.value.map((data, index) => {
+    const columnInfo = gristUtils.getColumnInfos(data, tableColumnsInfos.value)
+    const value = currentRecord.value[data]
+    const isList = typeof value === 'object' && value
+    if (isList) {
+      cellToSplit.columnIndex = index
+      cellToSplit.list = value
+    }
+    return {
+      type: getExcelType(columnInfo.type),
+      value: isList ? null : value, 
+    }
+  })
+  if (cellToSplit.columnIndex !== null) {
+    for(const value of cellToSplit.list) {
+      const cloneRow = row.map((cell, index) => {
+        const isCellToUpdate = index === cellToSplit.columnIndex
+        const newValue = isCellToUpdate ? value : cell.value
+        return {
+          type: cell.type,
+          value: newValue,
+        }
+      })
+      rows.push(cloneRow)
+    }
+  } else rows.push(row)
+ 
+  excelData.push(headersColumns)
+  excelData.push(...rows)
   return excelData
 }
 
