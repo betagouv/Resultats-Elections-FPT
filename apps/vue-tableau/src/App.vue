@@ -186,6 +186,7 @@ const backToTop = () => {
         :rows="tableRows"
         :pagination="true"
         :pagination-options="['100', '200', '500']"
+        pagination-wrapper-class="fr-px-4w fr-pt-2w"
         :rows-per-page="100"
         @update:current-page="backToTop"
       >
