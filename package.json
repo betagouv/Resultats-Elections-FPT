@@ -4,12 +4,15 @@
   "description": "Saisir et centraliser les résultats des élections professionnelles dans la fonction publique territoriale",
   "type": "module",
   "scripts": {
-    "dev:serve-html": "http-server --port 5173 ./apps-html",
-    "dev:fiche": "vite --mode vue-fiche",
-    "build:fiche": "vite build --mode vue-fiche",
+    "dev:html": "http-server --port 5173 ./apps-html",
     "copy:html": "cp -r apps-html/* dist/",
-    "build": "npm-run-all build:fiche copy:html",
-    "preview:fiche": "vite preview --mode vue-fiche"
+    "dev:fiche": "vite --mode vue-fiche",
+    "preview:fiche": "vite preview --mode vue-fiche",
+    "build:fiche": "vite build --mode vue-fiche",
+    "dev:tableau": "vite --mode vue-tableau",
+    "preview:tableau": "vite preview --mode vue-tableau",
+    "build:tableau": "vite build --mode vue-tableau",
+    "build": "npm-run-all build:fiche build:tableau copy:html"
   },
   "repository": {
     "type": "git",
@@ -26,7 +29,8 @@
     "@gouvminint/vue-dsfr": "^8.13.1",
     "@vueuse/core": "^14.1.0",
     "http-server": "^14.1.1",
-    "vue": "^3.4.21"
+    "vue": "^3.4.21",
+    "write-excel-file": "^2.3.10"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^5.0.4",

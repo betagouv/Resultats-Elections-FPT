@@ -8,6 +8,7 @@ const __dirname = fileURLToPath(new URL('.', import.meta.url))
 // port 5173 utilisé pour les anciennes applications html
 const portMap = {
   'vue-fiche': 5174,
+  'vue-tableau': 5175,
 }
 
 // Détection du mode pour choisir l'app

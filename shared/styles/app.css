@@ -36,3 +36,9 @@
 .app-cw-search li p {
 	text-align: left !important;
 }
+
+.app-flex-center {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}

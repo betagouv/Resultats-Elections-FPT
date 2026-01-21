@@ -31,6 +31,10 @@ const getColumnInfos = (column, table) => {
   return index >= 0 ? table[index] : null
 }
 
+const getColumnName = (id, table) => {
+  return table.value.find(column => column.colId === id)?.label
+}
+
 const getHtmlType = (type) => {
   if (type.indexOf('Ref:') >= 0) return 'select'
   if (type === 'Int' || type === 'Numeric') return 'number'
@@ -52,6 +56,7 @@ export default {
   getCurrentTableID,
   getColumnsInfos,
   getColumnInfos,
+  getColumnName,
   getHtmlType,
   getTable,
 }
