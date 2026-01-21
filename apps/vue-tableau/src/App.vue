@@ -2,6 +2,7 @@
 import { ref, computed } from 'vue'
 import { computedAsync } from '@vueuse/core'
 import gristUtils from '@shared/utils/grist.js'
+import valuesUtils from '@shared/utils/values.js'
 import GristContainer from '@shared/components/GristContainer.vue'
 import writeXlsxFile from 'write-excel-file'
 import IconCheck from '@shared/components/IconCheck.vue'
@@ -66,7 +67,7 @@ const onSearch = () => {
   trimSearch.value = search.value.trim()
   isSearching.value = true
   tableDataFiltered.value = tableData.value.filter(record => {
-    return record[firstColumnMapped.value].toLowerCase().includes(trimSearch.value.toLowerCase())
+    return valuesUtils.isInString(record[firstColumnMapped.value], trimSearch.value)
   })
 }
 

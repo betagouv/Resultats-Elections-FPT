@@ -1,8 +1,19 @@
+const removeSpecialChars = (string) => {
+  return string
+    .toLowerCase()
+    .replaceAll("-", " ")
+    .replaceAll("'", " ")
+    .normalize("NFD") // Convert string to unicode normalize : needed for accent replacement
+    .replace(/[\u0300-\u036f]/g, "") // Remove accents : all chars between unicode U+0300 to U+036F
+}
+
 const isInString = (string, value) => {
   if (typeof string !== 'string') return false // Censored values
-  const stringClean = string.toLowerCase()
-  const valueLower = value.toLowerCase()
-  return stringClean.indexOf(valueLower) >= 0
+  const stringClean = removeSpecialChars(string)
+  const valueClean = removeSpecialChars(value)
+  console.log("stringClean", stringClean)
+  console.log("valueClean", valueClean)
+  return stringClean.indexOf(valueClean) >= 0
 }
 
 const prettify = (value) => {
