@@ -1,5 +1,6 @@
 # Changelog
 
+- feat(Vue fiche): ajoute un bouton de téléchargement optionnel [#18](https://github.com/betagouv/Resultats-Elections-FPT/pull/18)
 - fix(Vue tableau): change les urls générées au build pour des chemin relatif [#17](https://github.com/betagouv/Resultats-Elections-FPT/pull/17)
 - feat(Vue tableau): première version de la vue tableau DSFR [#16](https://github.com/betagouv/Resultats-Elections-FPT/pull/16)
 - chore: mise en place de vue.js pour remplacer les customs widget html [#15](https://github.com/betagouv/Resultats-Elections-FPT/pull/15) 
