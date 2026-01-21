@@ -150,14 +150,20 @@ const getExcelType = (type) => {
         to="/"
       />
       <div v-else-if="tableColumnsInfos.length > 0">
-        <h1 data-js="title" class="fr-h6 fr-mb-1w">{{ currentRecord[titleMapped] }}</h1>
-        <StatusBadge :label="currentRecord[badgeMapped]" />
+        <div class="fr-grid-row fr-grid-row--top fr-mb-3w">
+          <div class="fr-col-6">
+            <h1 data-js="title" class="fr-mb-1w fr-h6">{{ currentRecord[titleMapped] }}</h1>
+            <StatusBadge :label="currentRecord[badgeMapped]" />
+          </div>
+          <div class="fr-col-6 fr-grid-row fr-grid-row--right">
+            <DsfrButton v-if="showDownloadButton" secondary label="Enregistrer les données (.xlsx)" @click="downloadExcel" />
+          </div>
+        </div>
         <ul class="fr-pl-0 fr-mb-3w app-list--unstyled">
           <li v-for="error in errorsMapped" :key="error" class="fr-pb-0 fr-mb-1w">
             <DsfrAlert v-if="currentRecord[error]" type="error" titleTag="p" :description="currentRecord[error]" />
           </li>
         </ul>
-        <DsfrButton v-if="showDownloadButton" label="Télécharger les données" @click="downloadExcel" />
         <ul class="fr-pl-0 fr-mb-3w app-list--unstyled">
           <li v-for="data in dataMapped" :key="data" class="fr-pb-0 fr-mb-1w">
             <div v-if="currentRecord[data] && typeof currentRecord[data] === 'object' && currentRecord[data].length > 0">
