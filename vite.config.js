@@ -27,6 +27,7 @@ export default defineConfig(({ mode }) => {
   const appConfig = getAppConfig(mode)
 
   return {
+    base: "./",
     plugins: [vue()],
     root: appConfig.root,
     build: {
