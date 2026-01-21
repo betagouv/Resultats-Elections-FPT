@@ -4,6 +4,7 @@ import { computedAsync } from '@vueuse/core'
 import StatusBadge from '@shared/components/StatusBadge.vue'
 import valuesUtils from '@shared/utils/values.js'
 import gristUtils from '@shared/utils/grist.js'
+import writeXlsxFile from 'write-excel-file'
 import pictoDocumentFill from '@shared/picto/document-fill.svg'
 import GristContainer from '@shared/components/GristContainer.vue'
 
@@ -100,6 +101,42 @@ const triggerAction = async () => {
   const updatedRecord = await grist.docApi.applyUserActions([actionArray])
   if (updatedRecord) opened.value = false
 }
+
+/* EXPORT */
+const isDownloadingFile = ref(false)
+const downloadExcel = async () => {
+  const data = generateExcelData()
+  isDownloadingFile.value = true
+  const title = currentRecord.value[titleMapped.value].replace(/ /g, '-')
+  const fileName = `informations-${title}.xlsx`
+  await writeXlsxFile(data, {
+    fileName: fileName
+  })
+  isDownloadingFile.value = false
+}
+
+const generateExcelData = () => {
+  const excelData = []
+  const headers = []
+  const row = []
+  for(const data of dataMapped.value) {
+    const columnInfo = gristUtils.getColumnInfos(data, tableColumnsInfos.value)
+    headers.push({value: getPrettyLabel(data)})
+    row.push({
+      type: getExcelType(columnInfo.type),
+      value: currentRecord.value[data], 
+    })
+  }
+  excelData.push(headers)
+  excelData.push(row)
+  return excelData
+}
+
+const getExcelType = (type) => {
+  if (type === 'Int' || type === 'Numeric') return Number
+  if (type === 'Bool') return Boolean
+  else return String
+}
 </script>
 <template>
   <GristContainer @update:record="onRecord" @update:records="onRecords" :columns="gristColumns" :configuration="gristConfiguration" @update:configuration="onConfiguration">
@@ -120,7 +157,7 @@ const triggerAction = async () => {
             <DsfrAlert v-if="currentRecord[error]" type="error" titleTag="p" :description="currentRecord[error]" />
           </li>
         </ul>
-        <p v-if="showDownloadButton">Le bouton pour "Enregister les données" est affiché</p>
+        <DsfrButton v-if="showDownloadButton" label="Télécharger les données" @click="downloadExcel" />
         <ul class="fr-pl-0 fr-mb-3w app-list--unstyled">
           <li v-for="data in dataMapped" :key="data" class="fr-pb-0 fr-mb-1w">
             <div v-if="currentRecord[data] && typeof currentRecord[data] === 'object' && currentRecord[data].length > 0">
