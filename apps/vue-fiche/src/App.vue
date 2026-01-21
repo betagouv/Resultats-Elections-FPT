@@ -124,7 +124,7 @@ const generateExcelData = () => {
     headers.push({value: getPrettyLabel(data)})
     row.push({
       type: getExcelType(columnInfo.type),
-      value: currentRecord.value[data], 
+      value: typeof currentRecord.value[data] === 'object' ? currentRecord.value[data].join(', ') : currentRecord.value[data], 
     })
   }
   excelData.push(headers)
