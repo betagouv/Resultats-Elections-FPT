@@ -11,8 +11,6 @@ const isInString = (string, value) => {
   if (typeof string !== 'string') return false // Censored values
   const stringClean = removeSpecialChars(string)
   const valueClean = removeSpecialChars(value)
-  console.log("stringClean", stringClean)
-  console.log("valueClean", valueClean)
   return stringClean.indexOf(valueClean) >= 0
 }
 
