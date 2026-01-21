@@ -4,6 +4,7 @@ import { computedAsync } from '@vueuse/core'
 import gristUtils from '@shared/utils/grist.js'
 import GristContainer from '@shared/components/GristContainer.vue'
 import writeXlsxFile from 'write-excel-file'
+import IconCheck from '@shared/components/IconCheck.vue'
 
 const currentRecord = ref()
 const tableData = ref([])
@@ -189,7 +190,9 @@ const backToTop = () => {
         @update:current-page="backToTop"
       >
         <template #cell="{ cell }" class="fr-col--sm">
-          <DsfrBadge v-if="cell.type === 'Bool'" :type="cell.value ? 'success' : 'error'" :label="cell.value ? 'Oui' : 'Non'" />
+          <p v-if="cell.type === 'Bool'" class="app-flex-center">
+            <IconCheck v-if="cell.value" class="vue-tableau__icon-check fr-text-title--blue-france" />
+          </p>
           <DsfrTag v-else-if="cell.type.indexOf('Ref:') > -1" :label="cell.value" />
           <ul v-else-if="cell.hasMultipleValues">
             <li v-for="value in cell.value">
@@ -230,4 +233,9 @@ const backToTop = () => {
   z-index: 3;
 }
 
+/* ICON */
+.vue-tableau__icon-check {
+  width: 1.5rem;
+  height: 1.5rem;
+}
 </style>
