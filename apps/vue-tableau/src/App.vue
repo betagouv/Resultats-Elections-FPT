@@ -168,7 +168,7 @@ const backToTop = () => {
           <div class="fr-col-12 fr-col-md-6 fr-grid-row fr-grid-row--right">
             <DsfrButton 
               v-if="displayTable"
-              :label="isGeneratingFile ? 'Enregistrement en cours...' : 'Enregistrer au format Excel'" 
+              :label="isGeneratingFile ? 'Enregistrement en cours...' : `Enregistrer ${tableRows.length} collectivités (.xlsx)`" 
               icon="ri-file-excel-line" 
               size="medium"
               secondary
