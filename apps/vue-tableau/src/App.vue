@@ -2,6 +2,7 @@
 import { ref, computed } from 'vue'
 import { computedAsync } from '@vueuse/core'
 import gristUtils from '@shared/utils/grist.js'
+import valuesUtils from '@shared/utils/values.js'
 import GristContainer from '@shared/components/GristContainer.vue'
 import writeXlsxFile from 'write-excel-file'
 import IconCheck from '@shared/components/IconCheck.vue'
@@ -11,9 +12,14 @@ const tableData = ref([])
 const tableDataFiltered = ref([])
 const firstColumnMapped = ref()
 const otherColumnsMapped = ref()
+const currentPage = ref(0)
 
 /* EXPORT */
 const isGeneratingFile = ref(false)
+const buttonLabel = computed(() => {
+  const rowsName = tableRows.value.length > 1 ? 'collectivités' : 'collectivité'
+  return isGeneratingFile.value ? 'Enregistrement en cours...' : `Enregistrer ${tableRows.value.length} ${rowsName} (.xlsx)`
+})
 const downloadExcel = async () => {
   const data = generateExcelData()
   isGeneratingFile.value = true
@@ -57,10 +63,11 @@ const isSearching = ref(false)
 const trimSearch = ref('')
 
 const onSearch = () => {
+  currentPage.value = 0
   trimSearch.value = search.value.trim()
   isSearching.value = true
   tableDataFiltered.value = tableData.value.filter(record => {
-    return record[firstColumnMapped.value].toLowerCase().includes(trimSearch.value.toLowerCase())
+    return valuesUtils.isInString(record[firstColumnMapped.value], trimSearch.value)
   })
 }
 
@@ -117,6 +124,11 @@ const tableRows = computed(() => {
   return rows
 })
 
+const updateCurrentPage = (page) => {
+  currentPage.value = page
+  backToTop()
+}
+
 /* GRIST */
 const gristColumns = [
   {
@@ -169,7 +181,7 @@ const backToTop = () => {
           <div class="fr-col-12 fr-col-md-6 fr-grid-row fr-grid-row--right">
             <DsfrButton 
               v-if="displayTable"
-              :label="isGeneratingFile ? 'Enregistrement en cours...' : `Enregistrer ${tableRows.length} collectivités (.xlsx)`" 
+              :label="buttonLabel" 
               icon="ri-file-excel-line" 
               size="medium"
               secondary
@@ -188,7 +200,8 @@ const backToTop = () => {
         :pagination-options="['100', '200', '500']"
         pagination-wrapper-class="fr-px-4w fr-pt-2w"
         :rows-per-page="100"
-        @update:current-page="backToTop"
+        :current-page="currentPage"
+        @update:current-page="updateCurrentPage"
       >
         <template #cell="{ cell }" class="fr-col--sm">
           <p v-if="cell.type === 'Bool'" class="app-flex-center">
