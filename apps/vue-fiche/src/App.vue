@@ -122,9 +122,10 @@ const generateExcelData = () => {
   for(const data of dataMapped.value) {
     const columnInfo = gristUtils.getColumnInfos(data, tableColumnsInfos.value)
     headers.push({value: getPrettyLabel(data)})
+    const isList = typeof currentRecord.value[data] === 'object' && currentRecord.value[data]
     row.push({
       type: getExcelType(columnInfo.type),
-      value: typeof currentRecord.value[data] === 'object' ? currentRecord.value[data].join(', ') : currentRecord.value[data], 
+      value: isList ? currentRecord.value[data].join(', ') : currentRecord.value[data], 
     })
   }
   excelData.push(headers)
