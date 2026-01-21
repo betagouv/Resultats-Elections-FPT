@@ -11,6 +11,7 @@ const tableData = ref([])
 const tableDataFiltered = ref([])
 const firstColumnMapped = ref()
 const otherColumnsMapped = ref()
+const currentPage = ref(0)
 
 /* EXPORT */
 const isGeneratingFile = ref(false)
@@ -57,6 +58,7 @@ const isSearching = ref(false)
 const trimSearch = ref('')
 
 const onSearch = () => {
+  currentPage.value = 0
   trimSearch.value = search.value.trim()
   isSearching.value = true
   tableDataFiltered.value = tableData.value.filter(record => {
@@ -116,6 +118,11 @@ const tableRows = computed(() => {
   })
   return rows
 })
+
+const updateCurrentPage = (page) => {
+  currentPage.value = page
+  backToTop()
+}
 
 /* GRIST */
 const gristColumns = [
@@ -188,7 +195,8 @@ const backToTop = () => {
         :pagination-options="['100', '200', '500']"
         pagination-wrapper-class="fr-px-4w fr-pt-2w"
         :rows-per-page="100"
-        @update:current-page="backToTop"
+        :current-page="currentPage"
+        @update:current-page="updateCurrentPage"
       >
         <template #cell="{ cell }" class="fr-col--sm">
           <p v-if="cell.type === 'Bool'" class="app-flex-center">
