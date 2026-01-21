@@ -151,7 +151,7 @@ const getExcelType = (type) => {
         to="/"
       />
       <div v-else-if="tableColumnsInfos.length > 0">
-        <div class="fr-grid-row fr-grid-row--top fr-mb-3w">
+        <div class="fr-grid-row fr-grid-row--gutters fr-grid-row--top fr-mb-3w">
           <div class="fr-col-6">
             <h1 data-js="title" class="fr-mb-1w fr-h6">{{ currentRecord[titleMapped] }}</h1>
             <StatusBadge :label="currentRecord[badgeMapped]" />
