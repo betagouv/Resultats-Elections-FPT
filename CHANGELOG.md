@@ -1,5 +1,8 @@
 # Changelog
 
+- feat: Build app [#23](https://github.com/betagouv/Resultats-Elections-FPT/pull/23)
+- chore: Améliore l'action pour qu'elle mette à jour le dossier dist [#22](https://github.com/betagouv/Resultats-Elections-FPT/pull/22)
+- chore: met à jour le Changelog [#21](https://github.com/betagouv/Resultats-Elections-FPT/pull/21)
 - chore: Création d'une CI pour build l'app automatiquement [#20](https://github.com/betagouv/Resultats-Elections-FPT/pull/20)
 - fix(Vue tableau): diverses améliorations suite au recettage [#19](https://github.com/betagouv/Resultats-Elections-FPT/pull/19)
 - feat(Vue fiche): ajoute un bouton de téléchargement optionnel [#18](https://github.com/betagouv/Resultats-Elections-FPT/pull/18)
