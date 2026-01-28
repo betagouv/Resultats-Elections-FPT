@@ -49,6 +49,12 @@ const getSelectOptions = async (type) => {
   return options
 }
 
+const fillForm = () => {
+  for(let i = 0; i < fieldsMapped.value.length; i++) {
+    formModels.value[fieldsMapped.value[i]] = currentRecord.value[fieldsMapped.value[i]]
+  }
+}
+
 
 /* GRIST */
 const gristColumns = [
@@ -65,20 +71,14 @@ const gristColumns = [
 
 const onRecord = (record) => {
   currentRecord.value = record
-  prefillForm()
+  fillForm()
 }
 
 const onRecords = (params) => {
   const { mapping } = params
   titleMapped.value = mapping['title']
   fieldsMapped.value = mapping['fields']
-  prefillForm()
-}
-
-const prefillForm = () => {
-  for(let i = 0; i < fieldsMapped.value.length; i++) {
-    formModels.value[fieldsMapped.value[i]] = currentRecord.value[fieldsMapped.value[i]]
-  }
+  fillForm()
 }
 </script>
 
