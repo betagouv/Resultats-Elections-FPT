@@ -1,0 +1,77 @@
+<html>
+  <head>
+    <script src="https://docs.getgrist.com/grist-plugin-api.js"></script>
+    <link
+      href="https://cdn.jsdelivr.net/npm/@gouvfr/dsfr@1.14.0/dist/dsfr.min.css"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../styles/app.css" />
+  </head>
+  <body>
+    <main id="view" class="fr-container app-cw-search fr-p-3w">
+      <section>
+        <div class="fr-mb-2w fr-grid-row fr-grid-row--left">
+          <button aria-controls="modal" class="fr-btn" data-js-modal="open">
+            Créer une collectivité
+          </button>
+        </div>
+
+        <dialog
+          data-js-modal="dialog"
+          class="fr-modal"
+          aria-labelledby="Créer une collectivité"
+          aria-modal="true"
+        >
+          <div class="fr-container fr-container--fluid fr-container-md">
+            <div class="fr-grid-row fr-grid-row--center">
+              <div class="fr-col-12 fr-col-md-8 fr-col-lg-6">
+                <div class="fr-modal__body">
+                  <div class="fr-modal__header">
+                    <button
+                      aria-controls="modal"
+                      title="Fermer"
+                      type="button"
+                      class="fr-btn--close fr-btn"
+                      data-js-modal="close"
+                    >
+                      Fermer
+                    </button>
+                  </div>
+                  <div class="fr-modal__content">
+                    <iframe
+                      id="iframe"
+                      style="border: none; width: 100%; height: 80vh"
+                      src=""
+                    ></iframe>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </dialog>
+
+        <div class="fr-search-bar fr-search-bar--lg" role="search">
+          <label class="fr-label" for="search-input">Rechercher</label>
+          <input
+            class="fr-input"
+            aria-describedby="search-input-messages"
+            placeholder="Rechercher"
+            id="search-input"
+            type="search"
+          />
+          <div
+            class="fr-messages-group"
+            id="search-input-messages"
+            aria-live="polite"
+          ></div>
+          <button title="Rechercher" type="button" class="fr-btn" id="submit">
+            Rechercher
+          </button>
+        </div>
+        <ul id="list" class="app-list--unstyled fr-pl-0"></ul>
+        <p id="error" class="fr-mt-2w"></p>
+      </section>
+    </main>
+    <script type="module" src="main.js"></script>
+  </body>
+</html>
