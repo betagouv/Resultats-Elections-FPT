@@ -6,8 +6,10 @@ import GristContainer from '@shared/components/GristContainer.vue'
 
 /* INFORMATIONS */
 const currentRecord = ref({})
-let fieldsMapped = ref()
-let titleMapped = ref()
+const fieldsMapped = ref()
+const titleMapped = ref()
+const formModels = ref({})
+
 
 /* FORMULAIRE */
 const inputs = computed(() => {
@@ -51,6 +53,9 @@ const onRecords = (params) => {
   const { mapping } = params
   titleMapped.value = mapping['title']
   fieldsMapped.value = mapping['fields']
+  for(let i = 0; i < fieldsMapped.value.length; i++) {
+    formModels.value[fieldsMapped.value[i]] = null
+  }
 }
 </script>
 
