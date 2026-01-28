@@ -10,9 +10,13 @@ const fieldsMapped = ref()
 const titleMapped = ref()
 const formModels = ref({})
 
+/* TABLE */
+const tableColumnsInfos = computedAsync(async () => {
+  return await gristUtils.getTableColumnsInfos()
+}, [])
 
 /* FORMULAIRE */
-const inputs = computed(() => {
+const formInputs = computed(() => {
   if (tableColumnsInfos.value.length <= 0 || fieldsMapped.value.length <= 0) return []
   return fieldsMapped.value.map(field => {
     const infos = gristUtils.getColumnInfos(field, tableColumnsInfos.value)
@@ -21,15 +25,29 @@ const inputs = computed(() => {
   })
 })
 
-const formInputs = computed(() => {
-  return inputs.value.map(input => { input.name })
-})
+const formSelects = computedAsync(async () => {
+  let options = {}
+  for(let i = 0; i < formInputs.value.length; i++) {
+    const isSelect = formInputs.value[i].type === 'select'
+    if (!isSelect) continue
+    options[formInputs.value[i].name] = await getSelectOptions(formInputs.value[i].infos.type)
+  }
+  return options
+}, {})
 
 
-/* TABLE */
-const tableColumnsInfos = computedAsync(async () => {
-  return await gristUtils.getTableColumnsInfos()
-}, [])
+const getSelectOptions = async (type) => {
+  const tableId = type.replace('Ref:', '')
+  const refRecords = await gristUtils.getTable(tableId)
+  const options = []
+  for(let i = 0; i < refRecords.id.length; i++) {
+    options.push({
+      text: refRecords.Nom_complet_acronyme[i],
+      value: refRecords.id[i],
+    })
+  }
+  return options
+}
 
 
 /* GRIST */
