@@ -14,6 +14,7 @@ const getTableColumnsInfos = async () => {
         description: allGristColumns.description[index],
         colId: allGristColumns.colId[index],
         type: allGristColumns.type[index],
+        widgetOptions: allGristColumns.widgetOptions[index],
       })
     index++
     return filtered
@@ -36,7 +37,7 @@ const getColumnName = (id, table) => {
 }
 
 const getHtmlType = (type) => {
-  if (type.indexOf('Ref:') >= 0) return 'select'
+  if (type.indexOf('Ref:') >= 0 || type === 'Choice') return 'select'
   if (type === 'Int' || type === 'Numeric') return 'number'
   if (type === 'Bool') return 'checkbox'
   if (type === 'Attachments') return 'file'

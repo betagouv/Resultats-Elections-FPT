@@ -32,13 +32,29 @@ const formSelects = computedAsync(async () => {
   for(let i = 0; i < formInputs.value.length; i++) {
     const isSelect = formInputs.value[i].type === 'select'
     if (!isSelect) continue
-    options[formInputs.value[i].name] = await getSelectOptions(formInputs.value[i].infos.type)
+    else if (formInputs.value[i].infos.type === 'Choice') options[formInputs.value[i].name] = getChoiceOptions(formInputs.value[i].infos.widgetOptions)
+    else options[formInputs.value[i].name] = await getRefOptions(formInputs.value[i].infos.type)
   }
   return options
 }, {})
 
+const getChoiceOptions = (widgetOptions) => {
+  const widgetOptionsClean = JSON.parse(widgetOptions)
+  const choices = []
+  choices.push({
+    text: 'Non concerné',
+    value: '',
+  })
+  widgetOptionsClean.choices.forEach(choice => {
+    choices.push({
+      text: choice,
+      value: choice,
+    })
+  })
+  return choices
+}
 
-const getSelectOptions = async (type) => {
+const getRefOptions = async (type) => {
   const tableId = type.replace('Ref:', '')
   const refRecords = await gristUtils.getTable(tableId)
   const options = []
@@ -54,29 +70,29 @@ const getSelectOptions = async (type) => {
 
 const fillForm = () => {
   for(let i = 0; i < fieldsMapped.value.length; i++) {
-    formModels.value[fieldsMapped.value[i]] = currentRecord.value[fieldsMapped.value[i]]
+    formModels.value[fieldsMapped.value[i]] = currentRecord.value[fieldsMapped.value[i]] || ''
   }
 }
 
 const getFormValuesCleaned = () => {
   let values = {}
   for(let i = 0; i < formInputs.value.length; i++) {
-    const type = formInputs.value[i].type
+    const isSelect = formInputs.value[i].type === 'select' && formInputs.value[i].infos.type !== 'Choice'
     const inputName = formInputs.value[i].name
-    const value = type === 'select' ? getSelectValue(inputName, formModels.value[inputName]) : formModels.value[inputName]
+    const value = isSelect ? getSelectRefValue(inputName, formModels.value[inputName]) : formModels.value[inputName]
     values[inputName] = value
   }
   return values
 }
 
-const getSelectValue = (inputName, valueToFind) => {
+const getSelectRefValue = (inputName, valueToFind) => {
   return formSelects.value[inputName].find(option => option.value === valueToFind).id
 }
 
 const saveRecord = async () => {
   isLoading.value = true
+  const newValues = getFormValuesCleaned()
   try {
-    const newValues = getFormValuesCleaned()
     await grist.selectedTable.update({
       id: currentRecord.value.id,
       fields: newValues,
