@@ -63,7 +63,6 @@ const onRecords = (params) => {
           <DsfrInput
             v-if="input.type === 'text'"
             v-model="formInputs.name"
-            :key="input.name"
             :label="input.infos.label"
             :label-visible="true"
             :hint="input.infos.description"
