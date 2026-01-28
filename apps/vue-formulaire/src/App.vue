@@ -6,9 +6,10 @@ import GristContainer from '@shared/components/GristContainer.vue'
 
 /* INFORMATIONS */
 const currentRecord = ref({})
-const fieldsMapped = ref()
+const fieldsMapped = ref([])
 const titleMapped = ref()
 const formModels = ref({})
+const isLoading = ref(false)
 
 /* TABLE */
 const tableColumnsInfos = computedAsync(async () => {
@@ -44,6 +45,7 @@ const getSelectOptions = async (type) => {
     options.push({
       text: refRecords.Nom_complet_acronyme[i],
       value: refRecords.Nom_complet_acronyme[i],
+      id: refRecords.id[i],
     })
   }
   return options
@@ -55,6 +57,36 @@ const fillForm = () => {
   }
 }
 
+const getFormValuesCleaned = () => {
+  let values = {}
+  for(let i = 0; i < formInputs.value.length; i++) {
+    const type = formInputs.value[i].type
+    const inputName = formInputs.value[i].name
+    const value = type === 'select' ? getSelectValue(inputName, formModels.value[inputName]) : formModels.value[inputName]
+    values[inputName] = value
+  }
+  return values
+}
+
+const getSelectValue = (inputName, valueToFind) => {
+  return formSelects.value[inputName].find(option => option.value === valueToFind).id
+}
+
+const saveRecord = async () => {
+  isLoading.value = true
+  try {
+    const newValues = getFormValuesCleaned()
+    await grist.selectedTable.update({
+      id: currentRecord.value.id,
+      fields: newValues,
+    })
+    console.log("RECORD newValues")
+  } catch (error) {
+    console.error(error)
+  } finally {
+    isLoading.value = false
+  }
+}
 
 /* GRIST */
 const gristColumns = [
@@ -107,6 +139,7 @@ const onRecords = (params) => {
             </div>
           </div>
         </fieldset>
+        <DsfrButton @click="saveRecord" :disabled="isLoading">Enregistrer les modifications</DsfrButton>
       </form>
     </main>
   </GristContainer>
