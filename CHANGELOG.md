@@ -1,5 +1,6 @@
 # Changelog
 
+- feat(Vue formulaire): ajout de la nouvelle vue pour la cartographie collectivité [#24](https://github.com/betagouv/Resultats-Elections-FPT/pull/24)
 - feat: Build app [#23](https://github.com/betagouv/Resultats-Elections-FPT/pull/23)
 - chore: Améliore l'action pour qu'elle mette à jour le dossier dist [#22](https://github.com/betagouv/Resultats-Elections-FPT/pull/22)
 - chore: met à jour le Changelog [#21](https://github.com/betagouv/Resultats-Elections-FPT/pull/21)

@@ -12,7 +12,10 @@
     "dev:tableau": "vite --mode vue-tableau",
     "preview:tableau": "vite preview --mode vue-tableau",
     "build:tableau": "vite build --mode vue-tableau",
-    "build": "npm-run-all build:fiche build:tableau copy:html"
+    "dev:formulaire": "vite --mode vue-formulaire",
+    "preview:formulaire": "vite preview --mode vue-formulaire",
+    "build:formulaire": "vite build --mode vue-formulaire",
+    "build": "npm-run-all build:fiche build:tableau build:formulaire copy:html"
   },
   "repository": {
     "type": "git",
