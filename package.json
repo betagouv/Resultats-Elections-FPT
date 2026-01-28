@@ -15,7 +15,9 @@
     "dev:formulaire": "vite --mode vue-formulaire",
     "preview:formulaire": "vite preview --mode vue-formulaire",
     "build:formulaire": "vite build --mode vue-formulaire",
-    "build": "npm-run-all build:fiche build:tableau build:formulaire copy:html"
+    "build": "npm-run-all build:fiche build:tableau build:formulaire copy:html",
+    "build:staging": "npm-run-all build copy:staging",
+    "copy:staging": "cp -r dist/* staging/"
   },
   "repository": {
     "type": "git",
