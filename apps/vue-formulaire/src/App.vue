@@ -10,6 +10,7 @@ const fieldsMapped = ref([])
 const titleMapped = ref()
 const formModels = ref({})
 const isLoading = ref(false)
+const displayView = ref('form')
 
 /* TABLE */
 const tableColumnsInfos = computedAsync(async () => {
@@ -80,10 +81,11 @@ const saveRecord = async () => {
       id: currentRecord.value.id,
       fields: newValues,
     })
-    console.log("RECORD newValues")
+    displayView.value = 'success'
   } catch (error) {
-    console.error(error)
+    displayView.value = 'error'
   } finally {
+    fillForm()
     isLoading.value = false
   }
 }
@@ -117,7 +119,12 @@ const onRecords = (params) => {
 <template>
   <GristContainer @update:record="onRecord" @update:records="onRecords" :columns="gristColumns">
     <main class="fr-container fr-p-3w">
-      <form>
+      <DsfrAlert v-if="displayView === 'success'" type="success" title="Modifications enregistrées" :description="`Les modifications ${currentRecord[titleMapped]} ont été enregistrées avec succès.`" />
+      <DsfrAlert v-if="displayView === 'error'" type="error" title="Une erreur technique est survenue" description="Merci de recommencer votre saisie, nous nous excusons pour la gène occasionnée." />
+      <div class="fr-grid-row fr-grid-row--center fr-my-2w">
+        <DsfrButton v-if="displayView !== 'form'" @click="displayView = 'form'" secondary>Revenir au formulaire</DsfrButton>
+      </div>
+      <form v-if="displayView === 'form'"  >
         <h1 class="fr-h6">Modifier {{ currentRecord[titleMapped] }}</h1>
         <fieldset class="fr-fieldset fr-mb-2w">
           <div class="fr-fieldset__element">
