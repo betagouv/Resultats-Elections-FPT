@@ -82,16 +82,26 @@ const onRecords = (params) => {
     <main class="fr-container fr-p-3w">
       <form>
         <h1 class="fr-h6">Modifier {{ currentRecord[titleMapped] }}</h1>
-        <div v-for="input in inputs" :key="input.name">
-          <DsfrInput
-            v-if="input.type === 'text'"
-            v-model="formInputs.name"
-            :label="input.infos.label"
-            :label-visible="true"
-            :hint="input.infos.description"
-          />
-          <p v-else>{{ input }}</p>
-        </div>
+        <fieldset class="fr-fieldset fr-mb-2w">
+          <div class="fr-fieldset__element">
+            <div v-for="input in formInputs" :key="input.name" class="fr-mb-2w">
+              <DsfrInput
+                v-if="input.type === 'text'"
+                v-model="formModels[input.name]"
+                :label="input.infos.label"
+                :label-visible="true"
+                :hint="input.infos.description"
+              />
+              <DsfrSelect
+                v-else-if="input.type === 'select'"
+                v-model="formModels[input.name]"
+                :label="input.infos.label"
+                :hint="input.infos.description"
+                :options="formSelects[input.name]"
+              />
+            </div>
+          </div>
+        </fieldset>
       </form>
     </main>
   </GristContainer>
