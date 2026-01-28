@@ -121,12 +121,12 @@ const onRecords = (params) => {
     <main class="fr-container fr-p-3w">
       <DsfrAlert v-if="displayView === 'success'" type="success" title="Modifications enregistrées" :description="`Les modifications ${currentRecord[titleMapped]} ont été enregistrées avec succès.`" />
       <DsfrAlert v-if="displayView === 'error'" type="error" title="Une erreur technique est survenue" description="Merci de recommencer votre saisie, nous nous excusons pour la gène occasionnée." />
-      <div class="fr-grid-row fr-grid-row--center fr-my-2w">
-        <DsfrButton v-if="displayView !== 'form'" @click="displayView = 'form'" secondary>Revenir au formulaire</DsfrButton>
+      <div v-if="displayView !== 'form'" class="fr-grid-row fr-grid-row--center fr-my-2w">
+        <DsfrButton @click="displayView = 'form'" secondary>Revenir au formulaire</DsfrButton>
       </div>
-      <form v-if="displayView === 'form'"  >
+      <form v-if="displayView === 'form'" class="fr-mb-2w">
         <h1 class="fr-h6">Modifier {{ currentRecord[titleMapped] }}</h1>
-        <fieldset class="fr-fieldset fr-mb-2w">
+        <fieldset class="fr-fieldset">
           <div class="fr-fieldset__element">
             <div v-for="input in formInputs" :key="input.name" class="fr-mb-2w">
               <DsfrInput
