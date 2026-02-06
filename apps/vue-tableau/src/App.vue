@@ -102,6 +102,17 @@ const filtersColumnsInfos = computed(() => {
   return filters
 })
 
+const filtersSelected = computed(() => {
+  let activedFilters = []
+  const filtersKeys = Object.keys(formFilters.inputs)
+  for(const key of filtersKeys) {
+    if (formFilters.inputs[key] === '') continue
+    const filterName = filtersColumnsInfos.value.find(filter => filter.id === key).label
+    activedFilters.push(`${filterName} : ${formFilters.inputs[key] === '1' ? 'Oui' : 'Non'}`)
+  }
+  return activedFilters
+})
+
 const resetFilters = () => {
   const filtersKeys = Object.keys(formFilters.inputs)
   for(const key of filtersKeys) {
@@ -224,6 +235,12 @@ const backToTop = () => {
     <div class="vue-tableau">
       <div class="fr-pt-3w fr-px-3w">
         <div class="fr-grid-row fr-grid-row--right">
+          <DsfrButton 
+            class="fr-mr-2w"
+            secondary
+            label="Filtrer"
+            @click="openedFiltersModal = true"
+          />
           <DsfrSearchBar
             v-model="search" 
             class="vue-tableau__search-bar"
@@ -233,21 +250,16 @@ const backToTop = () => {
             @search="onSearch()" 
             @update:modelValue="onSearchUpdate()"
           />
-          <DsfrButton 
-            class="fr-ml-2w"
-            secondary
-            label="Filtrer"
-            @click="openedFiltersModal = true"
-          />
         </div>
         <div class="fr-grid-row fr-grid-row--middle fr-my-2w">
           <div class="fr-col-12 fr-col-md-6">
-            <p class="fr-mb-0">
-              {{ tableRows.length }} {{ tableRows.length > 1 ? 'collectivités' : 'collectivité' }}
-              <span v-if="isSearching">pour la recherche : "{{ trimSearch }}"</span>
-            </p>
+            <DsfrTag v-if="isSearching" small :label="`Recherche : ${trimSearch}`" class="fr-ml-0 fr-mr-1w" />
+            <DsfrTag v-for="filter in filtersSelected" small :key="filter" :label="filter" class="fr-mr-1w" />
           </div>
-          <div class="fr-col-12 fr-col-md-6 fr-grid-row fr-grid-row--right">
+          <div class="fr-col-12 fr-col-md-6 fr-grid-row fr-grid-row--right fr-grid-row--middle">
+            <p class="fr-mb-0 fr-mr-2w">
+              {{ tableRows.length }} {{ tableRows.length > 1 ? 'collectivités' : 'collectivité' }}
+            </p>
             <DsfrButton 
               v-if="displayTable"
               :label="buttonLabel" 
