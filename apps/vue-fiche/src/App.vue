@@ -31,6 +31,7 @@ const isNotFilled = computed(() => {
   const badge = currentRecord.value[badgeMapped.value]
   return badge ? badge.toLowerCase() === 'à renseigner' : false
 })
+const actionType = computed(() => currentRecord.value[actionMapped.value].type || 'primary')
 
 /* TABLE */
 const tableColumnsInfos = computedAsync(async () => {
@@ -205,7 +206,11 @@ const getExcelType = (type) => {
             <p v-else class="fr-mb-0">{{ getPrettyLabel(data) }} : {{ getPrettyValue(currentRecord[data]) }}</p>
           </li>
         </ul>
-        <DsfrButton v-if="currentRecord[actionMapped]" :label="currentRecord[actionMapped].button" @click="opened = true" />
+        <DsfrButton 
+          v-if="currentRecord[actionMapped]"
+          :[actionType]="true"
+          :label="currentRecord[actionMapped].button" 
+          @click="opened = true" />
       </div>
       <div v-else>
         <p>Chargement en cours...</p>
