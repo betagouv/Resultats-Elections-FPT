@@ -172,23 +172,21 @@ const backToTop = () => {
     <div class="vue-tableau">
       <div class="fr-pt-3w fr-px-3w">
         <div class="fr-grid-row fr-grid-row--right">
-          <div class="fr-col-4 fr-pr-2w">
-            <DsfrButton 
-              secondary
-              label="Filtrer par"
-              @click="openedFiltersModal = true"
-            />
-          </div>
-          <div class="fr-col-8">
-            <DsfrSearchBar
-              v-model="search" 
-              button-text="Rechercher" 
-              placeholder="Rechercher une collectivité par son nom" 
-              :large="true" 
-              @search="onSearch()" 
-              @update:modelValue="onSearchUpdate()"
-            />
-          </div>
+          <DsfrSearchBar
+            v-model="search" 
+            class="vue-tableau__search-bar"
+            button-text="Rechercher" 
+            placeholder="Rechercher une collectivité par son nom" 
+            :large="true" 
+            @search="onSearch()" 
+            @update:modelValue="onSearchUpdate()"
+          />
+          <DsfrButton 
+            class="fr-ml-2w"
+            secondary
+            label="Filtrer"
+            @click="openedFiltersModal = true"
+          />
         </div>
         <div class="fr-grid-row fr-grid-row--middle fr-my-2w">
           <div class="fr-col-12 fr-col-md-6">
@@ -250,6 +248,10 @@ const backToTop = () => {
   background-color: var(--background-alt-grey) !important; 
   max-width: 20rem !important;
   white-space: normal !important;
+}
+
+.vue-tableau__search-bar {
+  flex-grow: 1;
 }
 
 
