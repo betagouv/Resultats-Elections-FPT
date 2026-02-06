@@ -18,7 +18,7 @@ const currentPage = ref(0)
 const isGeneratingFile = ref(false)
 const buttonLabel = computed(() => {
   const rowsName = tableRows.value.length > 1 ? 'collectivités' : 'collectivité'
-  return isGeneratingFile.value ? 'Enregistrement en cours...' : `Enregistrer ${tableRows.value.length} ${rowsName} (.xlsx)`
+  return isGeneratingFile.value ? 'Téléchargement en cours...' : `Télécharger les ${tableRows.value.length} ${rowsName} (Excel)`
 })
 const downloadExcel = async () => {
   const data = generateExcelData()
@@ -182,7 +182,6 @@ const backToTop = () => {
             <DsfrButton 
               v-if="displayTable"
               :label="buttonLabel" 
-              icon="ri-file-excel-line" 
               size="medium"
               secondary
               class="fr-mr-0"

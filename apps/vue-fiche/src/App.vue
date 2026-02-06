@@ -181,7 +181,12 @@ const getExcelType = (type) => {
             <StatusBadge :label="currentRecord[badgeMapped]" />
           </div>
           <div class="fr-col-6 fr-grid-row fr-grid-row--right">
-            <DsfrButton v-if="showDownloadButton" secondary :label="isDownloadingFile ? 'Enregistrement en cours...' : 'Enregistrer les données (.xlsx)'" @click="downloadExcel" />
+            <DsfrButton 
+              v-if="showDownloadButton" 
+              icon="fr-icon-download-line"
+              secondary 
+              :label="isDownloadingFile ? 'Téléchargement en cours...' : 'Télécharger les données (Excel)'" 
+              @click="downloadExcel" />
           </div>
         </div>
         <ul class="fr-pl-0 fr-mb-3w app-list--unstyled">
