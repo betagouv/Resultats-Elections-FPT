@@ -12,7 +12,9 @@ const tableData = ref([])
 const tableDataFiltered = ref([])
 const firstColumnMapped = ref()
 const otherColumnsMapped = ref()
+const filtersColumnsMapped = ref()
 const currentPage = ref(0)
+const openedFiltersModal = ref(false)
 
 /* EXPORT */
 const isGeneratingFile = ref(false)
@@ -140,6 +142,11 @@ const gristColumns = [
     description: '',
     allowMultiple: true,
   },
+  {
+    name: 'Filtres',
+    description: 'Colonnes à ajouter dans les filtres',
+    allowMultiple: true,
+  },
 ]
 
 const onRecord = (record) => {
@@ -152,6 +159,7 @@ const onRecords = (params) => {
   tableDataFiltered.value = table
   firstColumnMapped.value = mapping['Première_Colonne']
   otherColumnsMapped.value = mapping['Autres_Colonnes']
+  filtersColumnsMapped.value = mapping['Filtres']
 }
 
 /* VUE */
@@ -163,14 +171,25 @@ const backToTop = () => {
   <GristContainer @update:record="onRecord" @update:records="onRecords" :columns="gristColumns">
     <div class="vue-tableau">
       <div class="fr-pt-3w fr-px-3w">
-        <DsfrSearchBar
-          v-model="search" 
-          button-text="Rechercher" 
-          placeholder="Rechercher une collectivité par son nom" 
-          :large="true" 
-          @search="onSearch()" 
-          @update:modelValue="onSearchUpdate()"
-        />
+        <div class="fr-grid-row fr-grid-row--right">
+          <div class="fr-col-4 fr-pr-2w">
+            <DsfrButton 
+              secondary
+              label="Filtrer par"
+              @click="openedFiltersModal = true"
+            />
+          </div>
+          <div class="fr-col-8">
+            <DsfrSearchBar
+              v-model="search" 
+              button-text="Rechercher" 
+              placeholder="Rechercher une collectivité par son nom" 
+              :large="true" 
+              @search="onSearch()" 
+              @update:modelValue="onSearchUpdate()"
+            />
+          </div>
+        </div>
         <div class="fr-grid-row fr-grid-row--middle fr-my-2w">
           <div class="fr-col-12 fr-col-md-6">
             <p class="fr-mb-0">
@@ -183,7 +202,7 @@ const backToTop = () => {
               v-if="displayTable"
               :label="buttonLabel" 
               size="medium"
-              secondary
+              tertiary
               class="fr-mr-0"
               :disabled="isGeneratingFile"
               @click="downloadExcel" />
@@ -217,6 +236,11 @@ const backToTop = () => {
       </DsfrDataTable>
       <p class="fr-p-3w" v-else-if="!displayTable && !search">Chargement en cours...</p>
     </div>
+    <DsfrModal v-model:opened="openedFiltersModal" @close="openedFiltersModal = false">
+      <div>
+        mes filtres
+      </div>
+    </DsfrModal>
   </GristContainer>
 </template>
 
