@@ -1,5 +1,6 @@
 # Changelog
 
+- fix: supprime l'icone [#28](https://github.com/betagouv/Resultats-Elections-FPT/pull/28)
 - fix: diverses améliorations UX et UI [#26](https://github.com/betagouv/Resultats-Elections-FPT/pull/26)
 - chore: Ajoute un build de "staging" pour le recettage [#25](https://github.com/betagouv/Resultats-Elections-FPT/pull/25)
 - feat(Vue formulaire): ajout de la nouvelle vue pour la cartographie collectivité [#24](https://github.com/betagouv/Resultats-Elections-FPT/pull/24)

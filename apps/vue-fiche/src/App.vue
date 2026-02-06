@@ -188,7 +188,6 @@ const getExcelType = (type) => {
           </div>
           <div v-if="showDownloadButton" class="fr-col-6 fr-grid-row fr-grid-row--right">
             <DsfrButton 
-              icon="fr-icon-download-line"
               secondary 
               :label="isDownloadingFile ? 'Téléchargement en cours...' : 'Télécharger les données (Excel)'" 
               @click="downloadExcel" />
