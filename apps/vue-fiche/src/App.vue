@@ -31,6 +31,7 @@ const isNotFilled = computed(() => {
   const badge = currentRecord.value[badgeMapped.value]
   return badge ? badge.toLowerCase() === 'à renseigner' : false
 })
+const actionType = computed(() => currentRecord.value[actionMapped.value].type || 'primary')
 
 /* TABLE */
 const tableColumnsInfos = computedAsync(async () => {
@@ -176,12 +177,21 @@ const getExcelType = (type) => {
       />
       <div v-else-if="tableColumnsInfos.length > 0">
         <div class="fr-grid-row fr-grid-row--gutters fr-grid-row--top fr-mb-3w">
-          <div class="fr-col-6">
+          <div
+            :class="{
+              'fr-col-6': showDownloadButton,
+              'fr-col-12': !showDownloadButton,
+            }"
+          >
             <h1 data-js="title" class="fr-mb-1w fr-h6">{{ currentRecord[titleMapped] }}</h1>
             <StatusBadge :label="currentRecord[badgeMapped]" />
           </div>
-          <div class="fr-col-6 fr-grid-row fr-grid-row--right">
-            <DsfrButton v-if="showDownloadButton" secondary :label="isDownloadingFile ? 'Enregistrement en cours...' : 'Enregistrer les données (.xlsx)'" @click="downloadExcel" />
+          <div v-if="showDownloadButton" class="fr-col-6 fr-grid-row fr-grid-row--right">
+            <DsfrButton 
+              icon="fr-icon-download-line"
+              secondary 
+              :label="isDownloadingFile ? 'Téléchargement en cours...' : 'Télécharger les données (Excel)'" 
+              @click="downloadExcel" />
           </div>
         </div>
         <ul class="fr-pl-0 fr-mb-3w app-list--unstyled">
@@ -193,14 +203,18 @@ const getExcelType = (type) => {
           <li v-for="data in dataMapped" :key="data" class="fr-pb-0 fr-mb-1w">
             <div v-if="currentRecord[data] && typeof currentRecord[data] === 'object' && currentRecord[data].length > 0">
               <p class="fr-mb-0">{{ getPrettyLabel(data) }} :</p>
-              <ul v-if="currentRecord[data].length > 0" class="fr-pl-0 fr-mb-3w app-list--unstyled">
+              <ul v-if="currentRecord[data].length > 0" class="fr-mb-3w">
                 <li v-for="item in currentRecord[data]" :key="item">{{ getPrettyValue(item) }}</li>
               </ul>
             </div>
             <p v-else class="fr-mb-0">{{ getPrettyLabel(data) }} : {{ getPrettyValue(currentRecord[data]) }}</p>
           </li>
         </ul>
-        <DsfrButton v-if="currentRecord[actionMapped]" :label="currentRecord[actionMapped].button" @click="opened = true" />
+        <DsfrButton 
+          v-if="currentRecord[actionMapped]"
+          :[actionType]="true"
+          :label="currentRecord[actionMapped].button" 
+          @click="opened = true" />
       </div>
       <div v-else>
         <p>Chargement en cours...</p>
