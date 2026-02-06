@@ -1,11 +1,12 @@
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, reactive, computed } from 'vue'
 import { computedAsync } from '@vueuse/core'
 import gristUtils from '@shared/utils/grist.js'
 import valuesUtils from '@shared/utils/values.js'
 import GristContainer from '@shared/components/GristContainer.vue'
 import writeXlsxFile from 'write-excel-file'
 import IconCheck from '@shared/components/IconCheck.vue'
+import { DsfrButton } from '@gouvminint/vue-dsfr'
 
 const currentRecord = ref()
 const tableData = ref([])
@@ -82,6 +83,38 @@ const deleteSearch = () => {
   trimSearch.value = ''
   search.value = ''
   tableDataFiltered.value = tableData.value
+}
+
+/* FILTERS */
+const formFilters = reactive({
+  inputs: {}
+})
+
+const filtersColumnsInfos = computed(() => {
+  if(!filtersColumnsMapped.value) return []
+  const filters = []
+  for(const column of filtersColumnsMapped.value) {
+    const columnInfos = gristUtils.getColumnInfos(column, tableColumnsInfos.value)
+    formFilters.inputs[columnInfos.colId] = ''
+    filters.push({
+      label: columnInfos.label,
+      type: columnInfos.type,
+      id: columnInfos.colId,
+      description: columnInfos.description,
+    })
+  }
+  return filters
+})
+
+const resetFilters = () => {
+  const filtersKeys = Object.keys(formFilters.inputs)
+  for(const key of filtersKeys) {
+    formFilters.inputs[key] = ''
+  }
+}
+
+const applyFilters = () => {
+  console.log('applyFilters')
 }
 
 /* TABLE */
@@ -234,9 +267,26 @@ const backToTop = () => {
       </DsfrDataTable>
       <p class="fr-p-3w" v-else-if="!displayTable && !search">Chargement en cours...</p>
     </div>
-    <DsfrModal v-model:opened="openedFiltersModal" @close="openedFiltersModal = false">
+    <DsfrModal v-model:opened="openedFiltersModal" @close="openedFiltersModal = false" size="large">
       <div>
-        mes filtres
+        <p class="fr-h6">Utilisez les filtres ci-dessous pour affiner la liste des collectivités affichées dans le tableau</p>
+        <form>
+          <div v-for="filter in filtersColumnsInfos" :key="filter">
+            <div v-if="filter.type === 'Bool'">
+              <DsfrRadioButtonSet 
+                v-model="formFilters.inputs[filter.id]"
+                inline
+                :legend="filter.label"
+                :hint="filter.description"
+                :options="[{value: '1', label: 'Oui', name: filter.id}, {value: '0', label: 'Non', name:filter.id, name: filter.id}]"
+              />
+            </div>
+          </div>
+        </form>
+        <div class="fr-grid-row fr-grid-row--center">
+          <DsfrButton label="Réinitiliser les filtres" secondary @click="resetFilters" class="fr-mr-2w" />
+          <DsfrButton label="Appliquer les filtres" primary @click="applyFilters" />
+        </div>
       </div>
     </DsfrModal>
   </GristContainer>
