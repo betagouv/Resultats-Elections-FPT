@@ -177,13 +177,17 @@ const getExcelType = (type) => {
       />
       <div v-else-if="tableColumnsInfos.length > 0">
         <div class="fr-grid-row fr-grid-row--gutters fr-grid-row--top fr-mb-3w">
-          <div class="fr-col-6">
+          <div
+            :class="{
+              'fr-col-6': showDownloadButton,
+              'fr-col-12': !showDownloadButton,
+            }"
+          >
             <h1 data-js="title" class="fr-mb-1w fr-h6">{{ currentRecord[titleMapped] }}</h1>
             <StatusBadge :label="currentRecord[badgeMapped]" />
           </div>
-          <div class="fr-col-6 fr-grid-row fr-grid-row--right">
+          <div v-if="showDownloadButton" class="fr-col-6 fr-grid-row fr-grid-row--right">
             <DsfrButton 
-              v-if="showDownloadButton" 
               icon="fr-icon-download-line"
               secondary 
               :label="isDownloadingFile ? 'Téléchargement en cours...' : 'Télécharger les données (Excel)'" 
