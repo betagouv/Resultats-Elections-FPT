@@ -10,7 +10,6 @@ import { DsfrButton } from '@gouvminint/vue-dsfr'
 
 const currentRecord = ref()
 const tableData = ref([])
-const tableDataFiltered = ref([])
 const firstColumnMapped = ref()
 const otherColumnsMapped = ref()
 const filtersColumnsMapped = ref()
@@ -69,9 +68,6 @@ const onSearch = () => {
   currentPage.value = 0
   trimSearch.value = search.value.trim()
   isSearching.value = true
-  tableDataFiltered.value = tableData.value.filter(record => {
-    return valuesUtils.isInString(record[firstColumnMapped.value], trimSearch.value)
-  })
 }
 
 const onSearchUpdate = () => {
@@ -82,13 +78,13 @@ const deleteSearch = () => {
   isSearching.value = false
   trimSearch.value = ''
   search.value = ''
-  tableDataFiltered.value = tableData.value
 }
 
 /* FILTERS */
 const formFilters = reactive({
   inputs: {}
 })
+const hasFiltersActive = ref(false)
 
 const filtersColumnsInfos = computed(() => {
   if(!filtersColumnsMapped.value) return []
@@ -111,10 +107,12 @@ const resetFilters = () => {
   for(const key of filtersKeys) {
     formFilters.inputs[key] = ''
   }
+  hasFiltersActive.value = false
 }
 
 const applyFilters = () => {
-  console.log('applyFilters')
+  hasFiltersActive.value = true
+  openedFiltersModal.value = false
 }
 
 /* TABLE */
@@ -141,9 +139,31 @@ const tableHeader = computed(() => {
 })
 
 const tableRows = computed(() => {
-  if(tableHeader.value.length === 0) return []
+  let tableDataFiltered = []
+  if(tableHeader.value.length === 0) return tableDataFiltered
+  tableDataFiltered = tableData.value
+  const hasSearch = trimSearch.value !== ''
+  if (hasSearch) {
+    tableDataFiltered = tableDataFiltered.filter(record => {
+      return valuesUtils.isInString(record[firstColumnMapped.value], trimSearch.value)
+    })
+  }
+  if (hasFiltersActive.value) {
+    const filtersKeys = Object.keys(formFilters.inputs)
+    for(const key of filtersKeys) {
+      if(formFilters.inputs[key] === '') continue
+      tableDataFiltered = tableDataFiltered.filter(record => {
+        const mustBeTrue = formFilters.inputs[key] === '1'
+        if (mustBeTrue) {
+          return record[key] === true
+        } else {
+          return record[key] === false
+        }
+      })
+    }    
+  }
   const rows = []
-  tableDataFiltered.value.forEach(record => {
+  tableDataFiltered.forEach(record => {
     const row = []
     allColumnsMapped.value.forEach(column => {
       const infos = gristUtils.getColumnInfos(column, tableColumnsInfos.value)
@@ -189,7 +209,6 @@ const onRecord = (record) => {
 const onRecords = (params) => {
   const { table, mapping } = params
   tableData.value = table
-  tableDataFiltered.value = table
   firstColumnMapped.value = mapping['Première_Colonne']
   otherColumnsMapped.value = mapping['Autres_Colonnes']
   filtersColumnsMapped.value = mapping['Filtres']
