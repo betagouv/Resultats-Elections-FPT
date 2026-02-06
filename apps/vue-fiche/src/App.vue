@@ -203,7 +203,7 @@ const getExcelType = (type) => {
           <li v-for="data in dataMapped" :key="data" class="fr-pb-0 fr-mb-1w">
             <div v-if="currentRecord[data] && typeof currentRecord[data] === 'object' && currentRecord[data].length > 0">
               <p class="fr-mb-0">{{ getPrettyLabel(data) }} :</p>
-              <ul v-if="currentRecord[data].length > 0" class="fr-pl-0 fr-mb-3w app-list--unstyled">
+              <ul v-if="currentRecord[data].length > 0" class="fr-mb-3w">
                 <li v-for="item in currentRecord[data]" :key="item">{{ getPrettyValue(item) }}</li>
               </ul>
             </div>
