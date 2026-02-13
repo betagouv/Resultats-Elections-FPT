@@ -19,7 +19,10 @@ grist.ready({
   allowSelectBy: true,
   columns: [
     'ColumnSearch',
-    'ColumnBadge',
+    {
+      name: 'ColumnBadge',
+      optional: true,
+    },
     {
       name: 'ColumnDescription',
       optional: true,
