@@ -113,14 +113,6 @@ const filtersSelected = computed(() => {
   return activedFilters
 })
 
-const resetFilters = () => {
-  const filtersKeys = Object.keys(formFilters.inputs)
-  for(const key of filtersKeys) {
-    formFilters.inputs[key] = ''
-  }
-  hasFiltersActive.value = false
-}
-
 const applyFilters = () => {
   hasFiltersActive.value = true
   openedFiltersModal.value = false
@@ -313,7 +305,6 @@ const backToTop = () => {
           </div>
         </form>
         <div class="fr-grid-row fr-grid-row--center">
-          <DsfrButton label="Réinitiliser les filtres" secondary @click="resetFilters" class="fr-mr-2w" />
           <DsfrButton label="Appliquer les filtres" primary @click="applyFilters" />
         </div>
       </div>
