@@ -296,7 +296,7 @@ const backToTop = () => {
       </DsfrDataTable>
       <p class="fr-p-3w" v-else-if="!displayTable && !search">Chargement en cours...</p>
     </div>
-    <DsfrModal v-model:opened="openedFiltersModal" @close="openedFiltersModal = false" size="large">
+    <DsfrModal v-model:opened="openedFiltersModal" @close="openedFiltersModal = false">
       <div>
         <p class="fr-h6">Utilisez les filtres ci-dessous pour affiner la liste des collectivités affichées dans le tableau</p>
         <form>
