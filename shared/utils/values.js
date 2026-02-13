@@ -1,8 +1,10 @@
 const removeSpecialChars = (string) => {
   return string
+    .trim()
     .toLowerCase()
     .replaceAll("-", " ")
     .replaceAll("'", " ")
+    .replaceAll("  ", " ") // Remove double spaces
     .normalize("NFD") // Convert string to unicode normalize : needed for accent replacement
     .replace(/[\u0300-\u036f]/g, "") // Remove accents : all chars between unicode U+0300 to U+036F
 }
