@@ -234,11 +234,12 @@ const backToTop = () => {
   <GristContainer @update:record="onRecord" @update:records="onRecords" :columns="gristColumns">
     <div class="vue-tableau">
       <div class="fr-pt-3w fr-px-3w">
-        <div class="fr-grid-row fr-grid-row--right">
+        <div class="fr-grid-row fr-grid-row--center">
           <DsfrButton 
             class="fr-mr-2w"
             secondary
             label="Filtrer"
+            icon="ri-filter-line"
             @click="openedFiltersModal = true"
           />
           <DsfrSearchBar
@@ -246,20 +247,10 @@ const backToTop = () => {
             class="vue-tableau__search-bar"
             button-text="Rechercher" 
             placeholder="Rechercher une collectivité par son nom" 
-            :large="true" 
             @search="onSearch()" 
             @update:modelValue="onSearchUpdate()"
           />
-        </div>
-        <div class="fr-grid-row fr-grid-row--middle fr-my-2w">
-          <div class="fr-col-12 fr-col-md-6">
-            <DsfrTag v-if="isSearching" small :label="`Recherche : ${trimSearch}`" class="fr-ml-0 fr-mr-1w" />
-            <DsfrTag v-for="filter in filtersSelected" small :key="filter" :label="filter" class="fr-mr-1w" />
-          </div>
-          <div class="fr-col-12 fr-col-md-6 fr-grid-row fr-grid-row--right fr-grid-row--middle">
-            <p class="fr-mb-0 fr-mr-2w">
-              {{ tableRows.length }} {{ tableRows.length > 1 ? 'collectivités' : 'collectivité' }}
-            </p>
+          <div class="fr-grid-row fr-grid-row--right fr-grid-row--middle fr-ml-2w">
             <DsfrButton 
               v-if="displayTable"
               :label="buttonLabel" 
@@ -270,6 +261,13 @@ const backToTop = () => {
               @click="downloadExcel" />
           </div>
         </div>
+      </div>
+      <div class="fr-pt-3w fr-px-3w fr-grid-row fr-grid-row--left">
+        <p class="fr-mb-0 fr-mr-2w">
+          {{ tableRows.length }} {{ tableRows.length > 1 ? 'collectivités' : 'collectivité' }}
+        </p>
+        <DsfrTag v-if="isSearching" small :label="`Recherche : ${trimSearch}`" class="fr-ml-0 fr-mr-1w" />
+        <DsfrTag v-for="filter in filtersSelected" small :key="filter" :label="filter" class="fr-mr-1w" />
       </div>
       <DsfrDataTable 
         v-if="displayTable"
