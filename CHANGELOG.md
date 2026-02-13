@@ -1,5 +1,6 @@
 # Changelog
 
+- feat(Vue tableau): ajoute les filtres [#30](https://github.com/betagouv/Resultats-Elections-FPT/pull/30)
 - fix(Recherche): rend insensible aux accents et quand elle est vide raffiche automatiquement la liste [#29](https://github.com/betagouv/Resultats-Elections-FPT/pull/29)
 - fix: supprime l'icone [#28](https://github.com/betagouv/Resultats-Elections-FPT/pull/28)
 - fix: diverses améliorations UX et UI [#26](https://github.com/betagouv/Resultats-Elections-FPT/pull/26)
