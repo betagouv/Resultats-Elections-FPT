@@ -42,7 +42,7 @@ const getChoiceOptions = (widgetOptions) => {
   const widgetOptionsClean = JSON.parse(widgetOptions)
   const choices = []
   choices.push({
-    text: 'Non concerné',
+    text: '--',
     value: '',
   })
   widgetOptionsClean.choices.forEach(choice => {
