@@ -108,7 +108,11 @@ const filtersSelected = computed(() => {
   for(const key of filtersKeys) {
     if (formFilters.inputs[key] === '') continue
     const filterName = filtersColumnsInfos.value.find(filter => filter.id === key).label
-    activedFilters.push(`${filterName} : ${formFilters.inputs[key] === '1' ? 'Oui' : 'Non'}`)
+    activedFilters.push({
+      id: key,
+      name: filterName,
+      value: formFilters.inputs[key] === '1' ? 'Oui' : 'Non',
+    })
   }
   return activedFilters
 })
@@ -116,6 +120,11 @@ const filtersSelected = computed(() => {
 const applyFilters = () => {
   hasFiltersActive.value = true
   openedFiltersModal.value = false
+}
+
+const deleteFilter = (filter) => {
+  if (filter === 'search') deleteSearch()
+  else formFilters.inputs[filter] = ''
 }
 
 /* TABLE */
@@ -258,8 +267,8 @@ const backToTop = () => {
         <p class="fr-mb-0 fr-mr-2w">
           {{ tableRows.length }} {{ tableRows.length > 1 ? 'collectivités' : 'collectivité' }}
         </p>
-        <DsfrTag v-if="isSearching" small :label="`Recherche : ${trimSearch}`" class="fr-ml-0 fr-mr-1w" />
-        <DsfrTag v-for="filter in filtersSelected" small :key="filter" :label="filter" class="fr-mr-1w" />
+        <DsfrTag v-if="isSearching" :label="`Recherche : ${trimSearch}`" class="vue-tableau__filter-tag fr-ml-0 fr-mr-1w" icon="ri-close-circle-fill" selectable @click="deleteFilter('search')" />
+        <DsfrTag v-for="filter in filtersSelected" class="vue-tableau__filter-tag fr-mr-1w" :key="filter.id" :label="`${filter.name} : ${filter.value}`" icon="ri-close-circle-fill" selectable @click="deleteFilter(filter.id)" />
       </div>
       <DsfrDataTable 
         v-if="displayTable"
@@ -340,6 +349,16 @@ const backToTop = () => {
   position: sticky !important;
   left: 0px;
   z-index: 3;
+}
+
+.vue-tableau__filter-tag {
+  display: flex;
+  flex-direction: row-reverse;
+}
+
+.vue-tableau__filter-tag svg {
+  margin-left: 0.5rem;
+  margin-right: 0;
 }
 
 /* ICON */
