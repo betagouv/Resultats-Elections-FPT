@@ -134,6 +134,14 @@ submitElement.addEventListener('click', () => {
   selectRow(currentRecord.id)
 })
 
+inputElement.addEventListener('input', () => {
+  const value = inputElement.value.trim()
+  if (value.length === 0) {
+    displayList()
+    selectRow(currentRecord.id)
+  }
+})
+
 /* CONFIGURATION */
 const setupConfiguration = () => {
   configuration = new Configuration({
