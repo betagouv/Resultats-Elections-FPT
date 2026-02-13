@@ -8,6 +8,7 @@ import GristContainer from '@shared/components/GristContainer.vue'
 const currentRecord = ref({})
 const fieldsMapped = ref([])
 const titleMapped = ref()
+const hiddenFormMapped = ref()
 const formModels = ref({})
 const isLoading = ref(false)
 const displayView = ref('form')
@@ -42,7 +43,7 @@ const getChoiceOptions = (widgetOptions) => {
   const widgetOptionsClean = JSON.parse(widgetOptions)
   const choices = []
   choices.push({
-    text: 'Non concerné',
+    text: '--',
     value: '',
   })
   widgetOptionsClean.choices.forEach(choice => {
@@ -116,6 +117,11 @@ const gristColumns = [
     name: 'fields',
     description: 'Champs à modifier',
     allowMultiple: true,
+  },
+  {
+    name: 'hiddenForm',
+    description: 'Formulaire non modifiable si',
+    optional: true,
   }
 ]
 
@@ -128,6 +134,7 @@ const onRecords = (params) => {
   const { mapping } = params
   titleMapped.value = mapping['title']
   fieldsMapped.value = mapping['fields']
+  hiddenFormMapped.value = mapping['hiddenForm']
   fillForm()
 }
 </script>
@@ -135,35 +142,38 @@ const onRecords = (params) => {
 <template>
   <GristContainer @update:record="onRecord" @update:records="onRecords" :columns="gristColumns">
     <main class="fr-container fr-p-3w">
-      <DsfrAlert v-if="displayView === 'success'" type="success" title="Modifications enregistrées" :description="`Les modifications ${currentRecord[titleMapped]} ont été enregistrées avec succès.`" />
-      <DsfrAlert v-if="displayView === 'error'" type="error" title="Une erreur technique est survenue" description="Merci de recommencer votre saisie, nous nous excusons pour la gène occasionnée." />
-      <div v-if="displayView !== 'form'" class="fr-grid-row fr-grid-row--center fr-my-2w">
-        <DsfrButton @click="displayView = 'form'" secondary>Revenir au formulaire</DsfrButton>
-      </div>
-      <form v-if="displayView === 'form'" class="fr-mb-2w">
-        <h1 class="fr-h6">Modifier {{ currentRecord[titleMapped] }}</h1>
-        <fieldset class="fr-fieldset">
-          <div class="fr-fieldset__element">
-            <div v-for="input in formInputs" :key="input.name" class="fr-mb-2w">
-              <DsfrInput
-                v-if="input.type === 'text'"
-                v-model="formModels[input.name]"
-                :label="input.infos.label"
-                :label-visible="true"
-                :hint="input.infos.description"
-              />
-              <DsfrSelect
-                v-else-if="input.type === 'select'"
-                v-model="formModels[input.name]"
-                :label="input.infos.label"
-                :hint="input.infos.description"
-                :options="formSelects[input.name]"
-              />
+      <DsfrAlert v-if="currentRecord[hiddenFormMapped]" type="info" title="Formulaire non modifiable" :description="currentRecord[hiddenFormMapped]" />
+      <template v-else>
+        <DsfrAlert v-if="displayView === 'success'" type="success" title="Modifications enregistrées" :description="`Les modifications ${currentRecord[titleMapped]} ont été enregistrées avec succès.`" />
+        <DsfrAlert v-if="displayView === 'error'" type="error" title="Une erreur technique est survenue" description="Merci de recommencer votre saisie, nous nous excusons pour la gène occasionnée." />
+        <div v-if="displayView !== 'form'" class="fr-grid-row fr-grid-row--center fr-my-2w">
+          <DsfrButton @click="displayView = 'form'" secondary>Revenir au formulaire</DsfrButton>
+        </div>
+        <form v-if="displayView === 'form'" class="fr-mb-2w">
+          <h1 class="fr-h6">Modifier {{ currentRecord[titleMapped] }}</h1>
+          <fieldset class="fr-fieldset">
+            <div class="fr-fieldset__element">
+              <div v-for="input in formInputs" :key="input.name" class="fr-mb-2w">
+                <DsfrInput
+                  v-if="input.type === 'text'"
+                  v-model="formModels[input.name]"
+                  :label="input.infos.label"
+                  :label-visible="true"
+                  :hint="input.infos.description"
+                />
+                <DsfrSelect
+                  v-else-if="input.type === 'select'"
+                  v-model="formModels[input.name]"
+                  :label="input.infos.label"
+                  :hint="input.infos.description"
+                  :options="formSelects[input.name]"
+                />
+              </div>
             </div>
-          </div>
-        </fieldset>
-        <DsfrButton @click="saveRecord" :disabled="isLoading">Enregistrer les modifications</DsfrButton>
-      </form>
+          </fieldset>
+          <DsfrButton @click="saveRecord" :disabled="isLoading">Enregistrer les modifications</DsfrButton>
+        </form>
+      </template>
     </main>
   </GristContainer>
 </template>
