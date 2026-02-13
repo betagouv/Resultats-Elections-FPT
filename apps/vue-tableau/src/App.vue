@@ -1,18 +1,20 @@
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, reactive, computed } from 'vue'
 import { computedAsync } from '@vueuse/core'
 import gristUtils from '@shared/utils/grist.js'
 import valuesUtils from '@shared/utils/values.js'
 import GristContainer from '@shared/components/GristContainer.vue'
 import writeXlsxFile from 'write-excel-file'
 import IconCheck from '@shared/components/IconCheck.vue'
+import { DsfrButton } from '@gouvminint/vue-dsfr'
 
 const currentRecord = ref()
 const tableData = ref([])
-const tableDataFiltered = ref([])
 const firstColumnMapped = ref()
 const otherColumnsMapped = ref()
+const filtersColumnsMapped = ref()
 const currentPage = ref(0)
+const openedFiltersModal = ref(false)
 
 /* EXPORT */
 const isGeneratingFile = ref(false)
@@ -66,9 +68,6 @@ const onSearch = () => {
   currentPage.value = 0
   trimSearch.value = search.value.trim()
   isSearching.value = true
-  tableDataFiltered.value = tableData.value.filter(record => {
-    return valuesUtils.isInString(record[firstColumnMapped.value], trimSearch.value)
-  })
 }
 
 const onSearchUpdate = () => {
@@ -79,7 +78,52 @@ const deleteSearch = () => {
   isSearching.value = false
   trimSearch.value = ''
   search.value = ''
-  tableDataFiltered.value = tableData.value
+}
+
+/* FILTERS */
+const formFilters = reactive({
+  inputs: {}
+})
+const hasFiltersActive = ref(false)
+
+const filtersColumnsInfos = computed(() => {
+  if(!filtersColumnsMapped.value) return []
+  const filters = []
+  for(const column of filtersColumnsMapped.value) {
+    const columnInfos = gristUtils.getColumnInfos(column, tableColumnsInfos.value)
+    formFilters.inputs[columnInfos.colId] = ''
+    filters.push({
+      label: columnInfos.label,
+      type: columnInfos.type,
+      id: columnInfos.colId,
+      description: columnInfos.description,
+    })
+  }
+  return filters
+})
+
+const filtersSelected = computed(() => {
+  let activedFilters = []
+  const filtersKeys = Object.keys(formFilters.inputs)
+  for(const key of filtersKeys) {
+    if (formFilters.inputs[key] === '') continue
+    const filterName = filtersColumnsInfos.value.find(filter => filter.id === key).label
+    activedFilters.push(`${filterName} : ${formFilters.inputs[key] === '1' ? 'Oui' : 'Non'}`)
+  }
+  return activedFilters
+})
+
+const resetFilters = () => {
+  const filtersKeys = Object.keys(formFilters.inputs)
+  for(const key of filtersKeys) {
+    formFilters.inputs[key] = ''
+  }
+  hasFiltersActive.value = false
+}
+
+const applyFilters = () => {
+  hasFiltersActive.value = true
+  openedFiltersModal.value = false
 }
 
 /* TABLE */
@@ -106,9 +150,31 @@ const tableHeader = computed(() => {
 })
 
 const tableRows = computed(() => {
-  if(tableHeader.value.length === 0) return []
+  let tableDataFiltered = []
+  if(tableHeader.value.length === 0) return tableDataFiltered
+  tableDataFiltered = tableData.value
+  const hasSearch = trimSearch.value !== ''
+  if (hasSearch) {
+    tableDataFiltered = tableDataFiltered.filter(record => {
+      return valuesUtils.isInString(record[firstColumnMapped.value], trimSearch.value)
+    })
+  }
+  if (hasFiltersActive.value) {
+    const filtersKeys = Object.keys(formFilters.inputs)
+    for(const key of filtersKeys) {
+      if(formFilters.inputs[key] === '') continue
+      tableDataFiltered = tableDataFiltered.filter(record => {
+        const mustBeTrue = formFilters.inputs[key] === '1'
+        if (mustBeTrue) {
+          return record[key] === true
+        } else {
+          return record[key] === false
+        }
+      })
+    }    
+  }
   const rows = []
-  tableDataFiltered.value.forEach(record => {
+  tableDataFiltered.forEach(record => {
     const row = []
     allColumnsMapped.value.forEach(column => {
       const infos = gristUtils.getColumnInfos(column, tableColumnsInfos.value)
@@ -140,6 +206,11 @@ const gristColumns = [
     description: '',
     allowMultiple: true,
   },
+  {
+    name: 'Filtres',
+    description: 'Colonnes à ajouter dans les filtres',
+    allowMultiple: true,
+  },
 ]
 
 const onRecord = (record) => {
@@ -149,9 +220,9 @@ const onRecord = (record) => {
 const onRecords = (params) => {
   const { table, mapping } = params
   tableData.value = table
-  tableDataFiltered.value = table
   firstColumnMapped.value = mapping['Première_Colonne']
   otherColumnsMapped.value = mapping['Autres_Colonnes']
+  filtersColumnsMapped.value = mapping['Filtres']
 }
 
 /* VUE */
@@ -163,32 +234,40 @@ const backToTop = () => {
   <GristContainer @update:record="onRecord" @update:records="onRecords" :columns="gristColumns">
     <div class="vue-tableau">
       <div class="fr-pt-3w fr-px-3w">
-        <DsfrSearchBar
-          v-model="search" 
-          button-text="Rechercher" 
-          placeholder="Rechercher une collectivité par son nom" 
-          :large="true" 
-          @search="onSearch()" 
-          @update:modelValue="onSearchUpdate()"
-        />
-        <div class="fr-grid-row fr-grid-row--middle fr-my-2w">
-          <div class="fr-col-12 fr-col-md-6">
-            <p class="fr-mb-0">
-              {{ tableRows.length }} {{ tableRows.length > 1 ? 'collectivités' : 'collectivité' }}
-              <span v-if="isSearching">pour la recherche : "{{ trimSearch }}"</span>
-            </p>
-          </div>
-          <div class="fr-col-12 fr-col-md-6 fr-grid-row fr-grid-row--right">
+        <div class="fr-grid-row fr-grid-row--center">
+          <DsfrButton 
+            class="fr-mr-2w"
+            secondary
+            label="Filtrer"
+            icon="ri-filter-line"
+            @click="openedFiltersModal = true"
+          />
+          <DsfrSearchBar
+            v-model="search" 
+            class="vue-tableau__search-bar"
+            button-text="Rechercher" 
+            placeholder="Rechercher une collectivité par son nom" 
+            @search="onSearch()" 
+            @update:modelValue="onSearchUpdate()"
+          />
+          <div class="fr-grid-row fr-grid-row--right fr-grid-row--middle fr-ml-2w">
             <DsfrButton 
               v-if="displayTable"
               :label="buttonLabel" 
               size="medium"
-              secondary
+              tertiary
               class="fr-mr-0"
               :disabled="isGeneratingFile"
               @click="downloadExcel" />
           </div>
         </div>
+      </div>
+      <div class="fr-pt-3w fr-px-3w fr-grid-row fr-grid-row--left">
+        <p class="fr-mb-0 fr-mr-2w">
+          {{ tableRows.length }} {{ tableRows.length > 1 ? 'collectivités' : 'collectivité' }}
+        </p>
+        <DsfrTag v-if="isSearching" small :label="`Recherche : ${trimSearch}`" class="fr-ml-0 fr-mr-1w" />
+        <DsfrTag v-for="filter in filtersSelected" small :key="filter" :label="filter" class="fr-mr-1w" />
       </div>
       <DsfrDataTable 
         v-if="displayTable"
@@ -217,6 +296,28 @@ const backToTop = () => {
       </DsfrDataTable>
       <p class="fr-p-3w" v-else-if="!displayTable && !search">Chargement en cours...</p>
     </div>
+    <DsfrModal v-model:opened="openedFiltersModal" @close="openedFiltersModal = false" size="large">
+      <div>
+        <p class="fr-h6">Utilisez les filtres ci-dessous pour affiner la liste des collectivités affichées dans le tableau</p>
+        <form>
+          <div v-for="filter in filtersColumnsInfos" :key="filter">
+            <div v-if="filter.type === 'Bool'">
+              <DsfrRadioButtonSet 
+                v-model="formFilters.inputs[filter.id]"
+                inline
+                :legend="filter.label"
+                :hint="filter.description"
+                :options="[{value: '1', label: 'Oui', name: filter.id}, {value: '0', label: 'Non', name:filter.id, name: filter.id}]"
+              />
+            </div>
+          </div>
+        </form>
+        <div class="fr-grid-row fr-grid-row--center">
+          <DsfrButton label="Réinitiliser les filtres" secondary @click="resetFilters" class="fr-mr-2w" />
+          <DsfrButton label="Appliquer les filtres" primary @click="applyFilters" />
+        </div>
+      </div>
+    </DsfrModal>
   </GristContainer>
 </template>
 
@@ -226,6 +327,10 @@ const backToTop = () => {
   background-color: var(--background-alt-grey) !important; 
   max-width: 20rem !important;
   white-space: normal !important;
+}
+
+.vue-tableau__search-bar {
+  flex-grow: 1;
 }
 
 
