@@ -181,6 +181,7 @@ const tableRows = computed(() => {
       const infos = gristUtils.getColumnInfos(column, tableColumnsInfos.value)
       const rowValue = {
         type: infos.type,
+        isDSFRBadge: infos.colId.indexOf('DSFR_Badge') > -1,
         hasMultipleValues: record[column] && typeof record[column] === 'object',
         value: record[column],
       }
@@ -283,7 +284,8 @@ const backToTop = () => {
         @update:current-page="updateCurrentPage"
       >
         <template #cell="{ cell }" class="fr-col--sm">
-          <p v-if="cell.type === 'Bool'" class="app-flex-center">
+          <DsfrBadge v-if="cell.isDSFRBadge" :label="cell.value.text" :type="cell.value.type" />
+          <p v-else-if="cell.type === 'Bool'" class="app-flex-center">
             <IconCheck v-if="cell.value" class="vue-tableau__icon-check fr-text-title--blue-france" />
           </p>
           <DsfrTag v-else-if="cell.type.indexOf('Ref:') > -1" :label="cell.value" />
