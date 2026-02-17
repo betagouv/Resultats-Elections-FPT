@@ -108,22 +108,23 @@ const filtersSelected = computed(() => {
   for(const key of filtersKeys) {
     if (formFilters.inputs[key] === '') continue
     const filterName = filtersColumnsInfos.value.find(filter => filter.id === key).label
-    activedFilters.push(`${filterName} : ${formFilters.inputs[key] === '1' ? 'Oui' : 'Non'}`)
+    activedFilters.push({
+      id: key,
+      name: filterName,
+      value: formFilters.inputs[key] === '1' ? 'Oui' : 'Non',
+    })
   }
   return activedFilters
 })
 
-const resetFilters = () => {
-  const filtersKeys = Object.keys(formFilters.inputs)
-  for(const key of filtersKeys) {
-    formFilters.inputs[key] = ''
-  }
-  hasFiltersActive.value = false
-}
-
 const applyFilters = () => {
   hasFiltersActive.value = true
   openedFiltersModal.value = false
+}
+
+const deleteFilter = (filter) => {
+  if (filter === 'search') deleteSearch()
+  else formFilters.inputs[filter] = ''
 }
 
 /* TABLE */
@@ -262,12 +263,12 @@ const backToTop = () => {
           </div>
         </div>
       </div>
-      <div class="fr-pt-3w fr-px-3w fr-grid-row fr-grid-row--left">
+      <div class="fr-pt-3w fr-px-3w fr-grid-row fr-grid-row--left fr-grid-row--middle">
         <p class="fr-mb-0 fr-mr-2w">
           {{ tableRows.length }} {{ tableRows.length > 1 ? 'collectivités' : 'collectivité' }}
         </p>
-        <DsfrTag v-if="isSearching" small :label="`Recherche : ${trimSearch}`" class="fr-ml-0 fr-mr-1w" />
-        <DsfrTag v-for="filter in filtersSelected" small :key="filter" :label="filter" class="fr-mr-1w" />
+        <DsfrTag v-if="isSearching" :label="`Recherche : ${trimSearch}`" class="vue-tableau__filter-tag fr-ml-0 fr-mr-1w" icon="ri-close-circle-fill" selectable @click="deleteFilter('search')" />
+        <DsfrTag v-for="filter in filtersSelected" class="vue-tableau__filter-tag fr-mr-1w" :key="filter.id" :label="`${filter.name} : ${filter.value}`" icon="ri-close-circle-fill" selectable @click="deleteFilter(filter.id)" />
       </div>
       <DsfrDataTable 
         v-if="displayTable"
@@ -313,7 +314,6 @@ const backToTop = () => {
           </div>
         </form>
         <div class="fr-grid-row fr-grid-row--center">
-          <DsfrButton label="Réinitiliser les filtres" secondary @click="resetFilters" class="fr-mr-2w" />
           <DsfrButton label="Appliquer les filtres" primary @click="applyFilters" />
         </div>
       </div>
@@ -349,6 +349,16 @@ const backToTop = () => {
   position: sticky !important;
   left: 0px;
   z-index: 3;
+}
+
+.vue-tableau__filter-tag {
+  display: flex;
+  flex-direction: row-reverse;
+}
+
+.vue-tableau__filter-tag svg {
+  margin-left: 0.5rem;
+  margin-right: 0;
 }
 
 /* ICON */
