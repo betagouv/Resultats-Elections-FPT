@@ -1,5 +1,6 @@
 # Changelog
 
+- fix: Recettage filtre vue tableau et espaces dans la recherche [#35](https://github.com/betagouv/Resultats-Elections-FPT/pull/35)
 - feat(Vue formulaire): change l'option 'vide' du select et ajoute l'option pour cacher le formulaire [#34](https://github.com/betagouv/Resultats-Elections-FPT/pull/34)
 - fix(Recherche scrutin): rend la colonne badge optionnelle [#33](https://github.com/betagouv/Resultats-Elections-FPT/pull/33)
 - fix(Vue tableau): réduit la taille de la modale [#32](https://github.com/betagouv/Resultats-Elections-FPT/pull/32)
