@@ -11,21 +11,20 @@ const isLoading = ref(false)
 /* GRIST */
 const gristColumns = [
   {
-    name: 'button',
-    description: 'Bouton',
+    name: 'title',
+    description: 'Titre',
   },
   {
     name: 'message',
     description: 'Message',
   },
   {
-    name: 'title',
-    description: 'Titre',
+    name: 'button',
+    description: 'Bouton',
   },
 ]
 
 const onRecord = (record) => {
-  console.log('onRecord', record)
   currentRecord.value = record
 }
 
