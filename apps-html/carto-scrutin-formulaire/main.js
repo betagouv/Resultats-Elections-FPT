@@ -130,7 +130,10 @@ const resetSearch = () => {
 }
 
 /* MESSAGE */
-backToForm.addEventListener('click', reset)
+backToForm.addEventListener('click', () => {
+  updateRefsList() // The checkboxes are not removed when user uncheck them, when need to update the list before going back to the form
+  reset()
+})
 
 const displayMessage = (type) => {
   if (type === 'success') successElement.classList.remove('fr-hidden')
