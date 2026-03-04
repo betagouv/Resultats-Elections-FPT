@@ -10,6 +10,7 @@ const portMap = {
   'vue-fiche': 5174,
   'vue-tableau': 5175,
   'vue-formulaire': 5176,
+  'vue-bouton': 5177,
 }
 
 // Détection du mode pour choisir l'app
