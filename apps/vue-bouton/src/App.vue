@@ -4,6 +4,7 @@ import GristContainer from '@shared/components/GristContainer.vue'
 
 const buttonMapped = ref()
 const messageMapped = ref()
+const titleMapped = ref()
 const currentRecord = ref({})
 const isLoading = ref(false)
 
@@ -17,6 +18,10 @@ const gristColumns = [
     name: 'message',
     description: 'Message',
   },
+  {
+    name: 'title',
+    description: 'Titre',
+  },
 ]
 
 const onRecord = (record) => {
@@ -28,6 +33,7 @@ const onRecords = (records) => {
   const { mapping } = records
   buttonMapped.value = mapping['button']
   messageMapped.value = mapping['message']
+  titleMapped.value = mapping['title']
 }
 
 /* BUTTON */
@@ -48,7 +54,7 @@ const triggerAction = async () => {
 <template>
   <GristContainer :columns="gristColumns" @update:record="onRecord" @update:records="onRecords">
     <main class="fr-p-3w">
-      <h2>Valider la cartographie</h2>
+      <h1>{{ currentRecord[titleMapped] }}</h1>
       <p v-if="messageMapped">{{ currentRecord[messageMapped] }}</p>
       <DsfrButton 
         v-if="buttonMapped"
