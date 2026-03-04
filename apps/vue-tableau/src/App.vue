@@ -58,7 +58,6 @@ const formatCellValue = (cell) => {
   else return cell.value.toString()
 }
 
-
 /* SEARCH */
 const search = ref()
 const isSearching = ref(false)
@@ -128,8 +127,8 @@ const deleteFilter = (filter) => {
 }
 
 /* TABLE */
-const displayTable = computed(() => {
-  return tableRows.value.length > 0 && tableHeader.value.length > 0
+const tableIsReady = computed(() => {
+  return tableRows.value.length >= 0 && tableHeader.value.length > 0
 })
 const tableColumnsInfos = computedAsync(async () => {
   return await gristUtils.getTableColumnsInfos()
@@ -254,7 +253,7 @@ const backToTop = () => {
           />
           <div class="fr-grid-row fr-grid-row--right fr-grid-row--middle fr-ml-2w">
             <DsfrButton 
-              v-if="displayTable"
+              v-if="tableIsReady"
               :label="buttonLabel" 
               size="medium"
               tertiary
@@ -272,7 +271,7 @@ const backToTop = () => {
         <DsfrTag v-for="filter in filtersSelected" class="vue-tableau__filter-tag fr-mr-1w" :key="filter.id" :label="`${filter.name} : ${filter.value}`" icon="ri-close-circle-fill" selectable @click="deleteFilter(filter.id)" />
       </div>
       <DsfrDataTable 
-        v-if="displayTable"
+        v-if="tableIsReady"
         class="vue-tableau__table fr-table--bordered"
         :headers-row="tableHeader"
         :rows="tableRows"
@@ -297,7 +296,7 @@ const backToTop = () => {
           <p class="fr-mb-0" v-else>{{ cell.value }}</p>
         </template>
       </DsfrDataTable>
-      <p class="fr-p-3w" v-else-if="!displayTable && !search">Chargement en cours...</p>
+      <p class="fr-p-3w" v-else-if="!tableIsReady">Chargement en cours...</p>
     </div>
     <DsfrModal v-model:opened="openedFiltersModal" @close="openedFiltersModal = false">
       <div>
