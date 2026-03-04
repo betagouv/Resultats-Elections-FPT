@@ -8,4 +8,4 @@ import App from './App.vue'
 
 const app = createApp(App)
 app.use(VueDsfr)                              // Enregistrement de la bibliothèque en tant que plugin //
-app.mount('#app-vue-button')
+app.mount('#app-vue-bouton')

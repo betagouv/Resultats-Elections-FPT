@@ -1,6 +1,6 @@
 <script setup></script>
 <template>
   <main>
-    <p>Vue Bouton d'action</p>
+    <p>Vue Bouton</p>
   </main>
 </template>
