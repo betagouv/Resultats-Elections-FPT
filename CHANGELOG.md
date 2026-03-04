@@ -1,5 +1,6 @@
 # Changelog
 
+- feat(Vue bouton): création de la vue pour afficher un bouton [#40](https://github.com/betagouv/Resultats-Elections-FPT/pull/40)
 - fix: diverses améliorations [#39](https://github.com/betagouv/Resultats-Elections-FPT/pull/39)
 - mep: création d'une version figée pour les custom widget à la version v0.12 [#38](https://github.com/betagouv/Resultats-Elections-FPT/pull/38)
 - feat(Vue tableau): ajoute un type d'affiche de cellule "badge" [#37](https://github.com/betagouv/Resultats-Elections-FPT/pull/37)
