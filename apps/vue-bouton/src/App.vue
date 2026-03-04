@@ -1,6 +1,62 @@
-<script setup></script>
+<script setup>
+import { ref, computed } from 'vue'
+import GristContainer from '@shared/components/GristContainer.vue'
+
+const buttonMapped = ref()
+const messageMapped = ref()
+const currentRecord = ref({})
+const isLoading = ref(false)
+
+/* GRIST */
+const gristColumns = [
+  {
+    name: 'button',
+    description: 'Bouton',
+  },
+  {
+    name: 'message',
+    description: 'Message',
+  },
+]
+
+const onRecord = (record) => {
+  console.log('onRecord', record)
+  currentRecord.value = record
+}
+
+const onRecords = (records) => {
+  const { mapping } = records
+  buttonMapped.value = mapping['button']
+  messageMapped.value = mapping['message']
+}
+
+/* BUTTON */
+const actionType = computed(() => currentRecord.value[buttonMapped.value].type || 'primary')
+const triggerAction = async () => {
+  isLoading.value = true
+  try {
+    const recordAction = currentRecord.value[buttonMapped.value].action
+    const actionArray = JSON.parse(JSON.stringify(recordAction))
+    await grist.docApi.applyUserActions([actionArray])
+  } catch (error) {
+    alert('Une erreur est survenue : ' + error.message)
+  } finally {
+    isLoading.value = false
+  }
+}
+</script>
 <template>
-  <main>
-    <p>Vue Bouton</p>
-  </main>
+  <GristContainer :columns="gristColumns" @update:record="onRecord" @update:records="onRecords">
+    <main class="fr-p-3w">
+      <h2>Valider la cartographie</h2>
+      <p v-if="messageMapped">{{ currentRecord[messageMapped] }}</p>
+      <DsfrButton 
+        v-if="buttonMapped"
+        :label="currentRecord[buttonMapped].label"
+        :disabled="currentRecord[buttonMapped].isDisabled || isLoading" 
+        :[actionType]="true"
+        @click="triggerAction"
+      />
+    </main>
+  </GristContainer>
 </template>
