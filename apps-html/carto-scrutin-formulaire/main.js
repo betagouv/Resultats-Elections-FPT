@@ -56,9 +56,6 @@ const updateHiddenForm = () => {
     notEditableMessage.textContent = hiddenMessage
     notEditableAlert.classList.remove('fr-hidden')
     formElement.classList.add('fr-hidden')
-  } else {
-    formElement.classList.remove('fr-hidden')
-    notEditableAlert.classList.add('fr-hidden')
   }
 }
 
