@@ -22,11 +22,14 @@ const resultSearch = document.querySelector('#search-result')
 const numberElement = document.querySelector('#number')
 const typeElement = document.querySelector('#type')
 const selectTypeElement = document.querySelector('#select')
+const notEditableMessage = document.querySelector('[data-name="js-form-not-editable-message"]')
+const notEditableAlert = document.querySelector('[data-name="js-form-not-editable-alert"]')
 
 let rowIdSelected = null
 let currentRecord = null
 let columnNameMapped = null
 let columnTypeMapped = null
+let columnHiddenFormMapped = null
 let columnRefIds = []
 let columnRefNames = []
 let isSaving = false
@@ -45,6 +48,18 @@ const updateNumber = () => {
 const updateType = () => {
   if (!columnTypeMapped) return
   selectTypeElement.value = currentRecord[columnTypeMapped]
+}
+
+const updateHiddenForm = () => {
+  const hiddenMessage = currentRecord[columnHiddenFormMapped]
+  if (hiddenMessage) {
+    notEditableMessage.textContent = hiddenMessage
+    notEditableAlert.classList.remove('fr-hidden')
+    formElement.classList.add('fr-hidden')
+  } else {
+    formElement.classList.remove('fr-hidden')
+    notEditableAlert.classList.add('fr-hidden')
+  }
 }
 
 const updateRefsList = () => {
@@ -119,7 +134,6 @@ const resetView = () => {
   successElement.classList.add('fr-hidden')
   errorElement.classList.add('fr-hidden')
   messageElement.classList.add('fr-hidden')
-  formElement.classList.remove('fr-hidden')
 }
 
 const resetSearch = () => {
@@ -130,7 +144,11 @@ const resetSearch = () => {
 }
 
 /* MESSAGE */
-backToForm.addEventListener('click', reset)
+backToForm.addEventListener('click', () => {
+  updateRefsList() // The checkboxes are not removed when user uncheck them, when need to update the list before going back to the form
+  reset()
+  formElement.classList.remove('fr-hidden')
+})
 
 const displayMessage = (type) => {
   if (type === 'success') successElement.classList.remove('fr-hidden')
@@ -260,6 +278,11 @@ grist.ready({
       description: 'Type de scrutin',
       optional: true,
     },
+    {
+      name: 'HiddenForm',
+      description: 'Formulaire non modifiable si',
+      optional: true,
+    }
   ],
 })
 
@@ -268,6 +291,9 @@ grist.onRecords(async (table, mapping) => {
   columnNameMapped = mapping['Name']
   columnRefIds = mapping['RefIds']
   columnRefNames = mapping['RefNames']
+  if (mapping['HiddenForm']) {
+    columnHiddenFormMapped = mapping['HiddenForm']
+  }
   if (mapping['Type']) {
     columnTypeMapped = mapping['Type']
     typeElement.classList.remove('fr-hidden')
@@ -290,7 +316,10 @@ grist.onRecord((record) => {
   namesElement.forEach((name) => {
     name.textContent = record[columnNameMapped]
   })
-  if (!isSaving) reset()
+  if (!isSaving) {
+    reset()
+    updateHiddenForm()
+  }
   isSaving = false
   window.scrollTo(0, 0)
 })
