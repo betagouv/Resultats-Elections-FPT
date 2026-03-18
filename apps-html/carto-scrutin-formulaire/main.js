@@ -313,11 +313,13 @@ grist.onRecord((record) => {
   updateRefsList()
   updateNumber()
   updateType()
-  updateHiddenForm()
   namesElement.forEach((name) => {
     name.textContent = record[columnNameMapped]
   })
-  if (!isSaving) reset()
+  if (!isSaving) {
+    reset()
+    updateHiddenForm()
+  }
   isSaving = false
   window.scrollTo(0, 0)
 })
