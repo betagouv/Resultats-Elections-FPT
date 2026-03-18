@@ -221,13 +221,21 @@ const createRadio = (props) => {
   const label = document.createElement('label')
   label.setAttribute('for', value)
   label.textContent = name
-  if (isOrganisor) {
+  if (isOrganisor && scrutinName !== 'CAP') {
     input.setAttribute('disabled', true)
     const span = document.createElement('span')
     span.textContent = `La collectivité organise déjà un scrutin ${scrutinName}`
     span.classList.add('fr-hint-text')
     label.appendChild(span)
-  } else if (scrutinAlreadyLinked && scrutinAlreadyLinked.length === 1 && scrutinName !== 'CAP') {
+  }
+  else if (isOrganisor && scrutinName === 'CAP') {
+    const span = document.createElement('span')
+    const numberOfScrutins = isOrganisor.length - 1  // HACK first value is "L"
+    span.textContent = numberOfScrutins > 1 ? `La collectivité organise déjà ${numberOfScrutins} scrutins ${scrutinName}` : `La collectivité organise déjà un scrutin ${scrutinName}`
+    span.classList.add('fr-hint-text')
+    label.appendChild(span)
+  }
+  else if (scrutinAlreadyLinked && scrutinAlreadyLinked.length === 1 && scrutinName !== 'CAP') {
     input.setAttribute('disabled', true)
     const span = document.createElement('span')
     span.textContent = `La collectivité est rattachée au scrutin ${scrutinName} de ${scrutinAlreadyLinked}, pour en créer un en tant qu'organisatrice vous devez d'abord la détacher de ce dernier.`
