@@ -1,5 +1,6 @@
 # Changelog
 
+- fix(Modalités de scrutins): corrige les multiples CAP et le bug du formulaire qui ne s'affichait plus après enregistrement [#42](https://github.com/betagouv/Resultats-Elections-FPT/pull/42)
 - fix(Cartographie vue formulaire): le formulaire ne s'affiche pas lorsque que l'on clic sur le bouton "Revenir au formulaire" [#41](https://github.com/betagouv/Resultats-Elections-FPT/pull/41)
 - feat(Vue bouton): création de la vue pour afficher un bouton [#40](https://github.com/betagouv/Resultats-Elections-FPT/pull/40)
 - fix: diverses améliorations [#39](https://github.com/betagouv/Resultats-Elections-FPT/pull/39)
