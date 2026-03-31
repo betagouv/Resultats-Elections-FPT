@@ -5,7 +5,7 @@ const props = defineProps(['label'])
 const type = computed(() => {
   const labelLower = props.label.toLowerCase()
   if (labelLower === 'complet' || labelLower === 'validé') return 'success'
-  if (labelLower === 'incomplet' || labelLower === 'à valider') return 'error'
+  if (labelLower === 'incomplet' || labelLower === 'à valider' || labelLower === 'doublon') return 'error'
   return ''
 })
 </script>
