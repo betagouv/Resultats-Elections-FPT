@@ -89,7 +89,7 @@ const addSelectedCheckboxe = (props) => {
 }
 
 const getCheckbox = (props) => {
-  const { name, disabled, checked, scrutins } = props
+  const { name, disabled, checked, scrutins, displayHint } = props
   const checkboxId = `id-${name}`
   const fieldset = document.createElement('div')
   fieldset.classList.add('fr-fieldset__element')
@@ -110,7 +110,7 @@ const getCheckbox = (props) => {
     span.textContent = disabled
     span.classList.add('fr-hint-text')
     label.appendChild(span)
-  } else if (scrutins && scrutins.length > 1) {
+  } else if (scrutins && scrutins.length > 1 && displayHint) {
     const scrutinsCleaned = scrutins.slice(1) // HACK first value is "L"
     const span = document.createElement('span')
     const scrutinsNames = scrutinsCleaned.join(', ')
@@ -203,6 +203,7 @@ buttonSearch.addEventListener('click', async (event) => {
       disabled: columnTypeMapped !== null ? false : disabledIfRelated,
       checked: false,
       scrutins: refListAll[columnScrutinName][index],
+      displayHint: true
     }
 
     const checkbox = getCheckbox(props)
@@ -210,6 +211,7 @@ buttonSearch.addEventListener('click', async (event) => {
     input.addEventListener('change', () => {
       if (input.checked) {
         props.checked = true
+        props.displayHint = false
         const id = refListAll.id[index]
         refListSelectedIds.push(id)
         addSelectedCheckboxe(props)
