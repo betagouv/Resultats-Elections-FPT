@@ -171,7 +171,7 @@ buttonSearch.addEventListener('click', async (event) => {
   if (searchValue.length < 3) return
   loadingSearch.classList.remove('fr-hidden')
 
-  await getTableData()
+  await getRefListAll()
 
   const foundRefs = refListAll[COLLECTIVITE_SEARCH_NAME].filter(
     (name, index) => {
@@ -237,7 +237,6 @@ buttonSave.addEventListener('click', async () => {
       id: rowIdSelected,
       fields,
     })
-    refListAll = []
     displayMessage('success')
   } catch (e) {
     displayMessage('error')
@@ -246,10 +245,8 @@ buttonSave.addEventListener('click', async () => {
 })
 
 /* TABLE */
-const getTableData = async () => {
-  if (refListAll.length === 0) {
-    refListAll = await gristUtils.getTable('Table_collectivites') // Dynamiser avec une configuration ? 
-  }
+const getRefListAll = async () => {
+  refListAll = await gristUtils.getTable('Table_collectivites')
 }
 
 const setScrutinName = async () => {
@@ -299,7 +296,7 @@ grist.onRecords(async (table, mapping) => {
     typeElement.classList.remove('fr-hidden')
   }
   await setScrutinName()
-  await getTableData()
+  await getRefListAll()
 })
 
 grist.onRecord((record) => {
