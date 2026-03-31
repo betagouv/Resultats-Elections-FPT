@@ -197,11 +197,12 @@ const getCollectiviteInfos = (name) => {
   const index = allCollectivites.Nom_de_collectivite_AFFICHE.indexOf(name)
   const scrutinColumn = `Scrutin_${scrutinName}`
   const scrutinColumnName = `${scrutinColumn}_AFFICHE`
+  const organisorColumnName = `${scrutinColumn}_Organisateur`
   const scrutinAlreadyLinked = allCollectivites[scrutinColumnName][index]
   return {
     value: allCollectivites.id[index],
     name: allCollectivites.Nom_de_collectivite_AFFICHE[index],
-    isOrganisor: allCollectivites[scrutinColumn][index],
+    isOrganisor: allCollectivites[organisorColumnName][index],
     scrutinAlreadyLinked:
       typeof scrutinAlreadyLinked === 'string' && scrutinAlreadyLinked !== ''
         ? [scrutinAlreadyLinked]
