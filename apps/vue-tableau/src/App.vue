@@ -53,7 +53,8 @@ const generateExcelData = () => {
 }
 
 const formatCellValue = (cell) => {
-  if(cell.type === 'Bool') return cell.value ? 'Oui' : 'Non'
+  if (cell.isDSFRBadge) return cell.value.text
+  else if(cell.type === 'Bool') return cell.value ? 'Oui' : 'Non'
   else if(!cell.value) return ''
   else return cell.value.toString()
 }
