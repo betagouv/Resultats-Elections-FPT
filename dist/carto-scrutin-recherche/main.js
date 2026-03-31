@@ -195,22 +195,26 @@ const displaySearchResults = (results) => {
 
 const getCollectiviteInfos = (name) => {
   const index = allCollectivites.Nom_de_collectivite_AFFICHE.indexOf(name)
+  const isCAP = scrutinName === 'CAP'
   const scrutinColumn = `Scrutin_${scrutinName}`
   const scrutinColumnName = `${scrutinColumn}_AFFICHE`
+  const organisorColumnName = `${scrutinColumn}_Organisateur`
   const scrutinAlreadyLinked = allCollectivites[scrutinColumnName][index]
+  const scrutinCAPOrganizedColumnName = `Scrutin_${scrutinName}_Organises`
   return {
     value: allCollectivites.id[index],
     name: allCollectivites.Nom_de_collectivite_AFFICHE[index],
-    isOrganisor: allCollectivites[scrutinColumn][index],
+    isOrganisor: allCollectivites[organisorColumnName][index],
     scrutinAlreadyLinked:
-      typeof scrutinAlreadyLinked === 'string' && scrutinAlreadyLinked !== ''
-        ? [scrutinAlreadyLinked]
-        : scrutinAlreadyLinked,
+    typeof scrutinAlreadyLinked === 'string' && scrutinAlreadyLinked !== ''
+    ? [scrutinAlreadyLinked]
+    : scrutinAlreadyLinked,
+    scrutinCAPOrganized: isCAP ? allCollectivites[scrutinCAPOrganizedColumnName][index] : [],
   }
 }
 
 const createRadio = (props) => {
-  const { value, name, isOrganisor, scrutinAlreadyLinked } = props
+  const { value, name, isOrganisor, scrutinAlreadyLinked, scrutinCAPOrganized } = props
   const radio = document.createElement('div')
   radio.classList.add('fr-radio-group', 'fr-mb-1w')
   const input = document.createElement('input')
@@ -230,7 +234,7 @@ const createRadio = (props) => {
   }
   else if (isOrganisor && scrutinName === 'CAP') {
     const span = document.createElement('span')
-    const numberOfScrutins = isOrganisor.length - 1  // HACK first value is "L"
+    const numberOfScrutins = scrutinCAPOrganized.length - 1  // HACK first value is "L"
     span.textContent = numberOfScrutins > 1 ? `La collectivité organise déjà ${numberOfScrutins} scrutins ${scrutinName}` : `La collectivité organise déjà un scrutin ${scrutinName}`
     span.classList.add('fr-hint-text')
     label.appendChild(span)
