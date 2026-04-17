@@ -115,12 +115,12 @@ const tableHeader = computed(() => {
 const tableRows = computed(() => {
   if(tableHeader.value.length === 0) return []
 
-  // All records are default value
-  let rowsToDisplay = tableData.value
+  // All records are default data
+  let data = tableData.value
 
   // Apply search
   if (trimSearch.value !== '') {
-    rowsToDisplay = rowsToDisplay.filter(record => {
+    data = data.filter(record => {
       return valuesUtils.isInString(record[firstColumnMapped.value], trimSearch.value)
     })
   }
@@ -128,7 +128,7 @@ const tableRows = computed(() => {
   // Apply filters
   if (filtersStore.getActiveFilters.length > 0) {
     for(const filter of filtersStore.getActiveFilters) {
-      rowsToDisplay = rowsToDisplay.filter(record => {
+      data = data.filter(record => {
         return record[filter.id] === filter.value
       })
     }
@@ -136,7 +136,7 @@ const tableRows = computed(() => {
 
   // Format rows
   const rows = []
-  rowsToDisplay.forEach(record => {
+  data.forEach(record => {
     const row = []
     allColumnsMapped.value.forEach(column => {
       const infos = gristUtils.getColumnInfos(column, tableColumnsInfos.value)
