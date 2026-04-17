@@ -1,5 +1,6 @@
 # Changelog
 
+- fix(Vue Tableau): filtrer le tableau uniquement au clic du bouton "Appliquer les filtres [#45](https://github.com/betagouv/Resultats-Elections-FPT/pull/45)
 - fix(Divers): plusieurs corrections avant le lancement [#44](https://github.com/betagouv/Resultats-Elections-FPT/pull/44)
 - fix(Cartographie): corrige le texte exporté pour les colonnes de type badge DSFR [#43](https://github.com/betagouv/Resultats-Elections-FPT/pull/43)
 - fix(Modalités de scrutins): corrige les multiples CAP et le bug du formulaire qui ne s'affichait plus après enregistrement [#42](https://github.com/betagouv/Resultats-Elections-FPT/pull/42)
