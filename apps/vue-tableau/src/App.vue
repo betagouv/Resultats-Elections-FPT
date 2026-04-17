@@ -1,5 +1,5 @@
 <script setup>
-import { ref, reactive, computed } from 'vue'
+import { ref, computed } from 'vue'
 import { computedAsync } from '@vueuse/core'
 import gristUtils from '@shared/utils/grist.js'
 import valuesUtils from '@shared/utils/values.js'
@@ -7,6 +7,7 @@ import GristContainer from '@shared/components/GristContainer.vue'
 import writeXlsxFile from 'write-excel-file'
 import IconCheck from '@shared/components/IconCheck.vue'
 import { DsfrButton } from '@gouvminint/vue-dsfr'
+import FiltersModal from './components/FiltersModal.vue'
 
 const currentRecord = ref()
 const tableData = ref([])
@@ -81,50 +82,16 @@ const deleteSearch = () => {
 }
 
 /* FILTERS */
-const formFilters = reactive({
-  inputs: {}
-})
-const hasFiltersActive = ref(false)
-
-const filtersColumnsInfos = computed(() => {
-  if(!filtersColumnsMapped.value) return []
-  const filters = []
-  for(const column of filtersColumnsMapped.value) {
-    const columnInfos = gristUtils.getColumnInfos(column, tableColumnsInfos.value)
-    formFilters.inputs[columnInfos.colId] = ''
-    filters.push({
-      label: columnInfos.label,
-      type: columnInfos.type,
-      id: columnInfos.colId,
-      description: columnInfos.description,
-    })
-  }
-  return filters
-})
-
-const filtersSelected = computed(() => {
-  let activedFilters = []
-  const filtersKeys = Object.keys(formFilters.inputs)
-  for(const key of filtersKeys) {
-    if (formFilters.inputs[key] === '') continue
-    const filterName = filtersColumnsInfos.value.find(filter => filter.id === key).label
-    activedFilters.push({
-      id: key,
-      name: filterName,
-      value: formFilters.inputs[key] === '1' ? 'Oui' : 'Non',
-    })
-  }
-  return activedFilters
-})
-
-const applyFilters = () => {
-  hasFiltersActive.value = true
-  openedFiltersModal.value = false
-}
+const activeFilters = ref([])
 
 const deleteFilter = (filter) => {
   if (filter === 'search') deleteSearch()
   else formFilters.inputs[filter] = ''
+}
+
+const closeFiltersModal = (updateFilters, filtersToApply) => {
+  if (updateFilters) activeFilters.value = filtersToApply
+  openedFiltersModal.value = false
 }
 
 /* TABLE */
@@ -151,31 +118,30 @@ const tableHeader = computed(() => {
 })
 
 const tableRows = computed(() => {
-  let tableDataFiltered = []
-  if(tableHeader.value.length === 0) return tableDataFiltered
-  tableDataFiltered = tableData.value
-  const hasSearch = trimSearch.value !== ''
-  if (hasSearch) {
-    tableDataFiltered = tableDataFiltered.filter(record => {
+  if(tableHeader.value.length === 0) return []
+
+  // All records are default value
+  let rowsToDisplay = tableData.value
+
+  // Apply search
+  if (trimSearch.value !== '') {
+    rowsToDisplay = rowsToDisplay.filter(record => {
       return valuesUtils.isInString(record[firstColumnMapped.value], trimSearch.value)
     })
   }
-  if (hasFiltersActive.value) {
-    const filtersKeys = Object.keys(formFilters.inputs)
-    for(const key of filtersKeys) {
-      if(formFilters.inputs[key] === '') continue
-      tableDataFiltered = tableDataFiltered.filter(record => {
-        const mustBeTrue = formFilters.inputs[key] === '1'
-        if (mustBeTrue) {
-          return record[key] === true
-        } else {
-          return record[key] === false
-        }
+
+  // Apply filters
+  if (activeFilters.value.length > 0) {
+    for(const filter of activeFilters.value) {
+      rowsToDisplay = rowsToDisplay.filter(record => {
+        return record[filter.id] === filter.value
       })
-    }    
+    }
   }
+
+  // Format rows
   const rows = []
-  tableDataFiltered.forEach(record => {
+  rowsToDisplay.forEach(record => {
     const row = []
     allColumnsMapped.value.forEach(column => {
       const infos = gristUtils.getColumnInfos(column, tableColumnsInfos.value)
@@ -269,7 +235,7 @@ const backToTop = () => {
           {{ tableRows.length }} {{ tableRows.length > 1 ? 'collectivités' : 'collectivité' }}
         </p>
         <DsfrTag v-if="isSearching" :label="`Recherche : ${trimSearch}`" class="vue-tableau__filter-tag fr-ml-0 fr-mr-1w" icon="ri-close-circle-fill" selectable @click="deleteFilter('search')" />
-        <DsfrTag v-for="filter in filtersSelected" class="vue-tableau__filter-tag fr-mr-1w" :key="filter.id" :label="`${filter.name} : ${filter.value}`" icon="ri-close-circle-fill" selectable @click="deleteFilter(filter.id)" />
+        <DsfrTag v-for="filter in activeFilters" class="vue-tableau__filter-tag fr-mr-1w" :key="filter.id" :label="`${filter.name} : ${filter.valueToDisplay}`" icon="ri-close-circle-fill" selectable @click="deleteFilter(filter.id)" />
       </div>
       <DsfrDataTable 
         v-if="tableIsReady"
@@ -299,27 +265,12 @@ const backToTop = () => {
       </DsfrDataTable>
       <p class="fr-p-3w" v-else-if="!tableIsReady">Chargement en cours...</p>
     </div>
-    <DsfrModal v-model:opened="openedFiltersModal" @close="openedFiltersModal = false">
-      <div>
-        <p class="fr-h6">Utilisez les filtres ci-dessous pour affiner la liste des collectivités affichées dans le tableau</p>
-        <form>
-          <div v-for="filter in filtersColumnsInfos" :key="filter">
-            <div v-if="filter.type === 'Bool'">
-              <DsfrRadioButtonSet 
-                v-model="formFilters.inputs[filter.id]"
-                inline
-                :legend="filter.label"
-                :hint="filter.description"
-                :options="[{value: '1', label: 'Oui', name: filter.id}, {value: '0', label: 'Non', name:filter.id, name: filter.id}]"
-              />
-            </div>
-          </div>
-        </form>
-        <div class="fr-grid-row fr-grid-row--center">
-          <DsfrButton label="Appliquer les filtres" primary @click="applyFilters" />
-        </div>
-      </div>
-    </DsfrModal>
+    <FiltersModal 
+      :isOpen="openedFiltersModal"
+      :filtersColumnsMapped="filtersColumnsMapped"
+      :tableColumnsInfos="tableColumnsInfos"
+      @close="closeFiltersModal" 
+    />
   </GristContainer>
 </template>
 
