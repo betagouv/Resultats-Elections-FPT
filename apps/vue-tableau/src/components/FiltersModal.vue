@@ -1,6 +1,11 @@
 <script setup>
 import { reactive, computed } from 'vue'
 import gristUtils from '@shared/utils/grist.js'
+import { useFiltersStore } from '@/store/filters'
+
+/* STORE */
+const filtersStore = useFiltersStore()
+const emit = defineEmits(['close'])
 
 /* PROPS */
 const props = defineProps(['isOpen', 'filtersColumnsMapped', 'tableColumnsInfos'])
@@ -24,36 +29,25 @@ const filterInfos = computed(() => {
   return filters
 })
 
-const filtersSelected = computed(() => {
-  let activedFilters = []
+/* APPLY */
+const applyFilters = () => {
   const filtersIds = Object.keys(filtersForm.inputs)
   for(const id of filtersIds) {
     const value = filtersForm.inputs[id]
     if (value === '') continue
     const name = filterInfos.value.find(filter => filter.id === id).label
-    activedFilters.push({
+    filtersStore.addFilter({
       id,
       name: name,
       value: value === '1',
       valueToDisplay: value === '1' ? 'Oui' : 'Non',
     })
   }
-  return activedFilters
-})
-
-/* ACTIONS */
-const emit = defineEmits(['close'])
-const closeModal = (updateFilters) => {
-  emit('close', updateFilters)
-}
-
-const applyFilters = () => {
-  emit('close', true, filtersSelected.value)
+  emit('close')
 }
 </script>
 <template>
-  <DsfrModal :opened="isOpen" @close="closeModal(false)">
-    <pre>{{ filtersForm.inputs }}</pre>
+  <DsfrModal :opened="isOpen" @close="emit('close')">
     <div>
       <p class="fr-h6">Utilisez les filtres ci-dessous pour affiner la liste des collectivités affichées dans le tableau</p>
       <form>
