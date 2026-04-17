@@ -16,7 +16,7 @@ const filterInfos = computed(() => {
   const filters = []
   for(const column of props.filtersColumnsMapped) {
     const columnInfos = gristUtils.getColumnInfos(column, props.tableColumnsInfos)
-    inputs[columnInfos.colId] = ''
+    if (columnInfos.type !== 'Bool') continue  // Only bool filters are supported for now
     filters.push({
       label: columnInfos.label,
       type: columnInfos.type,
@@ -50,15 +50,13 @@ const applyFilters = () => {
       <p class="fr-h6">Utilisez les filtres ci-dessous pour affiner la liste des collectivités affichées dans le tableau</p>
       <form>
         <div v-for="filter in filterInfos" :key="filter">
-          <div v-if="filter.type === 'Bool'">
-            <DsfrRadioButtonSet 
-              v-model="inputs[filter.id]"
-              inline
-              :legend="filter.label"
-              :hint="filter.description"
-              :options="[{value: '1', label: 'Oui', name: filter.id}, {value: '0', label: 'Non', name:filter.id, name: filter.id}]"
-            />
-          </div>
+          <DsfrRadioButtonSet 
+            v-model="inputs[filter.id]"
+            inline
+            :legend="filter.label"
+            :hint="filter.description"
+            :options="[{value: '1', label: 'Oui', name: filter.id}, {value: '0', label: 'Non', name:filter.id, name: filter.id}]"
+          />
         </div>
       </form>
       <div class="fr-grid-row fr-grid-row--center">
