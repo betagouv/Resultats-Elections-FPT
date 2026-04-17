@@ -3,14 +3,13 @@ import { reactive, computed } from 'vue'
 import gristUtils from '@shared/utils/grist.js'
 import { useFiltersStore } from '@/store/filters'
 
-/* STORE */
+/* SETUP */
 const filtersStore = useFiltersStore()
 const emit = defineEmits(['close'])
-
-/* PROPS */
 const props = defineProps(['isOpen', 'filtersColumnsMapped', 'tableColumnsInfos'])
 const inputs = reactive({})
 
+/* DATA */
 const filterInfos = computed(() => {
   if(!props.filtersColumnsMapped) return []
   const filters = []
