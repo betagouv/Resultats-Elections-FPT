@@ -16,6 +16,9 @@ const useFiltersStore = defineStore('filters', {
     removeFilter(filter) {
       this.activeFilters = this.activeFilters.filter(f => f.id !== filter.id)
     },
+    resetFilters() {
+      this.activeFilters = []
+    },
   },
 })
 

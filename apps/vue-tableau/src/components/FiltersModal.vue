@@ -27,8 +27,14 @@ const filterInfos = computed(() => {
   return filters
 })
 
-/* APPLY */
+/* APPLY FILTERS */
 const applyFilters = () => {
+  filtersStore.resetFilters()
+  addFiltersToStore()
+  emit('close')
+}
+
+const addFiltersToStore = () => {
   const filtersIds = Object.keys(inputs)
   for(const id of filtersIds) {
     const value = inputs[id]
@@ -41,7 +47,6 @@ const applyFilters = () => {
       valueToDisplay: value === '1' ? 'Oui' : 'Non',
     })
   }
-  emit('close')
 }
 </script>
 <template>
