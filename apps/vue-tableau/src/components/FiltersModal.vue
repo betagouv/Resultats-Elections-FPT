@@ -1,5 +1,5 @@
 <script setup>
-import { reactive, computed } from 'vue'
+import { reactive, computed, onBeforeUpdate } from 'vue'
 import gristUtils from '@shared/utils/grist.js'
 import { useFiltersStore } from '@/store/filters'
 
@@ -26,6 +26,17 @@ const filterInfos = computed(() => {
   return filters
 })
 
+/* INPUTS */
+const prefillInputs = () => {
+  const inputsKey = Object.keys(inputs)
+  for (const key of inputsKey) {
+    let value = ''
+    const activeFilter = filtersStore.getActiveFilters.find(storeFilter => storeFilter.id === key)
+    if (activeFilter) value = activeFilter.value === true ? '1' : '0'
+    inputs[key] = value
+  }
+}
+
 /* APPLY FILTERS */
 const applyFilters = () => {
   filtersStore.resetFilters()
@@ -47,6 +58,9 @@ const addFiltersToStore = () => {
     })
   }
 }
+
+/* BEFORE UPDATE */
+onBeforeUpdate(prefillInputs)
 </script>
 <template>
   <DsfrModal :opened="isOpen" @close="emit('close')">
