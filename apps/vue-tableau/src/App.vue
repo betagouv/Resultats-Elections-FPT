@@ -5,6 +5,7 @@ import gristUtils from '@shared/utils/grist.js'
 import valuesUtils from '@shared/utils/values.js'
 import GristContainer from '@shared/components/GristContainer.vue'
 import writeXlsxFile from 'write-excel-file'
+import { useFiltersStore } from '@/store/filters'
 import IconCheck from '@shared/components/IconCheck.vue'
 import { DsfrButton } from '@gouvminint/vue-dsfr'
 import FiltersModal from './components/FiltersModal.vue'
@@ -16,6 +17,7 @@ const otherColumnsMapped = ref()
 const filtersColumnsMapped = ref()
 const currentPage = ref(0)
 const openedFiltersModal = ref(false)
+const filtersStore = useFiltersStore()
 
 /* EXPORT */
 const isGeneratingFile = ref(false)
@@ -82,16 +84,9 @@ const deleteSearch = () => {
 }
 
 /* FILTERS */
-const activeFilters = ref([])
-
 const deleteFilter = (filter) => {
   if (filter === 'search') deleteSearch()
-  else formFilters.inputs[filter] = ''
-}
-
-const closeFiltersModal = (updateFilters, filtersToApply) => {
-  if (updateFilters) activeFilters.value = filtersToApply
-  openedFiltersModal.value = false
+  else filtersStore.removeFilter(filter)
 }
 
 /* TABLE */
@@ -131,8 +126,8 @@ const tableRows = computed(() => {
   }
 
   // Apply filters
-  if (activeFilters.value.length > 0) {
-    for(const filter of activeFilters.value) {
+  if (filtersStore.getActiveFilters.length > 0) {
+    for(const filter of filtersStore.getActiveFilters) {
       rowsToDisplay = rowsToDisplay.filter(record => {
         return record[filter.id] === filter.value
       })
@@ -235,7 +230,7 @@ const backToTop = () => {
           {{ tableRows.length }} {{ tableRows.length > 1 ? 'collectivités' : 'collectivité' }}
         </p>
         <DsfrTag v-if="isSearching" :label="`Recherche : ${trimSearch}`" class="vue-tableau__filter-tag fr-ml-0 fr-mr-1w" icon="ri-close-circle-fill" selectable @click="deleteFilter('search')" />
-        <DsfrTag v-for="filter in activeFilters" class="vue-tableau__filter-tag fr-mr-1w" :key="filter.id" :label="`${filter.name} : ${filter.valueToDisplay}`" icon="ri-close-circle-fill" selectable @click="deleteFilter(filter.id)" />
+        <DsfrTag v-for="filter in filtersStore.getActiveFilters" class="vue-tableau__filter-tag fr-mr-1w" :key="filter.id" :label="`${filter.name} : ${filter.valueToDisplay}`" icon="ri-close-circle-fill" selectable @click="deleteFilter(filter)" />
       </div>
       <DsfrDataTable 
         v-if="tableIsReady"
@@ -269,7 +264,7 @@ const backToTop = () => {
       :isOpen="openedFiltersModal"
       :filtersColumnsMapped="filtersColumnsMapped"
       :tableColumnsInfos="tableColumnsInfos"
-      @close="closeFiltersModal" 
+      @close="openedFiltersModal = false" 
     />
   </GristContainer>
 </template>
