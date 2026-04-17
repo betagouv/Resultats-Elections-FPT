@@ -37,6 +37,7 @@
     "@gouvminint/vue-dsfr": "^8.13.1",
     "@vueuse/core": "^14.1.0",
     "http-server": "^14.1.1",
+    "pinia": "^3.0.4",
     "vue": "^3.4.21",
     "write-excel-file": "^2.3.10"
   },
