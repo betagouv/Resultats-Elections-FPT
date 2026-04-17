@@ -9,16 +9,14 @@ const emit = defineEmits(['close'])
 
 /* PROPS */
 const props = defineProps(['isOpen', 'filtersColumnsMapped', 'tableColumnsInfos'])
-const filtersForm = reactive({
-  inputs: {}
-})
+const inputs = reactive({})
 
 const filterInfos = computed(() => {
   if(!props.filtersColumnsMapped) return []
   const filters = []
   for(const column of props.filtersColumnsMapped) {
     const columnInfos = gristUtils.getColumnInfos(column, props.tableColumnsInfos)
-    filtersForm.inputs[columnInfos.colId] = ''
+    inputs[columnInfos.colId] = ''
     filters.push({
       label: columnInfos.label,
       type: columnInfos.type,
@@ -31,9 +29,9 @@ const filterInfos = computed(() => {
 
 /* APPLY */
 const applyFilters = () => {
-  const filtersIds = Object.keys(filtersForm.inputs)
+  const filtersIds = Object.keys(inputs)
   for(const id of filtersIds) {
-    const value = filtersForm.inputs[id]
+    const value = inputs[id]
     if (value === '') continue
     const name = filterInfos.value.find(filter => filter.id === id).label
     filtersStore.addFilter({
@@ -54,7 +52,7 @@ const applyFilters = () => {
         <div v-for="filter in filterInfos" :key="filter">
           <div v-if="filter.type === 'Bool'">
             <DsfrRadioButtonSet 
-              v-model="filtersForm.inputs[filter.id]"
+              v-model="inputs[filter.id]"
               inline
               :legend="filter.label"
               :hint="filter.description"
