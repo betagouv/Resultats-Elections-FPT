@@ -1,5 +1,6 @@
 # Changelog
 
+- fix(Cartographie collectivité): afficher le tag doublon avec le style "erreur" [#46](https://github.com/betagouv/Resultats-Elections-FPT/pull/46)
 - fix(Vue Tableau): filtrer le tableau uniquement au clic du bouton "Appliquer les filtres [#45](https://github.com/betagouv/Resultats-Elections-FPT/pull/45)
 - fix(Divers): plusieurs corrections avant le lancement [#44](https://github.com/betagouv/Resultats-Elections-FPT/pull/44)
 - fix(Cartographie): corrige le texte exporté pour les colonnes de type badge DSFR [#43](https://github.com/betagouv/Resultats-Elections-FPT/pull/43)
