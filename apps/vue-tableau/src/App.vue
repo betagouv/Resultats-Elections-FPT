@@ -283,7 +283,7 @@ const backToTop = () => {
         @update:selection="updateSelection"
         @update:current-page="updateCurrentPage"
       >
-        <template #cell="{ cell }" class="fr-col--sm">
+        <template #cell="{ cell }">
           <DsfrBadge v-if="cell.isDSFRBadge" :label="cell.value.text" :type="cell.value.type" />
           <p v-else-if="cell.type === 'Bool'" class="app-flex-center">
             <IconCheck v-if="cell.value" class="vue-tableau__icon-check fr-text-title--blue-france" />
