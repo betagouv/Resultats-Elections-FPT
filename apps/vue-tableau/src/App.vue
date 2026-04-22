@@ -167,6 +167,9 @@ const updateCurrentPage = (page) => {
 const updateSelection = () => {
   const lastSelectedRow = selectedRow.value[selectedRow.value.length - 1]
   selectedRow.value = [lastSelectedRow]
+  selectedRowKey.value = Number(lastSelectedRow.replace('row-', ''))
+}
+
 }
 
 /* GRIST */
@@ -243,6 +246,13 @@ const backToTop = () => {
         <DsfrTag v-if="isSearching" :label="`Recherche : ${trimSearch}`" class="vue-tableau__filter-tag fr-ml-0 fr-mr-1w" icon="ri-close-circle-fill" selectable @click="deleteFilter('search')" />
         <DsfrTag v-for="filter in filtersStore.getActiveFilters" class="vue-tableau__filter-tag fr-mr-1w" :key="filter.id" :label="`${filter.name} : ${filter.valueToDisplay}`" icon="ri-close-circle-fill" selectable @click="deleteFilter(filter)" />
       </div>
+      <component :is="'style'">
+        /* CSS : need implement custom style selection row */
+        .vue-tableau__table tbody tr:nth-child({{ selectedRowKey + 1 }}) {
+          border: 2px solid var(--background-active-blue-france) !important;
+        }
+        /* END CSS */
+      </component>
       <DsfrDataTable 
         v-if="tableIsReady"
         v-model:selection="selectedRow"
