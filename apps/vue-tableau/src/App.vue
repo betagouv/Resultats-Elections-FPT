@@ -90,6 +90,8 @@ const deleteFilter = (filter) => {
 }
 
 /* TABLE */
+const selectedRow = ref([])
+
 const tableIsReady = computed(() => {
   return tableRows.value.length >= 0 && tableHeader.value.length > 0
 })
@@ -156,6 +158,11 @@ const tableRows = computed(() => {
 const updateCurrentPage = (page) => {
   currentPage.value = page
   backToTop()
+}
+
+const updateSelection = () => {
+  const lastSelectedRow = selectedRow.value[selectedRow.value.length - 1]
+  selectedRow.value = [lastSelectedRow]
 }
 
 /* GRIST */
@@ -234,6 +241,7 @@ const backToTop = () => {
       </div>
       <DsfrDataTable 
         v-if="tableIsReady"
+        v-model:selection="selectedRow"
         class="vue-tableau__table fr-table--bordered"
         :headers-row="tableHeader"
         :rows="tableRows"
@@ -242,6 +250,8 @@ const backToTop = () => {
         pagination-wrapper-class="fr-px-4w fr-pt-2w"
         :rows-per-page="100"
         :current-page="currentPage"
+        :selectable-rows="true"
+        @update:selection="updateSelection"
         @update:current-page="updateCurrentPage"
       >
         <template #cell="{ cell }" class="fr-col--sm">
