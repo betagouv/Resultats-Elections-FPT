@@ -307,7 +307,7 @@ const backToTop = () => {
   z-index: 4;
 }
 
-.vue-tableau__table td:first-child, .vue-tableau__table thead th:first-child {
+.vue-tableau__table td:nth-child(2), .vue-tableau__table thead th:nth-child(2) {
   position: sticky !important;
   left: 0px;
   z-index: 3;
