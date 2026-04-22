@@ -68,7 +68,7 @@ const isSearching = ref(false)
 const trimSearch = ref('')
 
 const onSearch = () => {
-  currentPage.value = 0
+  resetCurrentPage()
   trimSearch.value = search.value.trim()
   isSearching.value = true
 }
@@ -89,12 +89,17 @@ const deleteFilter = (filter) => {
   else filtersStore.removeFilter(filter)
 }
 
-const closeFiltersModal = (newFilters = false) => {
+const closeFiltersModal = (updateTable = false) => {
   openedFiltersModal.value = false
+  if (updateTable) {
+    resetSelection()
+    resetCurrentPage()
+  }
 }
 
 /* TABLE */
 const selectedRow = ref([])
+const selectedRowKey = ref()
 
 const tableIsReady = computed(() => {
   return tableRows.value.length >= 0 && tableHeader.value.length > 0
@@ -161,7 +166,12 @@ const tableRows = computed(() => {
 
 const updateCurrentPage = (page) => {
   currentPage.value = page
+  resetSelection()
   backToTop()
+}
+
+const resetCurrentPage = () => {
+  currentPage.value = 0
 }
 
 const updateSelection = () => {
@@ -170,6 +180,9 @@ const updateSelection = () => {
   selectedRowKey.value = Number(lastSelectedRow.replace('row-', ''))
 }
 
+const resetSelection = () => {
+  selectedRow.value = []
+  selectedRowKey.value = -1
 }
 
 /* GRIST */
