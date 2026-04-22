@@ -87,6 +87,8 @@ const deleteSearch = () => {
 const deleteFilter = (filter) => {
   if (filter === 'search') deleteSearch()
   else filtersStore.removeFilter(filter)
+  resetCurrentPage()
+  resetSelection()
 }
 
 const closeFiltersModal = (updateTable = false) => {
