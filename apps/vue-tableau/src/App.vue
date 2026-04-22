@@ -89,6 +89,10 @@ const deleteFilter = (filter) => {
   else filtersStore.removeFilter(filter)
 }
 
+const closeFiltersModal = (newFilters = false) => {
+  openedFiltersModal.value = false
+}
+
 /* TABLE */
 const selectedRow = ref([])
 
@@ -274,7 +278,7 @@ const backToTop = () => {
       :isOpen="openedFiltersModal"
       :filtersColumnsMapped="filtersColumnsMapped"
       :tableColumnsInfos="tableColumnsInfos"
-      @close="openedFiltersModal = false" 
+      @close="closeFiltersModal"
     />
   </GristContainer>
 </template>

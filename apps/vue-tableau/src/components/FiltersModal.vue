@@ -41,7 +41,7 @@ const prefillInputs = () => {
 const applyFilters = () => {
   filtersStore.resetFilters()
   addFiltersToStore()
-  emit('close')
+  emit('close', true)
 }
 
 const addFiltersToStore = () => {
