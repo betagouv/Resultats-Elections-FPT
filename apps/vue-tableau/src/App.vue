@@ -320,6 +320,10 @@ const backToTop = () => {
   flex-grow: 1;
 }
 
+.vue-tableau__table thead tr:nth-child(1) th:nth-child(1) div {
+  display: none !important;
+}
+
 
 /* STICKY CELLS */
 .vue-tableau__table .fr-table__container {
