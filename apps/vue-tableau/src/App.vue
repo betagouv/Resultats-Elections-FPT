@@ -264,7 +264,7 @@ const backToTop = () => {
       <component :is="'style'">
         /* CSS : need implement custom style selection row */
         .vue-tableau__table tbody tr:nth-child({{ selectedRowKey + 1 }}) {
-          border: 2px solid var(--background-active-blue-france) !important;
+          border: 1px solid var(--background-active-blue-france) !important;
         }
         /* END CSS */
       </component>
@@ -310,12 +310,6 @@ const backToTop = () => {
 
 <style lang="css">
 /* TABLE */
-.vue-tableau__table table tbody td:first-child{
-  background-color: var(--background-alt-grey) !important; 
-  max-width: 20rem !important;
-  white-space: normal !important;
-}
-
 .vue-tableau__search-bar {
   flex-grow: 1;
 }
@@ -324,8 +318,11 @@ const backToTop = () => {
   display: none !important;
 }
 
+.vue-tableau__table tbody td:nth-child(2) {
+  background-color: var(--background-alt-grey) !important; 
+  white-space: normal !important;
+}
 
-/* STICKY CELLS */
 .vue-tableau__table .fr-table__container {
   overflow: initial !important;
 }
