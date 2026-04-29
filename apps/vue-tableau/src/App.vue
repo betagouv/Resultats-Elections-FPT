@@ -273,6 +273,10 @@ const backToTop = () => {
   white-space: normal !important;
 }
 
+.vue-tableau__table table tbody tr:has(.table-cell__checkbox--selected) {
+  border: solid 1px var(--background-active-blue-france) !important;
+}
+
 .vue-tableau__search-bar {
   flex-grow: 1;
 }
