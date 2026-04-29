@@ -1,5 +1,7 @@
 # Changelog
 
+- fix(Vue formulaire scrutin): Supprime le message de résultat vide lors d'une nouvelle recherche [#48](https://github.com/betagouv/Resultats-Elections-FPT/pull/48)
+- remove(Vues html): supprime les anciennes vues qui ont été remplacées par les vues génériques [#47](https://github.com/betagouv/Resultats-Elections-FPT/pull/47)
 - fix(Cartographie collectivité): afficher le tag doublon avec le style "erreur" [#46](https://github.com/betagouv/Resultats-Elections-FPT/pull/46)
 - fix(Vue Tableau): filtrer le tableau uniquement au clic du bouton "Appliquer les filtres [#45](https://github.com/betagouv/Resultats-Elections-FPT/pull/45)
 - fix(Divers): plusieurs corrections avant le lancement [#44](https://github.com/betagouv/Resultats-Elections-FPT/pull/44)
