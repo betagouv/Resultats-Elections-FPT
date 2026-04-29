@@ -41,7 +41,7 @@ let scrutinName = null
 /* CONTENT */
 const updateNumber = () => {
   numberElement.textContent =
-    refListSelectedIds.length > 0 ? refListSelectedIds.length : 'Aucun'
+    refListSelectedIds.length > 0 ? refListSelectedIds.length : 'Aucune'
 }
 
 /* FORM */
