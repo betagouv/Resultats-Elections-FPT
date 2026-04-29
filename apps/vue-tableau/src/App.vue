@@ -6,9 +6,9 @@ import valuesUtils from '@shared/utils/values.js'
 import GristContainer from '@shared/components/GristContainer.vue'
 import writeXlsxFile from 'write-excel-file'
 import { useFiltersStore } from '@/store/filters'
-import IconCheck from '@shared/components/IconCheck.vue'
 import { DsfrButton } from '@gouvminint/vue-dsfr'
 import FiltersModal from './components/FiltersModal.vue'
+import TableRow from './components/TableRow.vue'
 
 const currentRecord = ref()
 const tableData = ref([])
@@ -245,18 +245,8 @@ const backToTop = () => {
         :current-page="currentPage"
         @update:current-page="updateCurrentPage"
       >
-        <template #cell="{ cell }" class="fr-col--sm">
-          <DsfrBadge v-if="cell.isDSFRBadge" :label="cell.value.text" :type="cell.value.type" />
-          <p v-else-if="cell.type === 'Bool'" class="app-flex-center">
-            <IconCheck v-if="cell.value" class="vue-tableau__icon-check fr-text-title--blue-france" />
-          </p>
-          <DsfrTag v-else-if="cell.type.indexOf('Ref:') > -1" :label="cell.value" />
-          <ul v-else-if="cell.hasMultipleValues">
-            <li v-for="value in cell.value">
-              <p class="fr-mb-0">{{ value }}</p>
-            </li>
-          </ul>
-          <p class="fr-mb-0" v-else>{{ cell.value }}</p>
+        <template #cell="{ cell, colKey }" class="fr-col--sm">
+          <TableRow :cell="cell" :col-key="colKey" :is-first-column="colKey === firstColumnMapped" :is-selected="currentRecord.id === cell.id" @select-row="changeCursor" />
         </template>
       </DsfrDataTable>
       <p class="fr-p-3w" v-else-if="!tableIsReady">Chargement en cours...</p>
