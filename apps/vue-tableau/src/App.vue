@@ -6,9 +6,9 @@ import valuesUtils from '@shared/utils/values.js'
 import GristContainer from '@shared/components/GristContainer.vue'
 import writeXlsxFile from 'write-excel-file'
 import { useFiltersStore } from '@/store/filters'
-import IconCheck from '@shared/components/IconCheck.vue'
 import { DsfrButton } from '@gouvminint/vue-dsfr'
 import FiltersModal from './components/FiltersModal.vue'
+import TableCell from './components/TableCell.vue'
 
 const currentRecord = ref()
 const tableData = ref([])
@@ -18,6 +18,7 @@ const filtersColumnsMapped = ref()
 const currentPage = ref(0)
 const openedFiltersModal = ref(false)
 const filtersStore = useFiltersStore()
+const gristContainerRef = ref(null)
 
 /* EXPORT */
 const isGeneratingFile = ref(false)
@@ -140,13 +141,14 @@ const tableRows = computed(() => {
     const row = []
     allColumnsMapped.value.forEach(column => {
       const infos = gristUtils.getColumnInfos(column, tableColumnsInfos.value)
-      const rowValue = {
+      const cellValue = {
         type: infos.type,
         isDSFRBadge: infos.colId.indexOf('DSFR_Badge') > -1,
         hasMultipleValues: record[column] && typeof record[column] === 'object',
         value: record[column],
+        id: record.id,
       }
-      row.push(rowValue)
+      row.push(cellValue)
     })
     rows.push(row)
   })
@@ -188,13 +190,17 @@ const onRecords = (params) => {
   filtersColumnsMapped.value = mapping['Filtres']
 }
 
+const changeCursor = (id) => {
+  gristContainerRef.value?.updateCursorPos(id)
+}
+
 /* VUE */
 const backToTop = () => {
   window.scrollTo(0, 0, 'smooth')
 }
 </script>
 <template>
-  <GristContainer @update:record="onRecord" @update:records="onRecords" :columns="gristColumns">
+  <GristContainer ref="gristContainerRef" @update:record="onRecord" @update:records="onRecords" :columns="gristColumns">
     <div class="vue-tableau">
       <div class="fr-pt-3w fr-px-3w">
         <div class="fr-grid-row fr-grid-row--center">
@@ -244,18 +250,8 @@ const backToTop = () => {
         :current-page="currentPage"
         @update:current-page="updateCurrentPage"
       >
-        <template #cell="{ cell }" class="fr-col--sm">
-          <DsfrBadge v-if="cell.isDSFRBadge" :label="cell.value.text" :type="cell.value.type" />
-          <p v-else-if="cell.type === 'Bool'" class="app-flex-center">
-            <IconCheck v-if="cell.value" class="vue-tableau__icon-check fr-text-title--blue-france" />
-          </p>
-          <DsfrTag v-else-if="cell.type.indexOf('Ref:') > -1" :label="cell.value" />
-          <ul v-else-if="cell.hasMultipleValues">
-            <li v-for="value in cell.value">
-              <p class="fr-mb-0">{{ value }}</p>
-            </li>
-          </ul>
-          <p class="fr-mb-0" v-else>{{ cell.value }}</p>
+        <template #cell="{ cell, colKey }" class="fr-col--sm">
+          <TableCell :cell="cell" :col-key="colKey" :is-first-column="colKey === firstColumnMapped" :is-selected="currentRecord.id === cell.id" @select-row="changeCursor" />
         </template>
       </DsfrDataTable>
       <p class="fr-p-3w" v-else-if="!tableIsReady">Chargement en cours...</p>
@@ -275,6 +271,10 @@ const backToTop = () => {
   background-color: var(--background-alt-grey) !important; 
   max-width: 20rem !important;
   white-space: normal !important;
+}
+
+.vue-tableau__table table tbody tr:has(.table-cell__checkbox--selected) {
+  border: solid 1px var(--background-active-blue-france) !important;
 }
 
 .vue-tableau__search-bar {

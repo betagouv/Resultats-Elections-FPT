@@ -1,5 +1,7 @@
 <script setup>
 import { ref, computed } from 'vue'
+
+/* SETTINGS */
 const props = defineProps(['columns', 'configuration'])
 const emit = defineEmits(['update:record', 'update:records'])
 
@@ -7,6 +9,7 @@ const emit = defineEmits(['update:record', 'update:records'])
 grist.ready({
   requiredAccess: 'full',
   columns: props.columns || [],
+  allowSelectBy: true,
   onEditOptions: () => {
     openConfiguration()
   }
@@ -43,6 +46,12 @@ const closeConfiguration = () => {
   grist.setOption(props.configuration.name, configurationInput.value)
   emit('update:configuration', newConfiguration)
 }
+
+/* CURSOR POS */
+const updateCursorPos = (cursorPos) => {
+  grist.setCursorPos({ rowId: cursorPos })
+}
+defineExpose({updateCursorPos})
 </script>
 <template>
   <main class="grist-container">

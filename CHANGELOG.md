@@ -1,5 +1,6 @@
 # Changelog
 
+- feat(Vue tableau): ajoute la sélection de ligne avec le curseur grist [#49](https://github.com/betagouv/Resultats-Elections-FPT/pull/49)
 - fix(Vue formulaire scrutin): Supprime le message de résultat vide lors d'une nouvelle recherche [#48](https://github.com/betagouv/Resultats-Elections-FPT/pull/48)
 - remove(Vues html): supprime les anciennes vues qui ont été remplacées par les vues génériques [#47](https://github.com/betagouv/Resultats-Elections-FPT/pull/47)
 - fix(Cartographie collectivité): afficher le tag doublon avec le style "erreur" [#46](https://github.com/betagouv/Resultats-Elections-FPT/pull/46)
