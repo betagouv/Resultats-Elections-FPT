@@ -8,7 +8,7 @@ import writeXlsxFile from 'write-excel-file'
 import { useFiltersStore } from '@/store/filters'
 import { DsfrButton } from '@gouvminint/vue-dsfr'
 import FiltersModal from './components/FiltersModal.vue'
-import TableRow from './components/TableRow.vue'
+import TableCell from './components/TableCell.vue'
 
 const currentRecord = ref()
 const tableData = ref([])
@@ -251,7 +251,7 @@ const backToTop = () => {
         @update:current-page="updateCurrentPage"
       >
         <template #cell="{ cell, colKey }" class="fr-col--sm">
-          <TableRow :cell="cell" :col-key="colKey" :is-first-column="colKey === firstColumnMapped" :is-selected="currentRecord.id === cell.id" @select-row="changeCursor" />
+          <TableCell :cell="cell" :col-key="colKey" :is-first-column="colKey === firstColumnMapped" :is-selected="currentRecord.id === cell.id" @select-row="changeCursor" />
         </template>
       </DsfrDataTable>
       <p class="fr-p-3w" v-else-if="!tableIsReady">Chargement en cours...</p>

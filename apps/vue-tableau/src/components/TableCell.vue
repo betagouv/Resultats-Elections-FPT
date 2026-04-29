@@ -11,7 +11,7 @@ const clickCheckboxeCursor = () => {
 </script>
 
 <template>
-  <div v-if="isFirstColumn" class="table-row__checkbox">
+  <div v-if="isFirstColumn" class="table-cell__checkbox" :class="{ 'table-cell__checkbox--selected': isSelected }">
     <DsfrCheckbox :modelValue="isSelected" :label="cell.value" :small="true" @update:modelValue="clickCheckboxeCursor" :readonly="isSelected"/>
   </div>
   <DsfrBadge v-else-if="cell.isDSFRBadge" :label="cell.value.text" :type="cell.value.type" />
@@ -28,7 +28,7 @@ const clickCheckboxeCursor = () => {
 </template>
 
 <style>
-.table-row__checkbox .fr-fieldset__element {
+.table-cell__checkbox .fr-fieldset__element {
   margin-bottom: 0 !important;
 }
 </style>
