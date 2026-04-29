@@ -41,7 +41,7 @@ let scrutinName = null
 /* CONTENT */
 const updateNumber = () => {
   numberElement.textContent =
-    refListSelectedIds.length > 0 ? refListSelectedIds.length : 'Aucune'
+    refListSelectedIds.length > 0 ? refListSelectedIds.length : 'Aucun'
 }
 
 /* FORM */
@@ -166,6 +166,7 @@ inputSearch.addEventListener('input', () => {
 buttonSearch.addEventListener('click', async (event) => {
   event.preventDefault()
   resultSearch.replaceChildren()
+  emptySearch.classList.add('fr-hidden')
 
   const searchValue = inputSearch.value.trim().toLowerCase()
   if (searchValue.length < 3) return
