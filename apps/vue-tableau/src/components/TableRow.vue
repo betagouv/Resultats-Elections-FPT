@@ -5,7 +5,6 @@ import IconCheck from '@shared/components/IconCheck.vue'
 const props = defineProps(['cell', 'colKey', 'isSelected', 'isFirstColumn'])
 const emit = defineEmits(['selectRow'])
 
-const checkboxeCursor = ref(props.isSelected)
 const clickCheckboxeCursor = () => {
   emit('selectRow', props.cell.id)
 }
@@ -13,7 +12,7 @@ const clickCheckboxeCursor = () => {
 
 <template>
   <div v-if="isFirstColumn" class="table-row__checkbox">
-    <DsfrCheckbox :model-value="checkboxeCursor" :label="cell.value" :small="true" @update:modelValue="clickCheckboxeCursor" :readonly="isSelected"/>
+    <DsfrCheckbox :modelValue="isSelected" :label="cell.value" :small="true" @update:modelValue="clickCheckboxeCursor" :readonly="isSelected"/>
   </div>
   <DsfrBadge v-else-if="cell.isDSFRBadge" :label="cell.value.text" :type="cell.value.type" />
   <p v-else-if="cell.type === 'Bool'" class="app-flex-center">
