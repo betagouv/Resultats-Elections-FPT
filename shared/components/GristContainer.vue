@@ -7,6 +7,7 @@ const emit = defineEmits(['update:record', 'update:records'])
 grist.ready({
   requiredAccess: 'full',
   columns: props.columns || [],
+  allowSelectBy: true,
   onEditOptions: () => {
     openConfiguration()
   }
