@@ -1,5 +1,7 @@
 <script setup>
 import { ref, computed } from 'vue'
+
+/* SETTINGS */
 const props = defineProps(['columns', 'configuration'])
 const emit = defineEmits(['update:record', 'update:records'])
 
