@@ -46,6 +46,12 @@ const closeConfiguration = () => {
   grist.setOption(props.configuration.name, configurationInput.value)
   emit('update:configuration', newConfiguration)
 }
+
+/* CURSOR POS */
+const updateCursorPos = (cursorPos) => {
+  grist.setCursorPos({ rowId: cursorPos })
+}
+defineExpose({updateCursorPos})
 </script>
 <template>
   <main class="grist-container">

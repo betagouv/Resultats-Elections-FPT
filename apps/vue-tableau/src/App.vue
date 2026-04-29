@@ -18,6 +18,7 @@ const filtersColumnsMapped = ref()
 const currentPage = ref(0)
 const openedFiltersModal = ref(false)
 const filtersStore = useFiltersStore()
+const gristContainerRef = ref(null)
 
 /* EXPORT */
 const isGeneratingFile = ref(false)
@@ -189,13 +190,17 @@ const onRecords = (params) => {
   filtersColumnsMapped.value = mapping['Filtres']
 }
 
+const changeCursor = (id) => {
+  gristContainerRef.value?.updateCursorPos(id)
+}
+
 /* VUE */
 const backToTop = () => {
   window.scrollTo(0, 0, 'smooth')
 }
 </script>
 <template>
-  <GristContainer @update:record="onRecord" @update:records="onRecords" :columns="gristColumns">
+  <GristContainer ref="gristContainerRef" @update:record="onRecord" @update:records="onRecords" :columns="gristColumns">
     <div class="vue-tableau">
       <div class="fr-pt-3w fr-px-3w">
         <div class="fr-grid-row fr-grid-row--center">
