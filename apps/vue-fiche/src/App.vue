@@ -184,7 +184,7 @@ const getExcelType = (type) => {
             }"
           >
             <h1 data-js="title" class="fr-mb-1w fr-h6">{{ currentRecord[titleMapped] }}</h1>
-            <StatusBadge :label="currentRecord[badgeMapped]" />
+            <StatusBadge v-if="badgeMapped" :label="currentRecord[badgeMapped]" />
           </div>
           <div v-if="showDownloadButton" class="fr-col-6 fr-grid-row fr-grid-row--right">
             <DsfrButton 
