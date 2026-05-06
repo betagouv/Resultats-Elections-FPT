@@ -166,6 +166,7 @@ inputSearch.addEventListener('input', () => {
 buttonSearch.addEventListener('click', async (event) => {
   event.preventDefault()
   resultSearch.replaceChildren()
+  emptySearch.classList.add('fr-hidden')
 
   const searchValue = inputSearch.value.trim().toLowerCase()
   if (searchValue.length < 3) return
