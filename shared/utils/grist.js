@@ -1,5 +1,5 @@
 const getTableColumnsInfos = async () => {
-  const tableName = await grist.getSelectedTableId()
+  const tableName = await getCurrentTableID()
   const token = await grist.docApi.getAccessToken({ readOnly: false })
   const url = `${token.baseUrl}/tables/${tableName}/columns?auth=${token.token}`
   const response = await fetch(url)
