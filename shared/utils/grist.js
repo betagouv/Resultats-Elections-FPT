@@ -1,26 +1,17 @@
 const getTableColumnsInfos = async () => {
   const tableName = await grist.getSelectedTableId()
-  const allTables = await grist.docApi.fetchTable('_grist_Tables')
-  const tableId = allTables.id[allTables.tableId.indexOf(tableName)]
-  const allGristColumns = await grist.docApi.fetchTable('_grist_Tables_column')
-  let index = 0
-  const columnsInfos = allGristColumns.parentId.reduce(function (
-    filtered,
-    currentValue
-  ) {
-    if (currentValue === tableId)
-      filtered.push({
-        label: allGristColumns.label[index],
-        description: allGristColumns.description[index],
-        colId: allGristColumns.colId[index],
-        type: allGristColumns.type[index],
-        widgetOptions: allGristColumns.widgetOptions[index],
-      })
-    index++
-    return filtered
-  },
-  [])
-  return columnsInfos
+  const token = await grist.docApi.getAccessToken({ readOnly: true })
+  const url = `${token.baseUrl}/tables/${tableName}/columns?auth=${token.token}`
+  const response = await fetch(url)
+  if (!response.ok) return []
+  const { columns } = await response.json()
+  return columns.map((c) => ({
+    label: c.fields.label,
+    description: c.fields.description,
+    colId: c.id,
+    type: c.fields.type,
+    widgetOptions: c.fields.widgetOptions,
+  }))
 }
 
 const getColumnsInfos = (columns, table) => {
