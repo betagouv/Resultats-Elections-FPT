@@ -19,8 +19,7 @@ const getColumnsInfos = (columns, table) => {
 }
 
 const getColumnInfos = (column, table) => {
-  const index = table.findIndex((col) => col.colId === column)
-  return index >= 0 ? table[index] : null
+  return table.find((col) => col.colId === column) ?? null
 }
 
 const getColumnName = (id, table) => {
