@@ -100,15 +100,15 @@ const displayRows = (rows) => {
     divName.appendChild(p)
     divRow.appendChild(divName)
 
-    if (columnBadgeMapped) {
+    const hasBadge = columnBadgeMapped && rows[i][columnBadgeMapped]
+    if (hasBadge) {
       const divBadge = document.createElement('div')
       divBadge.classList.add('fr-col-6', 'fr-grid-row', 'fr-grid-row--right')
       const badge = document.createElement('p')
       const status = rows[i][columnBadgeMapped]
       badge.classList.add('fr-badge')
       badge.textContent = status
-      if (status === 'Complet') badge.classList.add('fr-badge--success')
-      else if (status === 'Incomplet' || status === 'Doublon') badge.classList.add('fr-badge--error')
+      if (status === 'Incomplet' || status === 'Doublon' || status === 'Champs manquant(s)') badge.classList.add('fr-badge--error')
       divBadge.appendChild(badge)
       divRow.appendChild(divBadge)
     } else {
