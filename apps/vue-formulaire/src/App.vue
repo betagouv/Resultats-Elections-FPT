@@ -87,6 +87,7 @@ const getFormValuesCleaned = () => {
 }
 
 const getSelectRefValue = (inputName, valueToFind) => {
+  if (!valueToFind) return null
   return formSelects.value[inputName].find(option => option.value === valueToFind).id
 }
 
