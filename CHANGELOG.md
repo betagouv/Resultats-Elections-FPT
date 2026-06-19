@@ -1,5 +1,6 @@
 # Changelog
 
+- fix(Collectivités): ne pas afficher de badge s'il est vide et ajout d'une nouvelle terminlogies pour un badge "erreur"  [#52](https://github.com/betagouv/Resultats-Elections-FPT/pull/52)
 - fix: amélioration des performances pour les informations des tables [#51](https://github.com/betagouv/Resultats-Elections-FPT/pull/51)
 - fix(Vue fiche): corrige le badge optionnel [#50](https://github.com/betagouv/Resultats-Elections-FPT/pull/50)
 - feat(Vue tableau): ajoute la sélection de ligne avec le curseur grist [#49](https://github.com/betagouv/Resultats-Elections-FPT/pull/49)
