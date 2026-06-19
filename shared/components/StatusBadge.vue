@@ -11,5 +11,5 @@ const type = computed(() => {
 })
 </script>
 <template>
-  <DsfrBadge :type="type" :label="label" />
+  <DsfrBadge v-if="label" :type="type" :label="label" />
 </template>
