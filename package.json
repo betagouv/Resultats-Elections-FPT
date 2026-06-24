@@ -18,8 +18,8 @@
     "dev:bouton": "vite --mode vue-bouton",
     "preview:bouton": "vite preview --mode vue-bouton",
     "build:bouton": "vite build --mode vue-bouton",
-    "build": "npm-run-all build:fiche build:tableau build:formulaire build:bouton copy:html",
-    "build:staging": "npm-run-all build copy:staging",
+    "build": "npm run build:fiche && npm run build:tableau && npm run build:formulaire && npm run build:bouton && npm run copy:html",
+    "build:staging": "npm run build && npm run copy:staging",
     "copy:staging": "cp -r dist/* staging/"
   },
   "repository": {
@@ -43,7 +43,6 @@
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^5.0.4",
-    "npm-run-all": "^4.1.5",
     "vite": "^5.2.0"
   }
 }
