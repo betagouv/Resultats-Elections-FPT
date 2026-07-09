@@ -191,11 +191,12 @@ buttonSearch.addEventListener('click', async (event) => {
   }
 
   for (let i = 0; i < foundRefs.length; i++) {
-    const columnScrutinName = `Scrutin_${scrutinName}_AFFICHE`
+    const columnScrutinName = `Scrutin_${scrutinName}`
     const index = refListAll[COLLECTIVITE_SEARCH_NAME].indexOf(foundRefs[i])
     const alreadyLinked =
       refListAll[columnScrutinName][index] !== null &&
-      refListAll[columnScrutinName][index] !== ''
+      refListAll[columnScrutinName][index] !== '' &&
+      refListAll[columnScrutinName][index] !== 0
     const disabledIfRelated = alreadyLinked
       ? `Est déjà rattachée au scrutin ${scrutinName} ${refListAll[columnScrutinName][index]}`
       : false
