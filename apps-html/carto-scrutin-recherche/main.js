@@ -197,13 +197,13 @@ const getCollectiviteInfos = (name) => {
   const index = allCollectivites.Nom_de_collectivite_AFFICHE.indexOf(name)
   const isCAP = scrutinName === 'CAP'
   const scrutinColumn = `Scrutin_${scrutinName}`
-  const organisorColumnName = `${scrutinColumn}_Organisateur`
+  const organisorColumnName = `${scrutinColumn}_Organisateur` // Info : la colonne "Scrutin_CAP_Organisateur" est vide, on ne l'utilise pas dans le code
   const scrutinAlreadyLinkedColumnName = `Scrutin_${scrutinName}_Nom`
   const scrutinAlreadyLinked = allCollectivites[scrutinAlreadyLinkedColumnName][index]
   return {
     value: allCollectivites.id[index],
     name: allCollectivites.Nom_de_collectivite_AFFICHE[index],
-    isOrganisor: allCollectivites[organisorColumnName][index],
+    isOrganisor: isCAP ? false : allCollectivites[organisorColumnName][index],
     scrutinAlreadyLinked: scrutinAlreadyLinked,
   }
 }
