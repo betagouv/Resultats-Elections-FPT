@@ -197,9 +197,12 @@ const getCollectiviteInfos = (name) => {
   const index = allCollectivites.Nom_de_collectivite_AFFICHE.indexOf(name)
   const isCAP = scrutinName === 'CAP'
   const scrutinColumn = `Scrutin_${scrutinName}`
-  const organisorColumnName = `${scrutinColumn}_Organisateur` // Info : la colonne "Scrutin_CAP_Organisateur" est vide, on ne l'utilise pas dans le code
+  const organisorColumnName = `${scrutinColumn}_Organisateur` 
   const scrutinAlreadyLinkedColumnName = `Scrutin_${scrutinName}_Nom`
   const scrutinAlreadyLinked = allCollectivites[scrutinAlreadyLinkedColumnName][index]
+  // Info : la colonne "Scrutin_CAP_Organisateur" n'est pas utilisée au moment de la création du scrutin. 
+  // Car récupérer la liste des scrutins organsés consomme trop de ressources pour la formule grist
+  // Pour les CAP on affiche juste les scrutins déjà rattachés
   return {
     value: allCollectivites.id[index],
     name: allCollectivites.Nom_de_collectivite_AFFICHE[index],
