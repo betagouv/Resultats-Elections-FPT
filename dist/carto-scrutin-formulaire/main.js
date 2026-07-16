@@ -111,10 +111,8 @@ const getCheckbox = (props) => {
     span.classList.add('fr-hint-text')
     label.appendChild(span)
   } else if (scrutins && scrutins.length > 1 && displayHint) {
-    const scrutinsCleaned = scrutins.slice(1) // HACK first value is "L"
     const span = document.createElement('span')
-    const scrutinsNames = scrutinsCleaned.join(', ')
-    span.textContent = `Est déja rattachée aux scrutins : ${scrutinsNames}`
+    span.textContent = `Est déja rattachée : ${scrutins}`
     span.classList.add('fr-hint-text')
     label.appendChild(span)
   }
@@ -191,13 +189,14 @@ buttonSearch.addEventListener('click', async (event) => {
   }
 
   for (let i = 0; i < foundRefs.length; i++) {
-    const columnScrutinName = `Scrutin_${scrutinName}_AFFICHE`
+    const columnScrutinName = `Scrutin_${scrutinName}_Nom`
     const index = refListAll[COLLECTIVITE_SEARCH_NAME].indexOf(foundRefs[i])
     const alreadyLinked =
       refListAll[columnScrutinName][index] !== null &&
-      refListAll[columnScrutinName][index] !== ''
+      refListAll[columnScrutinName][index] !== '' &&
+      refListAll[columnScrutinName][index] !== 0
     const disabledIfRelated = alreadyLinked
-      ? `Est déjà rattachée au scrutin ${scrutinName} ${refListAll[columnScrutinName][index]}`
+      ? `Est déjà rattachée : ${refListAll[columnScrutinName][index]}`
       : false
     const props = {
       name: foundRefs[i],
