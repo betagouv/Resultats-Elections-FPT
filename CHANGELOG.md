@@ -1,5 +1,6 @@
 # Changelog
 
+- fix(Créer un scrutin): pour les CAP on n'affiche pas les scrutins organisés ou liés [#63](https://github.com/betagouv/Resultats-Elections-FPT/pull/63)
 - fix(Créer un scrutin): corrige l'affichage des scrutins organisés [#62](https://github.com/betagouv/Resultats-Elections-FPT/pull/62)
 - fix(Carto scrutin): mise à jour du code après la supression d'une colonne [#61](https://github.com/betagouv/Resultats-Elections-FPT/pull/61)
 - fix: corrige la récupération des données de la table pour les éditeurs [#53](https://github.com/betagouv/Resultats-Elections-FPT/pull/53)
