@@ -32,6 +32,11 @@ grist.ready({
   ],
 })
 
+grist.onRecords((_table, mapping) => {
+  columnOrganisateurMapped = mapping['ColumnOrganisateur']
+  columnRattacheesMapped = mapping['ColumnRattachees']
+})
+
 /* NAME */
 const setScrutinName = async () => {
   const tableId = await gristUtils.getCurrentTableID()
