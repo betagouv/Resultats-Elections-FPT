@@ -56,14 +56,15 @@ defineExpose({updateCursorPos})
 <template>
   <main class="grist-container">
     <aside v-if="configurationIsOpened" class="grist-container__configuration fr-p-2w">
-      <p>Panneau de configuration</p>
+      <h2>Panneau de configuration</h2>
       <p v-if="configurationEmpty">Aucune configuration disponible</p>
       <div class="fr-mb-2w" v-else>
         <label>{{ configuration.label }} :
           <input v-model="configurationInput" type="text" :name="configuration.name" />
         </label>
       </div>
-      <button @click="closeConfiguration">Fermer</button>
+      <p>Après avoir cliquer sur "Fermer le panneau de configuration", vous devrez cliquer sur le bouton "Enregistrer" de Grist pour que les modifications soient prises en compte.</p>
+      <button @click="closeConfiguration">Fermer le panneau de configuration</button>
     </aside>
     <slot />
   </main>  
@@ -76,11 +77,12 @@ defineExpose({updateCursorPos})
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: white;
+  background-color: var(--background-contrast-blue-france);
   z-index: 9;
 }
 
-.grist-container__configuration input {
-  border: 1px solid purple;
+.grist-container__configuration input,
+.grist-container__configuration button {
+  border: 1px solid black;
 }
 </style>
