@@ -34,9 +34,7 @@ const isNotFilled = computed(() => {
 const actionType = computed(() => currentRecord.value[actionMapped.value].type || 'primary')
 
 /* TABLE */
-const tableColumnsInfos = computedAsync(async () => {
-  return await gristUtils.getTableColumnsInfos()
-}, [])
+const tableColumnsInfos = computedAsync(async () => await grist.getOption('tableColumnInfos'), [])
 
 /* GRIST */
 const gristColumns = [
