@@ -84,15 +84,17 @@ const selectRecord = (id) => {
     @update:configuration="onConfiguration"
     @update:options="onOptions"
   >
-    <main class="fr-container fr-p-3w">
-      <DsfrSearchBar
-        v-model="search"
-        large
-        label="Rechercher"
-        button-text="Rechercher"
-        placeholder="Rechercher"
-        @search="triggerSearch"
-      />
+    <main class="vue-recherche fr-container fr-p-3w">
+      <div class="vue-recherche__search fr-background-alt-grey fr-py-1w">
+        <DsfrSearchBar
+          v-model="search"
+          large
+          label="Rechercher"
+          button-text="Rechercher"
+          placeholder="Rechercher"
+          @search="triggerSearch"
+        />
+      </div>
       <ul class="fr-pl-0 app-list--unstyled">
         <SearchResultItem
           v-for="record in filteredRecords"
@@ -111,3 +113,16 @@ const selectRecord = (id) => {
     </main>
   </GristContainer>
 </template>
+
+<style lang="css" scoped>
+.vue-recherche {
+  position: relative;
+}
+
+.vue-recherche__search {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background-color: white;
+}
+</style>
