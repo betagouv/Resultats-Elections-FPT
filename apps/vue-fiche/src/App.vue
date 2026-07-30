@@ -179,7 +179,7 @@ const getExcelType = (type) => {
         title-tag="p"
         to="/"
       />
-      <div v-else-if="tableColumnsInfos.length > 0">
+      <div v-else-if="tableColumnsInfos?.length > 0">
         <div class="fr-grid-row fr-grid-row--gutters fr-grid-row--top fr-mb-3w">
           <div
             :class="{
