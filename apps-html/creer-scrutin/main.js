@@ -10,11 +10,18 @@ const searchAddEmpty = document.querySelector('#search-add-empty')
 const searchAddResults = document.querySelector('#search-add-results')
 const searchCreateButton = document.querySelector('#search-create-button')
 const scrutinNameElement = document.querySelector('#scrutin-name')
+const formElement = document.querySelector('#form')
+const messageElement = document.querySelector('#message')
+const successScrutinName = document.querySelector('#success-scrutin-name')
+const successCollectiviteName = document.querySelector('#success-collectivite-name')
+const successScrutinPage = document.querySelector('#success-scrutin-page')
+const backToForm = document.querySelector('#backToForm')
 
 let columnOrganisateurMapped = null
 let columnRattacheesMapped = null
 let allCollectivites = []
 let organisateurId = null
+let organisateurName = null
 let scrutinName = null
 
 /* GRIST */
@@ -123,7 +130,25 @@ searchAddButton.addEventListener('click', async () => {
 searchAddResults.addEventListener('change', () => {
   const formData = new FormData(searchAddResults)
   organisateurId = formData.get('organisateur')
-  if (organisateurId !== null) searchCreateButton.classList.remove('fr-hidden')
+  if (organisateurId !== null) {
+    const index = allCollectivites.id.indexOf(Number(organisateurId))
+    organisateurName = allCollectivites.Nom_de_collectivite_AFFICHE[index]
+    searchCreateButton.textContent += ` ${scrutinName} pour la collectivité ${organisateurName}`
+    searchCreateButton.classList.remove('fr-hidden')
+  }
+})
+
+const displaySuccess = () => {
+  successScrutinName.textContent = scrutinName
+  successCollectiviteName.textContent = organisateurName
+  successScrutinPage.textContent = scrutinName
+  formElement.classList.add('fr-hidden')
+  messageElement.classList.remove('fr-hidden')
+}
+
+backToForm.addEventListener('click', () => {
+  messageElement.classList.add('fr-hidden')
+  formElement.classList.remove('fr-hidden')
 })
 
 searchCreateButton.addEventListener('click', async () => {
@@ -150,6 +175,7 @@ searchCreateButton.addEventListener('click', async () => {
     const newRecordId = newRecord.retValues[0]
     resetAddSearch()
     searchAddInput.value = ''
+    displaySuccess()
     grist.setCursorPos({ rowId: newRecordId })
   } else {
     resetAddSearch()
