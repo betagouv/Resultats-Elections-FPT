@@ -14,9 +14,7 @@ const isLoading = ref(false)
 const displayView = ref('form')
 
 /* TABLE */
-const tableColumnsInfos = computedAsync(async () => {
-  return await gristUtils.getTableColumnsInfos()
-}, [])
+const tableColumnsInfos = computedAsync(async () => await grist.getOption('tableColumnInfos'), [])
 
 /* FORMULAIRE */
 const formInputs = computed(() => {
@@ -138,10 +136,19 @@ const onRecords = (params) => {
   hiddenFormMapped.value = mapping['hiddenForm']
   fillForm()
 }
+
+const onConfiguration = (configurations) => updateViewFromConfiguration(configurations)
+const onOptions = (options) => updateViewFromConfiguration(options)
+
+const updateViewFromConfiguration = (configurations) => {
+  for (const configuration of configurations) {
+    if (configuration.name === 'tableColumnInfos') tableColumnsInfos.value = configuration.value
+  }
+}
 </script>
 
 <template>
-  <GristContainer @update:record="onRecord" @update:records="onRecords" :columns="gristColumns">
+  <GristContainer @update:record="onRecord" @update:records="onRecords" :columns="gristColumns" @update:configuration="onConfiguration" @update:options="onOptions">
     <main class="fr-container fr-p-3w">
       <DsfrAlert v-if="currentRecord[hiddenFormMapped]" type="info" title="Formulaire non modifiable" :description="currentRecord[hiddenFormMapped]" />
       <template v-else>
