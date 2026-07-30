@@ -1,5 +1,7 @@
 <script setup>
 import { ref, computed } from 'vue'
+import { computedAsync } from '@vueuse/core'
+import gristUtils from '@shared/utils/grist.js'
 
 /* SETTINGS */
 const props = defineProps(['columns', 'configuration'])
@@ -54,9 +56,14 @@ const updateCursorPos = (cursorPos) => {
 defineExpose({updateCursorPos})
 
 /* Table column infos cache */
-const tableColumnInfos = ref(null)
-const saveTableColumnInfos = () => {
-  console.log('saveTableColumnInfos')
+const isLoading = ref(false)
+const tableColumnInfos = computedAsync(async () => await grist.getOption('tableColumnInfos'), [])
+const saveTableColumnInfos = async () => {
+  isLoading.value = true
+  const infos = await gristUtils.getTableColumnsInfos()
+  tableColumnInfos.value = infos
+  grist.setOption('tableColumnInfos', infos)
+  isLoading.value = false
 }
 </script>
 <template>
@@ -78,12 +85,12 @@ const saveTableColumnInfos = () => {
       <div class="fr-my-2w">
         <h3>2. Informations de la table</h3>
         <p>Les informations de la table sont enregistrées pour être utilisées dans la vue personnalisée.</p>
-        <button @click="saveTableColumnInfos">Actualiser les informations</button>
+        <button @click="saveTableColumnInfos" :disabled="isLoading">{{ isLoading ? 'Chargement en cours...' : 'Actualiser les informations' }}</button>
         <pre>{{ tableColumnInfos || 'Aucune information de la table enregistrée' }}</pre>
       </div>
     </aside>
     <slot />
-  </main>  
+  </main>
 </template>
 
 <style lang="css">
