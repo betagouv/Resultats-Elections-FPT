@@ -9,6 +9,7 @@ const searchAddLoading = document.querySelector('#search-add-loading')
 const searchAddEmpty = document.querySelector('#search-add-empty')
 const searchAddResults = document.querySelector('#search-add-results')
 const searchCreateButton = document.querySelector('#search-create-button')
+const scrutinNameElement = document.querySelector('#scrutin-name')
 
 let columnOrganisateurMapped = null
 let columnRattacheesMapped = null
@@ -31,17 +32,13 @@ grist.ready({
   ],
 })
 
-grist.onRecords(async (table, mapping) => {
-  columnOrganisateurMapped = mapping['ColumnOrganisateur']
-  columnRattacheesMapped = mapping['ColumnRattachees']
-  await setScrutinName()
-})
-
-/* COLUMNS */
+/* NAME */
 const setScrutinName = async () => {
   const tableId = await gristUtils.getCurrentTableID()
   scrutinName = tableId.split('_').pop()
+  scrutinNameElement.textContent = scrutinName
 }
+await setScrutinName()
 
 /* SEARCH */
 const displaySearchResults = (results) => {
