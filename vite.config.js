@@ -12,6 +12,7 @@ const portMap = {
   'vue-formulaire': 5176,
   'vue-bouton': 5177,
   'vue-recherche': 5178,
+  'vue-iframe': 5179,
 }
 
 // Détection du mode pour choisir l'app

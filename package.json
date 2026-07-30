@@ -21,7 +21,10 @@
     "dev:recherche": "vite --mode vue-recherche",
     "preview:recherche": "vite preview --mode vue-recherche",
     "build:recherche": "vite build --mode vue-recherche",
-    "build": "npm run build:fiche && npm run build:tableau && npm run build:formulaire && npm run build:bouton && npm run build:recherche && npm run copy:html",
+    "dev:iframe": "vite --mode vue-iframe",
+    "preview:iframe": "vite preview --mode vue-iframe",
+    "build:iframe": "vite build --mode vue-iframe",
+    "build": "npm run build:fiche && npm run build:tableau && npm run build:formulaire && npm run build:bouton && npm run build:recherche && npm run build:iframe && npm run copy:html",
     "build:staging": "npm run build && npm run copy:staging",
     "copy:staging": "cp -r dist/* staging/"
   },
