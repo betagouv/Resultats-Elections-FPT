@@ -26,10 +26,17 @@ const filteredRecords = computed(() => {
     valuesUtils.isInString(record[searchMapped.value], value)
   )
 })
+const isSearching = computed(() => appliedSearch.value.trim() !== '')
 const hasNoResults = computed(() => appliedSearch.value.trim() !== '' && filteredRecords.value.length === 0)
 
 const triggerSearch = () => {
   appliedSearch.value = search.value
+  window.scrollTo({ top: 0, behavior: 'smooth' })
+}
+
+const resetSearch = () => {
+  search.value = ''
+  appliedSearch.value = ''
 }
 
 /* GRIST */
@@ -95,6 +102,17 @@ const selectRecord = (id) => {
           @search="triggerSearch"
         />
       </div>
+      <div v-if="isSearching" class="vue-recherche__results fr-mb-1w">
+        <p v-if="hasNoResults" class="fr-mt-2w">Aucun résultat pour la recherche "{{ appliedSearch }}"</p>
+        <p v-else class="fr-mb-0">{{ filteredRecords.length }} {{ filteredRecords.length === 1 ? 'résultat' : 'résultats' }} pour la recherche "{{ appliedSearch }}"</p>
+        <DsfrButton
+          label="Supprimer la recherche"
+          icon="ri-delete-bin-line"
+          :icon-only="true"
+          @click="resetSearch"
+          tertiary
+        />
+      </div>
       <ul class="fr-pl-0 app-list--unstyled">
         <SearchResultItem
           v-for="record in filteredRecords"
@@ -107,9 +125,6 @@ const selectRecord = (id) => {
           @select="selectRecord(record.id)"
         />
       </ul>
-      <p v-if="hasNoResults" class="fr-mt-2w">
-        Aucun résultat pour la recherche : "{{ appliedSearch }}"
-      </p>
     </main>
   </GristContainer>
 </template>
@@ -117,6 +132,13 @@ const selectRecord = (id) => {
 <style lang="css" scoped>
 .vue-recherche {
   position: relative;
+}
+
+.vue-recherche__results {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
 }
 
 .vue-recherche__search {
