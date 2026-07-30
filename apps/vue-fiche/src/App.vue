@@ -78,8 +78,14 @@ const onRecords = (params) => {
   actionMapped.value = mapping['action']
 }
 
-const onConfiguration = (configuration) => {
-  showDownloadButton.value = configuration.value === 'oui'
+const onConfiguration = (configurations) => updateViewFromConfiguration(configurations)
+const onOptions = (options) => updateViewFromConfiguration(options)
+
+const updateViewFromConfiguration = (configurations) => {
+  for (const configuration of configurations) {
+    if (configuration.name === configurationButtonName) showDownloadButton.value = configuration.value === 'oui'
+    if (configuration.name === "tableColumnInfos") tableColumnsInfos.value = configuration.value
+  }
 }
 
 /* FUNCTIONS */
@@ -163,7 +169,7 @@ const getExcelType = (type) => {
 }
 </script>
 <template>
-  <GristContainer @update:record="onRecord" @update:records="onRecords" :columns="gristColumns" :configuration="gristConfiguration" @update:configuration="onConfiguration">
+  <GristContainer @update:record="onRecord" @update:records="onRecords" :columns="gristColumns" :configuration="gristConfiguration" @update:configuration="onConfiguration" @update:options="onOptions">
     <main v-if="currentRecord.id" class="fr-p-3w">
       <DsfrTile
         v-if="isNotFilled"

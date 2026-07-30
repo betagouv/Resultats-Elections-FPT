@@ -26,6 +26,11 @@ grist.onRecords((table, mapping) => {
   emit('update:records', {table, mapping})
 })
 
+grist.onOptions((options) => {
+  const optionsArray = Object.entries(options).map(([name, value]) => ({name, value}))
+  emit('update:options', optionsArray)
+})
+
 /* CONFIGURATION */
 const configurationIsOpened = ref(false)
 const configurationSaved = ref(false)
@@ -46,6 +51,13 @@ const closeConfiguration = () => {
     value: configurationInput.value,
   }
   grist.setOption(props.configuration.name, configurationInput.value)
+  updateConfiguration()
+}
+
+const updateConfiguration = () => {
+  let newConfiguration = []
+  if (props.configuration.name) newConfiguration.push({name: props.configuration.name, value: configurationInput.value})
+  newConfiguration.push({name: 'tableColumnInfos', value: tableColumnInfos.value})
   emit('update:configuration', newConfiguration)
 }
 
