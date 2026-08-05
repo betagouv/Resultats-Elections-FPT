@@ -1,5 +1,6 @@
 # Changelog
 
+- feat(Vue rattachement): migration de l'ancienne vue carto scrutin vers une app vue3 [#73](https://github.com/betagouv/Resultats-Elections-FPT/pull/73)
 - chore: mise à jour des dépendances [#72](https://github.com/betagouv/Resultats-Elections-FPT/pull/72)
 - fix: supprime code inutilisé [#71](https://github.com/betagouv/Resultats-Elections-FPT/pull/71)
 - fix: multiples améliorations [#69](https://github.com/betagouv/Resultats-Elections-FPT/pull/69)
