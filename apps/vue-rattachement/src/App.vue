@@ -32,12 +32,17 @@ const isSaving = ref(false)
 const displayView = ref('form')
 const reRender = ref(0)
 
-const selectedIds = computed(() => selectedItems.value.map((item) => item.id))
+/* Dynamic view */
+const isFormHidden = computed(() => hiddenFormMapped.value && currentRecord.value[hiddenFormMapped.value])
+const hasMessageSuccess = computed(() => displayView.value === 'success')
+const hasMessageError = computed(() => displayView.value === 'error')
+const hasNoForm = computed(() => displayView.value !== 'form')
 
+/* Selected items */
+const selectedIds = computed(() => selectedItems.value.map((item) => item.id))
 const selectedCountLabel = computed(() =>
   selectedItems.value.length > 0 ? selectedItems.value.length : 'Aucune'
 )
-
 const selectedCheckboxes = computed(() =>
   selectedItems.value.map((item) => ({
     id: `selected-${item.id}`,
@@ -45,10 +50,6 @@ const selectedCheckboxes = computed(() =>
     label: item.name,
     value: item.id,
   }))
-)
-
-const isFormHidden = computed(() =>
-  hiddenFormMapped.value && currentRecord.value[hiddenFormMapped.value]
 )
 
 const addCollectivite = (item) => {
@@ -171,23 +172,24 @@ const onRecords = async (params) => {
       />
 
       <template v-else>
+
         <DsfrAlert
-          v-if="displayView === 'success'"
+          v-if="hasMessageSuccess"
           type="success"
           title="Modifications enregistrées"
           description="Retrouver les informations du scrutin dans le résumé à gauche."
         />
         <DsfrAlert
-          v-if="displayView === 'error'"
+          v-if="hasMessageError"
           type="error"
           title="Une erreur technique est survenue"
           description="Merci de recommencer votre saisie, nous nous excusons pour la gène occasionnée."
         />
-        <div v-if="displayView !== 'form'" class="fr-grid-row fr-grid-row--center fr-my-2w">
+        <div v-if="hasNoForm" class="fr-grid-row fr-grid-row--center fr-my-2w">
           <DsfrButton secondary @click="backToForm">Revenir au formulaire</DsfrButton>
         </div>
+        <form v-else class="fr-mb-2w" @submit.prevent>
 
-        <form v-if="displayView === 'form'" class="fr-mb-2w" @submit.prevent>
           <h1 class="fr-h6">
             Modifier le scrutin {{ currentRecord[nameMapped] }} :
           </h1>
