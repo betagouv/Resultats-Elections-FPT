@@ -4,20 +4,6 @@ import gristUtils from '@shared/utils/grist.js'
 import GristContainer from '@shared/components/GristContainer.vue'
 import CollectiviteSearch from './components/CollectiviteSearch.vue'
 
-/* Grist data */
-const searchColumnName = 'Nom_de_collectivite_AFFICHE'
-const typeScrutinsOptions = [
-  { text: 'Sélectionner une option', value: '', disabled: true },
-  { text: 'CAP A', value: 'CAP A' },
-  { text: 'CAP B', value: 'CAP B' },
-  { text: 'CAP C', value: 'CAP C' },
-  { text: 'CAP (A+B)', value: 'CAP (A+B)' },
-  { text: 'CAP (A+C)', value: 'CAP (A+C)' },
-  { text: 'CAP (B+C)', value: 'CAP (B+C)' },
-  { text: 'CAP (A+B+C)', value: 'CAP (A+B+C)' },
-]
-
-/* INFORMATIONS */
 const currentRecord = ref({})
 const nameMapped = ref()
 const refIdsMapped = ref()
@@ -31,6 +17,19 @@ const isLoading = ref(false)
 const isSaving = ref(false)
 const displayView = ref('form')
 const reRender = ref(0)
+
+/* Grist data */
+const searchColumnName = 'Nom_de_collectivite_AFFICHE'
+const typeScrutinsOptions = [
+  { text: 'Sélectionner une option', value: '', disabled: true },
+  { text: 'CAP A', value: 'CAP A' },
+  { text: 'CAP B', value: 'CAP B' },
+  { text: 'CAP C', value: 'CAP C' },
+  { text: 'CAP (A+B)', value: 'CAP (A+B)' },
+  { text: 'CAP (A+C)', value: 'CAP (A+C)' },
+  { text: 'CAP (B+C)', value: 'CAP (B+C)' },
+  { text: 'CAP (A+B+C)', value: 'CAP (A+B+C)' },
+]
 
 /* Dynamic view */
 const isFormHidden = computed(() => hiddenFormMapped.value && currentRecord.value[hiddenFormMapped.value])
@@ -52,6 +51,7 @@ const selectedCheckboxes = computed(() =>
   }))
 )
 
+/* Collectivites actions */
 const addCollectivite = (item) => {
   if (selectedIds.value.includes(item.id)) return
   selectedItems.value.push(item)
@@ -62,7 +62,7 @@ const onSelectedChange = (values) => {
   selectedItems.value = selectedItems.value.filter((item) => nextIds.includes(item.id))
 }
 
-/* FORM */
+/* Form */
 const fillForm = () => {
   const names = currentRecord.value[refNamesMapped.value]
     ? [...currentRecord.value[refNamesMapped.value]].sort((a, b) => a.localeCompare(b))
