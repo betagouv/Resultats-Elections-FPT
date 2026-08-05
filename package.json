@@ -40,7 +40,7 @@
   "homepage": "https://github.com/betagouv/Resultats-Elections-FPT#readme",
   "dependencies": {
     "@gouvfr/dsfr": "^1.14.3",
-    "@gouvminint/vue-dsfr": "^8.13.1",
+    "@gouvminint/vue-dsfr": "^8.17.2",
     "@vueuse/core": "^14.1.0",
     "http-server": "^14.1.1",
     "pinia": "^3.0.4",
