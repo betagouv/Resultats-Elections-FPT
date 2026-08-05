@@ -34,9 +34,7 @@ const isNotFilled = computed(() => {
 const actionType = computed(() => currentRecord.value[actionMapped.value].type || 'primary')
 
 /* TABLE */
-const tableColumnsInfos = computedAsync(async () => {
-  return await gristUtils.getTableColumnsInfos()
-}, [])
+const tableColumnsInfos = computedAsync(async () => await grist.getOption('tableColumnInfos'), [])
 
 /* GRIST */
 const gristColumns = [
@@ -80,8 +78,14 @@ const onRecords = (params) => {
   actionMapped.value = mapping['action']
 }
 
-const onConfiguration = (configuration) => {
-  showDownloadButton.value = configuration.value === 'oui'
+const onConfiguration = (configurations) => updateViewFromConfiguration(configurations)
+const onOptions = (options) => updateViewFromConfiguration(options)
+
+const updateViewFromConfiguration = (configurations) => {
+  for (const configuration of configurations) {
+    if (configuration.name === configurationButtonName) showDownloadButton.value = configuration.value === 'oui'
+    if (configuration.name === "tableColumnInfos") tableColumnsInfos.value = configuration.value
+  }
 }
 
 /* FUNCTIONS */
@@ -165,7 +169,7 @@ const getExcelType = (type) => {
 }
 </script>
 <template>
-  <GristContainer @update:record="onRecord" @update:records="onRecords" :columns="gristColumns" :configuration="gristConfiguration" @update:configuration="onConfiguration">
+  <GristContainer @update:record="onRecord" @update:records="onRecords" :columns="gristColumns" :configuration="gristConfiguration" @update:configuration="onConfiguration" @update:options="onOptions">
     <main v-if="currentRecord.id" class="fr-p-3w">
       <DsfrTile
         v-if="isNotFilled"
@@ -175,7 +179,7 @@ const getExcelType = (type) => {
         title-tag="p"
         to="/"
       />
-      <div v-else-if="tableColumnsInfos.length > 0">
+      <div v-else-if="tableColumnsInfos?.length > 0">
         <div class="fr-grid-row fr-grid-row--gutters fr-grid-row--top fr-mb-3w">
           <div
             :class="{

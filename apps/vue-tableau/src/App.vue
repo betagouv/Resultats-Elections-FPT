@@ -94,9 +94,7 @@ const deleteFilter = (filter) => {
 const tableIsReady = computed(() => {
   return tableRows.value.length >= 0 && tableHeader.value.length > 0
 })
-const tableColumnsInfos = computedAsync(async () => {
-  return await gristUtils.getTableColumnsInfos()
-}, [])
+const tableColumnsInfos = computedAsync(async () => await grist.getOption('tableColumnInfos'), [])
 
 const allColumnsMapped = computed(() => {
   if(!firstColumnMapped.value || !otherColumnsMapped.value ) return []
@@ -190,6 +188,15 @@ const onRecords = (params) => {
   filtersColumnsMapped.value = mapping['Filtres']
 }
 
+const onConfiguration = (configurations) => updateViewFromConfiguration(configurations)
+const onOptions = (options) => updateViewFromConfiguration(options)
+
+const updateViewFromConfiguration = (configurations) => {
+  for (const configuration of configurations) {
+    if (configuration.name === 'tableColumnInfos') tableColumnsInfos.value = configuration.value
+  }
+}
+
 const changeCursor = (id) => {
   gristContainerRef.value?.updateCursorPos(id)
 }
@@ -200,7 +207,7 @@ const backToTop = () => {
 }
 </script>
 <template>
-  <GristContainer ref="gristContainerRef" @update:record="onRecord" @update:records="onRecords" :columns="gristColumns">
+  <GristContainer ref="gristContainerRef" @update:record="onRecord" @update:records="onRecords" :columns="gristColumns" @update:configuration="onConfiguration" @update:options="onOptions">
     <div class="vue-tableau">
       <div class="fr-pt-3w fr-px-3w">
         <div class="fr-grid-row fr-grid-row--center">

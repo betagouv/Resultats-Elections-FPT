@@ -1,5 +1,7 @@
 <script setup>
 import { ref, computed } from 'vue'
+import { computedAsync } from '@vueuse/core'
+import gristUtils from '@shared/utils/grist.js'
 
 /* SETTINGS */
 const props = defineProps(['columns', 'configuration'])
@@ -24,6 +26,11 @@ grist.onRecords((table, mapping) => {
   emit('update:records', {table, mapping})
 })
 
+grist.onOptions((options) => {
+  const optionsArray = Object.entries(options).map(([name, value]) => ({name, value}))
+  emit('update:options', optionsArray)
+})
+
 /* CONFIGURATION */
 const configurationIsOpened = ref(false)
 const configurationSaved = ref(false)
@@ -44,6 +51,13 @@ const closeConfiguration = () => {
     value: configurationInput.value,
   }
   grist.setOption(props.configuration.name, configurationInput.value)
+  updateConfiguration()
+}
+
+const updateConfiguration = () => {
+  let newConfiguration = []
+  if (props.configuration.name) newConfiguration.push({name: props.configuration.name, value: configurationInput.value})
+  newConfiguration.push({name: 'tableColumnInfos', value: tableColumnInfos.value})
   emit('update:configuration', newConfiguration)
 }
 
@@ -52,21 +66,43 @@ const updateCursorPos = (cursorPos) => {
   grist.setCursorPos({ rowId: cursorPos })
 }
 defineExpose({updateCursorPos})
+
+/* Table column infos cache */
+const isLoading = ref(false)
+const tableColumnInfos = computedAsync(async () => await grist.getOption('tableColumnInfos'), [])
+const saveTableColumnInfos = async () => {
+  isLoading.value = true
+  const infos = await gristUtils.getTableColumnsInfos()
+  tableColumnInfos.value = infos
+  grist.setOption('tableColumnInfos', infos)
+  isLoading.value = false
+}
 </script>
 <template>
   <main class="grist-container">
     <aside v-if="configurationIsOpened" class="grist-container__configuration fr-p-2w">
-      <p>Panneau de configuration</p>
-      <p v-if="configurationEmpty">Aucune configuration disponible</p>
-      <div class="fr-mb-2w" v-else>
-        <label>{{ configuration.label }} :
-          <input v-model="configurationInput" type="text" :name="configuration.name" />
-        </label>
+      <h2>Panneau de configuration</h2>
+      <button @click="closeConfiguration">Fermer le panneau de configuration</button>
+      <p class="fr-text--xs fr-mt-1w">Après avoir cliquer sur "Fermer le panneau de configuration", vous devrez cliquer sur le bouton "Enregistrer" de Grist pour que les modifications soient prises en compte.</p>
+      <hr>
+      <div class="fr-my-2w">
+        <h3>1. Configuration de la vue personnalisée</h3>
+        <p v-if="configurationEmpty">Aucune configuration disponible</p>
+        <div class="fr-mb-2w" v-else>
+          <label>{{ configuration.label }} :
+            <input v-model="configurationInput" type="text" :name="configuration.name" />
+          </label>
+        </div>
       </div>
-      <button @click="closeConfiguration">Fermer</button>
+      <div class="fr-my-2w">
+        <h3>2. Informations de la table</h3>
+        <p>Les informations de la table sont enregistrées pour être utilisées dans la vue personnalisée.</p>
+        <button @click="saveTableColumnInfos" :disabled="isLoading">{{ isLoading ? 'Chargement en cours...' : 'Actualiser les informations' }}</button>
+        <pre>{{ tableColumnInfos || 'Aucune information de la table enregistrée' }}</pre>
+      </div>
     </aside>
     <slot />
-  </main>  
+  </main>
 </template>
 
 <style lang="css">
@@ -76,11 +112,13 @@ defineExpose({updateCursorPos})
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: white;
+  background-color: var(--background-contrast-blue-france);
   z-index: 9;
+  overflow-y: scroll;
 }
 
-.grist-container__configuration input {
-  border: 1px solid purple;
+.grist-container__configuration input,
+.grist-container__configuration button {
+  border: 1px solid black;
 }
 </style>
