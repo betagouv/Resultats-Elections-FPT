@@ -1,13 +1,12 @@
 <script setup>
-import { ref, computed, defineAsyncComponent } from 'vue'
-import { computedAsync } from '@vueuse/core'
+import { ref, computed } from 'vue'
+import { computedAsync, useInfiniteScroll } from '@vueuse/core'
 import valuesUtils from '@shared/utils/values.js'
 import gristUtils from '@shared/utils/grist.js'
 import GristContainer from '@shared/components/GristContainer.vue'
+import SearchResultItem from './components/SearchResultItem.vue'
 
-const SearchResultItem = defineAsyncComponent(
-  () => import('./components/SearchResultItem.vue')
-)
+console.log("CHA DEBUG NEW VIEW")
 
 const gristContainerRef = ref(null)
 const currentRecord = ref({})
@@ -17,6 +16,8 @@ const badgeMapped = ref()
 const descriptionMapped = ref()
 const search = ref('')
 const appliedSearch = ref('')
+const pageSize = 100
+const visibleCount = ref(pageSize)
 
 /* TABLE */
 const tableColumnsInfos = computedAsync(async () => await grist.getOption('tableColumnInfos'), [])
@@ -29,17 +30,38 @@ const filteredRecords = computed(() => {
     valuesUtils.isInString(record[searchMapped.value], value)
   )
 })
+const displayedRecords = computed(() =>
+  filteredRecords.value.slice(0, visibleCount.value)
+)
 const isSearching = computed(() => appliedSearch.value.trim() !== '')
 const hasNoResults = computed(() => appliedSearch.value.trim() !== '' && filteredRecords.value.length === 0)
 
+const { reset: resetInfiniteScroll } = useInfiniteScroll(
+  window,
+  () => {
+    visibleCount.value += pageSize
+  },
+  {
+    distance: 100,
+    canLoadMore: () => visibleCount.value < filteredRecords.value.length,
+  }
+)
+
+const resetVisibleRecords = () => {
+  visibleCount.value = pageSize
+  resetInfiniteScroll()
+}
+
 const triggerSearch = () => {
   appliedSearch.value = search.value
+  resetVisibleRecords()
   window.scrollTo({ top: 0, behavior: 'smooth' })
 }
 
 const resetSearch = () => {
   search.value = ''
   appliedSearch.value = ''
+  resetVisibleRecords()
 }
 
 /* GRIST */
@@ -118,7 +140,7 @@ const selectRecord = (id) => {
       </div>
       <ul class="fr-pl-0 app-list--unstyled">
         <SearchResultItem
-          v-for="record in filteredRecords"
+          v-for="record in displayedRecords"
           :key="record.id"
           :title="record[searchMapped]"
           :description="descriptionMapped ? record[descriptionMapped] : ''"

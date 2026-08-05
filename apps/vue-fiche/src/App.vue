@@ -4,9 +4,9 @@ import { computedAsync } from '@vueuse/core'
 import StatusBadge from '@shared/components/StatusBadge.vue'
 import valuesUtils from '@shared/utils/values.js'
 import gristUtils from '@shared/utils/grist.js'
-import writeXlsxFile from 'write-excel-file'
 import pictoDocumentFill from '@shared/picto/document-fill.svg'
 import GristContainer from '@shared/components/GristContainer.vue'
+import ExcelDownloadButton from '@shared/components/ExcelDownloadButton.vue'
 
 const titleMapped = ref()
 const badgeMapped = ref()
@@ -108,17 +108,10 @@ const triggerAction = async () => {
 }
 
 /* EXPORT */
-const isDownloadingFile = ref(false)
-const downloadExcel = async () => {
-  const data = generateExcelData()
-  isDownloadingFile.value = true
-  const title = currentRecord.value[titleMapped.value].replace(/ /g, '-')
-  const fileName = `informations-${title}.xlsx`
-  await writeXlsxFile(data, {
-    fileName: fileName
-  })
-  isDownloadingFile.value = false
-}
+const excelFileName = computed(() => {
+  const title = currentRecord.value[titleMapped.value]?.replace(/ /g, '-') || 'fiche'
+  return `informations-${title}.xlsx`
+})
 
 const generateExcelData = () => {
   const excelData = []
@@ -191,10 +184,11 @@ const getExcelType = (type) => {
             <StatusBadge v-if="badgeMapped" :label="currentRecord[badgeMapped]" />
           </div>
           <div v-if="showDownloadButton" class="fr-col-6 fr-grid-row fr-grid-row--right">
-            <DsfrButton 
-              secondary 
-              :label="isDownloadingFile ? 'Téléchargement en cours...' : 'Télécharger les données (Excel)'" 
-              @click="downloadExcel" />
+            <ExcelDownloadButton
+              label="Télécharger les données (Excel)"
+              :file-name="excelFileName"
+              :get-data="generateExcelData"
+            />
           </div>
         </div>
         <ul class="fr-pl-0 fr-mb-3w app-list--unstyled">

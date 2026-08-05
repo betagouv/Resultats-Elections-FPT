@@ -4,7 +4,7 @@ import { computedAsync } from '@vueuse/core'
 import gristUtils from '@shared/utils/grist.js'
 import valuesUtils from '@shared/utils/values.js'
 import GristContainer from '@shared/components/GristContainer.vue'
-import writeXlsxFile from 'write-excel-file'
+import ExcelDownloadButton from '@shared/components/ExcelDownloadButton.vue'
 import { useFiltersStore } from '@/store/filters'
 import { DsfrButton } from '@gouvminint/vue-dsfr'
 import FiltersModal from './components/FiltersModal.vue'
@@ -21,20 +21,10 @@ const filtersStore = useFiltersStore()
 const gristContainerRef = ref(null)
 
 /* EXPORT */
-const isGeneratingFile = ref(false)
-const buttonLabel = computed(() => {
+const excelButtonLabel = computed(() => {
   const rowsName = tableRows.value.length > 1 ? 'collectivités' : 'collectivité'
-  return isGeneratingFile.value ? 'Téléchargement en cours...' : `Télécharger les ${tableRows.value.length} ${rowsName} (Excel)`
+  return `Télécharger les ${tableRows.value.length} ${rowsName} (Excel)`
 })
-const downloadExcel = async () => {
-  const data = generateExcelData()
-  isGeneratingFile.value = true
-  await writeXlsxFile(data, {
-    // TODO: rendre le nom du fichier dynamique
-    fileName: 'liste-collectivites.xlsx'
-  })
-  isGeneratingFile.value = false
-}
 
 const generateExcelData = () => {
   const data = []
@@ -227,14 +217,13 @@ const backToTop = () => {
             @update:modelValue="onSearchUpdate()"
           />
           <div class="fr-grid-row fr-grid-row--right fr-grid-row--middle fr-ml-2w">
-            <DsfrButton 
+            <ExcelDownloadButton
               v-if="tableIsReady"
-              :label="buttonLabel" 
-              size="medium"
-              tertiary
+              :label="excelButtonLabel"
+              file-name="liste-collectivites.xlsx"
+              :get-data="generateExcelData"
               class="fr-mr-0"
-              :disabled="isGeneratingFile"
-              @click="downloadExcel" />
+            />
           </div>
         </div>
       </div>

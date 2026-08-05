@@ -1,5 +1,10 @@
 # Changelog
 
+- fix: multiples améliorations [#69](https://github.com/betagouv/Resultats-Elections-FPT/pull/69)
+- feat(Création de scrutin): simplifie la vue existante pour ne garder que la partie de création [#68](https://github.com/betagouv/Resultats-Elections-FPT/pull/68)
+- feat(Vue iframe): création de la nouvelle vue [#67](https://github.com/betagouv/Resultats-Elections-FPT/pull/67)
+- feat(Vue recherche): création de la nouvelle vue [#66](https://github.com/betagouv/Resultats-Elections-FPT/pull/66)
+- feat: sauvegarde les informations de la table utilisée dans la vue dans les options [#65](https://github.com/betagouv/Resultats-Elections-FPT/pull/65)
 - fix(Cartographie scrutin): corrige l'accessibilité de la barre de recherche [#64](https://github.com/betagouv/Resultats-Elections-FPT/pull/64)
 - fix(Créer un scrutin): pour les CAP on n'affiche pas les scrutins organisés ou liés [#63](https://github.com/betagouv/Resultats-Elections-FPT/pull/63)
 - fix(Créer un scrutin): corrige l'affichage des scrutins organisés [#62](https://github.com/betagouv/Resultats-Elections-FPT/pull/62)
