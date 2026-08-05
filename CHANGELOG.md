@@ -1,5 +1,6 @@
 # Changelog
 
+- chore: mise à jour des dépendances [#72](https://github.com/betagouv/Resultats-Elections-FPT/pull/72)
 - fix: supprime code inutilisé [#71](https://github.com/betagouv/Resultats-Elections-FPT/pull/71)
 - fix: multiples améliorations [#69](https://github.com/betagouv/Resultats-Elections-FPT/pull/69)
 - feat(Création de scrutin): simplifie la vue existante pour ne garder que la partie de création [#68](https://github.com/betagouv/Resultats-Elections-FPT/pull/68)
