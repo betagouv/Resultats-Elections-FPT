@@ -27,6 +27,7 @@ grist.onRecords((table, mapping) => {
 })
 
 grist.onOptions((options) => {
+  if (!options) return
   const optionsArray = Object.entries(options).map(([name, value]) => ({name, value}))
   emit('update:options', optionsArray)
 })
