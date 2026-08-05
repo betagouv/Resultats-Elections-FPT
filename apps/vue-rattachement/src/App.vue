@@ -1,6 +1,5 @@
 <script setup>
 import { ref, computed } from 'vue'
-import gristUtils from '@shared/utils/grist.js'
 import GristContainer from '@shared/components/GristContainer.vue'
 import CollectiviteSearch from './components/CollectiviteSearch.vue'
 
@@ -10,7 +9,6 @@ const refIdsMapped = ref()
 const refNamesMapped = ref()
 const typeMapped = ref()
 const hiddenFormMapped = ref()
-const refListAll = ref(null)
 const selectedItems = ref([])
 const selectedType = ref('')
 const isLoading = ref(false)
@@ -64,17 +62,15 @@ const onSelectedChange = (values) => {
 
 /* Form */
 const fillForm = () => {
-  const names = currentRecord.value[refNamesMapped.value]
-    ? [...currentRecord.value[refNamesMapped.value]].sort((a, b) => a.localeCompare(b))
-    : []
+  const ids = currentRecord.value[refIdsMapped.value] || []
+  const names = currentRecord.value[refNamesMapped.value] || []
 
-  selectedItems.value = names.map((name) => {
-    const index = refListAll.value?.[searchColumnName]?.indexOf(name)
-    return {
-      id: index >= 0 ? refListAll.value.id[index] : null,
-      name,
-    }
-  }).filter((item) => item.id != null)
+  selectedItems.value = ids
+    .map((id, index) => ({
+      id,
+      name: names[index] || '',
+    }))
+    .sort((a, b) => a.name.localeCompare(b.name))
 
   selectedType.value = typeMapped.value ? currentRecord.value[typeMapped.value] || '' : ''
 }
@@ -145,14 +141,13 @@ const onRecord = (record) => {
   window.scrollTo(0, 0)
 }
 
-const onRecords = async (params) => {
+const onRecords = (params) => {
   const { mapping } = params
   nameMapped.value = mapping['Name']
   refIdsMapped.value = mapping['RefIds']
   refNamesMapped.value = mapping['RefNames']
   typeMapped.value = mapping['Type'] || null
   hiddenFormMapped.value = mapping['HiddenForm'] || null
-  refListAll.value = await gristUtils.getTable('Table_collectivites')
   fillForm()
 }
 </script>
