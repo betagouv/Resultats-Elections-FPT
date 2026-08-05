@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, h } from 'vue'
 import { computedAsync } from '@vueuse/core'
 import StatusBadge from '@shared/components/StatusBadge.vue'
 import valuesUtils from '@shared/utils/values.js'
@@ -98,7 +98,7 @@ const getPrettyLabel = (label) => {
 
 /* ACTION */
 const hasAction = computed(() => currentRecord.value[actionMapped.value])
-const recordAction = computed(() => { hasAction.value ? valuesUtils.cleanJson(currentRecord.value[actionMapped.value]) : null })
+const recordAction = computed(() => hasAction.value ? valuesUtils.cleanJson(currentRecord.value[actionMapped.value]) : null)
 const actionType = computed(() => recordAction.value?.type || 'primary')
 
 /* MODAL */
