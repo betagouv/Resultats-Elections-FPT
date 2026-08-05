@@ -23,4 +23,13 @@ const prettify = (value) => {
   return value
 }
 
-export default { isInString, prettify }
+const cleanUrl = (url) => {
+  if (!url || typeof url !== 'string') return ''
+  try {
+    return encodeURI(decodeURI(url.trim()))
+  } catch {
+    return encodeURI(url.trim())
+  }
+}
+
+export default { isInString, prettify, cleanUrl }

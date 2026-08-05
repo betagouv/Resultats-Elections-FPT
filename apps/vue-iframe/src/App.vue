@@ -1,6 +1,7 @@
 <script setup>
 import { computedAsync } from '@vueuse/core'
 import GristContainer from '@shared/components/GristContainer.vue'
+import valuesUtils from '@shared/utils/values.js'
 
 /* GRIST */
 const configurationName = 'iframeUrl'
@@ -10,12 +11,15 @@ const gristConfiguration = {
 }
 
 /* Iframe */
-const iframeUrl = computedAsync(async () => await grist.getOption(configurationName), '')
+const iframeUrl = computedAsync(async () => {
+  const url = await grist.getOption(configurationName)
+  return valuesUtils.cleanUrl(url)
+}, '')
 const onConfiguration = (configurations) => updateViewFromConfiguration(configurations)
 const onOptions = (options) => updateViewFromConfiguration(options)
 const updateViewFromConfiguration = (configurations) => {
   for (const configuration of configurations) {
-    if (configuration.name === configurationName) iframeUrl.value = configuration.value
+    if (configuration.name === configurationName) iframeUrl.value = valuesUtils.cleanUrl(configuration.value)
   }
 }
 </script>
