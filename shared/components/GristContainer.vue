@@ -90,7 +90,8 @@ const saveTableColumnInfos = async () => {
         <p v-if="configurationEmpty">Aucune configuration disponible</p>
         <div class="fr-mb-2w" v-else>
           <label>{{ configuration.label }} :
-            <input v-model="configurationInput" type="text" :name="configuration.name" />
+            <br/>
+            <input v-model="configurationInput" type="text" :name="configuration.name" style="width: 100%;"/>
           </label>
         </div>
       </div>

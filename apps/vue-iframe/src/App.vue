@@ -1,0 +1,45 @@
+<script setup>
+import { computedAsync } from '@vueuse/core'
+import GristContainer from '@shared/components/GristContainer.vue'
+
+/* GRIST */
+const configurationName = 'iframeUrl'
+const gristConfiguration = {
+  name: configurationName,
+  label: "Entrer l'url de l'iframe à afficher, attention à avoir un lien en https",
+}
+
+/* Iframe */
+const iframeUrl = computedAsync(async () => await grist.getOption(configurationName), '')
+const onConfiguration = (configurations) => updateViewFromConfiguration(configurations)
+const onOptions = (options) => updateViewFromConfiguration(options)
+const updateViewFromConfiguration = (configurations) => {
+  for (const configuration of configurations) {
+    if (configuration.name === configurationName) iframeUrl.value = configuration.value
+  }
+}
+</script>
+
+<template>
+  <GristContainer
+    :configuration="gristConfiguration"
+    @update:configuration="onConfiguration"
+    @update:options="onOptions"
+  >
+    <iframe
+      v-if="iframeUrl"
+      class="vue-iframe"
+      :src="iframeUrl"
+      title="Contenu iframe"
+    />
+  </GristContainer>
+</template>
+
+<style lang="css" scoped>
+.vue-iframe {
+  display: block;
+  width: 100%;
+  height: 100vh;
+  border: 0;
+}
+</style>
