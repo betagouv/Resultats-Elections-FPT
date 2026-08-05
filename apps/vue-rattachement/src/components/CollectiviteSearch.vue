@@ -3,7 +3,7 @@ import { ref, computed, onMounted } from 'vue'
 import valuesUtils from '@shared/utils/values.js'
 import gristUtils from '@shared/utils/grist.js'
 
-const props = defineProps(['selectedIds','scrutinName','allowAlreadyLinked','collectiviteSearchName'])
+const props = defineProps(['selectedIds','allowAlreadyLinked','collectiviteSearchName'])
 const emit = defineEmits(['select'])
 
 const search = ref('')
@@ -11,9 +11,15 @@ const appliedSearch = ref('')
 const searchResults = ref([])
 const isLoading = ref(false)
 const refListAll = ref(null)
+const scrutinName = ref(null)
 
 const isSearching = computed(() => appliedSearch.value.trim() !== '')
 const hasNoResults = computed(() => isSearching.value && searchResults.value.length === 0)
+
+const setScrutinName = async () => {
+  const tableId = await gristUtils.getCurrentTableID()
+  scrutinName.value = tableId.split('_').pop()
+}
 
 /* Reset */
 const reset = () => {
@@ -34,6 +40,7 @@ const triggerSearch = async () => {
 
   isLoading.value = true
   appliedSearch.value = search.value.trim()
+  if (!scrutinName.value) await setScrutinName()
   refListAll.value = await gristUtils.getTable('Table_collectivites')
 
   const names = refListAll.value[props.collectiviteSearchName]
@@ -46,7 +53,7 @@ const triggerSearch = async () => {
     if (isFound) foundIndexes.push(index)
   })
 
-  const columnScrutinName = `Scrutin_${props.scrutinName}_Nom`
+  const columnScrutinName = `Scrutin_${scrutinName.value}_Nom`
   searchResults.value = foundIndexes.map((index) => {
     const name = names[index]
     const scrutins = refListAll.value[columnScrutinName][index]

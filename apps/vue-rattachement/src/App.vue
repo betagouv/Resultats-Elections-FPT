@@ -24,7 +24,6 @@ const refIdsMapped = ref()
 const refNamesMapped = ref()
 const typeMapped = ref()
 const hiddenFormMapped = ref()
-const scrutinName = ref(null)
 const refListAll = ref(null)
 const selectedItems = ref([])
 const selectedType = ref('')
@@ -51,11 +50,6 @@ const selectedCheckboxes = computed(() =>
 const isFormHidden = computed(() =>
   hiddenFormMapped.value && currentRecord.value[hiddenFormMapped.value]
 )
-
-const setScrutinName = async () => {
-  const tableId = await gristUtils.getCurrentTableID()
-  scrutinName.value = tableId.split('_').pop()
-}
 
 const addCollectivite = (item) => {
   if (selectedIds.value.includes(item.id)) return
@@ -157,7 +151,6 @@ const onRecords = async (params) => {
   refNamesMapped.value = mapping['RefNames']
   typeMapped.value = mapping['Type'] || null
   hiddenFormMapped.value = mapping['HiddenForm'] || null
-  await setScrutinName()
   refListAll.value = await gristUtils.getTable('Table_collectivites')
   fillForm()
 }
@@ -221,7 +214,6 @@ const onRecords = async (params) => {
           <CollectiviteSearch
             :key="reRender"
             :selected-ids="selectedIds"
-            :scrutin-name="scrutinName"
             :allow-already-linked="!!typeMapped"
             :collectivite-search-name="searchColumnName"
             @select="addCollectivite"
