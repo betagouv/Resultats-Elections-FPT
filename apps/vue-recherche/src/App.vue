@@ -1,13 +1,10 @@
 <script setup>
-import { ref, computed, defineAsyncComponent } from 'vue'
+import { ref, computed } from 'vue'
 import { computedAsync, useInfiniteScroll } from '@vueuse/core'
 import valuesUtils from '@shared/utils/values.js'
 import gristUtils from '@shared/utils/grist.js'
 import GristContainer from '@shared/components/GristContainer.vue'
-
-const SearchResultItem = defineAsyncComponent(
-  () => import('./components/SearchResultItem.vue')
-)
+import SearchResultItem from './components/SearchResultItem.vue'
 
 const gristContainerRef = ref(null)
 const currentRecord = ref({})
