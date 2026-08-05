@@ -17,7 +17,7 @@
         <p data-name="js-form-not-editable-message"></p>
       </div>
       
-      <div id="form">
+      <form id="form">
         <fieldset class="fr-fieldset fr-mb-2w">
           <legend class="fr-fieldset__legend">
             Modifier le scrutin <span data-name="collectivite"></span> :
@@ -80,28 +80,29 @@
             >
           </legend>
 
-          <form style="width: 100%;">
-            <div class="fr-fieldset__element fr-search-bar fr-search-bar--lg" role="search">
-              <label class="fr-label" for="search-input">
-                Ajouter une collectivité :
-              </label>
-              <input
-                class="fr-input"
-                aria-describedby="search-input-messages"
-                placeholder="Rechercher par son nom"
-                id="search-input"
-                type="search"
-              />
-              <button
-                id="search-button"
-                title="Rechercher"
-                type="submit"
-                class="fr-btn"
-              >
-                Rechercher
-              </button>
-            </div>
-          </form>
+          <div
+            class="fr-fieldset__element fr-search-bar fr-search-bar--lg"
+            role="search"
+          >
+            <label class="fr-label" for="search-input">
+              Ajouter une collectivité :
+            </label>
+            <input
+              class="fr-input"
+              aria-describedby="search-input-messages"
+              placeholder="Rechercher par son nom"
+              id="search-input"
+              type="search"
+            />
+            <button
+              id="search-button"
+              title="Rechercher"
+              type="button"
+              class="fr-btn"
+            >
+              Rechercher
+            </button>
+          </div>
 
           <div class="fr-fieldset__element fr-mb-0">
             <p class="fr-hidden" id="search-loading">Recherche en cours...</p>
@@ -114,7 +115,7 @@
         <button class="fr-btn fr-mt-2w" type="button" id="save">
           Enregistrer les modifications
         </button>
-      </div>
+      </form>
 
       <section id="message" class="fr-hidden">
         <div class="fr-hidden fr-alert fr-alert--success fr-mb-3w" id="success">
