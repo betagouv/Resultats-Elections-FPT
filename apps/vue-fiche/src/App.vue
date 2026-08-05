@@ -31,8 +31,6 @@ const isNotFilled = computed(() => {
   const badge = currentRecord.value[badgeMapped.value]
   return badge ? badge.toLowerCase() === 'à renseigner' : false
 })
-const actionType = computed(() => currentRecord.value[actionMapped.value].type || 'primary')
-
 /* TABLE */
 const tableColumnsInfos = computedAsync(async () => await grist.getOption('tableColumnInfos'), [])
 
@@ -98,12 +96,17 @@ const getPrettyLabel = (label) => {
   return columnInfo ? columnInfo.label : null
 }
 
+/* ACTION */
+const hasAction = computed(() => currentRecord.value[actionMapped.value])
+const recordAction = computed(() => { hasAction.value ? valuesUtils.cleanJson(currentRecord.value[actionMapped.value]) : null })
+const actionType = computed(() => recordAction.value?.type || 'primary')
+
 /* MODAL */
 const opened = ref(false)
 const triggerAction = async () => {
-  const recordAction = currentRecord.value[actionMapped.value].action
-  const actionArray = JSON.parse(JSON.stringify(recordAction))
-  const updatedRecord = await grist.docApi.applyUserActions([actionArray])
+  const action = recordAction.value.action
+  const actionToArray = JSON.parse(JSON.stringify(action))
+  const updatedRecord = await grist.docApi.applyUserActions([actionToArray])
   if (updatedRecord) opened.value = false
 }
 
@@ -208,23 +211,23 @@ const getExcelType = (type) => {
           </li>
         </ul>
         <DsfrButton 
-          v-if="currentRecord[actionMapped]"
+          v-if="hasAction"
           :[actionType]="true"
-          :label="currentRecord[actionMapped].button" 
+          :label="recordAction.button" 
           @click="opened = true" />
       </div>
       <div v-else>
         <p>Chargement en cours...</p>
       </div>
       <DsfrModal
-        v-if="currentRecord[actionMapped]"
+        v-if="hasAction"
         v-model:opened="opened"
-        :title="currentRecord[actionMapped].button"
+        :title="recordAction.button"
         @close="opened = false"
       >
         <template #default>
-          <p>{{ currentRecord[actionMapped].description }}</p>
-          <DsfrButton v-if="!currentRecord[actionMapped].isDisabled" label="Oui" @click="triggerAction" />
+          <p>{{ recordAction.description }}</p>
+          <DsfrButton v-if="!recordAction.isDisabled" label="Oui" @click="triggerAction" />
         </template>
       </DsfrModal>
     </main>
