@@ -10,11 +10,9 @@ const buttonLabel = computed(() => isDownloading.value ? 'Téléchargement en co
 const downloadExcel = async () => {
   isDownloading.value = true
   try {
-    const { default: writeXlsxFile } = await import('write-excel-file')
+    const { default: writeExcelFile } = await import('write-excel-file/browser')
     const data = props.getData()
-    await writeXlsxFile(data, {
-      fileName: props.fileName,
-    })
+    await writeExcelFile(data).toFile(props.fileName)
   } finally {
     isDownloading.value = false
   }
