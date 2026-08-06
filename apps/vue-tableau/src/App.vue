@@ -129,14 +129,12 @@ const tableRows = computed(() => {
     const row = []
     allColumnsMapped.value.forEach(column => {
       const infos = gristUtils.getColumnInfos(column, tableColumnsInfos.value)
-      const cellValue = {
-        type: infos.type,
-        isDSFRBadge: infos.colId.indexOf('DSFR_Badge') > -1,
-        hasMultipleValues: record[column] && typeof record[column] === 'object',
-        value: record[column],
-        id: record.id,
-      }
-      row.push(cellValue)
+      const id = record.id
+      const type = infos.type
+      const hasMultipleValues = record[column] && typeof record[column] === 'object'
+      const isDSFRBadge = infos.colId.indexOf('DSFR_Badge') > -1
+      const value = isDSFRBadge ? valuesUtils.cleanJson(record[column]) : record[column]
+      row.push({id, type, value, isDSFRBadge, hasMultipleValues})
     })
     rows.push(row)
   })
