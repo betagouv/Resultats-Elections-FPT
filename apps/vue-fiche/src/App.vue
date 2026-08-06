@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed, h } from 'vue'
+import { ref, computed } from 'vue'
 import { computedAsync } from '@vueuse/core'
 import StatusBadge from '@shared/components/StatusBadge.vue'
 import valuesUtils from '@shared/utils/values.js'
