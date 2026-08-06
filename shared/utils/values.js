@@ -1,3 +1,5 @@
+import { jsonrepair } from 'jsonrepair'
+
 const removeSpecialChars = (string) => {
   return string
     .trim()
@@ -32,4 +34,14 @@ const cleanUrl = (url) => {
   }
 }
 
-export default { isInString, prettify, cleanUrl }
+const cleanJson = (value) => {
+  if (value && typeof value === 'object') return value
+  if (typeof value !== 'string') return null
+  try {
+    return JSON.parse(value)
+  } catch {
+    return JSON.parse(jsonrepair(value))
+  }
+}
+
+export default { isInString, prettify, cleanUrl, cleanJson }
