@@ -18,7 +18,7 @@ const clickCheckboxeCursor = () => {
   <p v-else-if="cell.type === 'Bool'" class="app-flex-center">
     <IconCheck v-if="cell.value" class="vue-tableau__icon-check fr-text-title--blue-france" />
   </p>
-  <DsfrTag v-else-if="cell.type.indexOf('Ref:') > -1" :label="cell.value" />
+  <DsfrTag v-else-if="cell.isDSFRTag" :label="cell.value" />
   <ul v-else-if="cell.hasMultipleValues">
     <li v-for="value in cell.value">
       <p class="fr-mb-0">{{ value }}</p>
