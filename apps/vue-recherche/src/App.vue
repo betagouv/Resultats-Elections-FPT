@@ -6,8 +6,6 @@ import gristUtils from '@shared/utils/grist.js'
 import GristContainer from '@shared/components/GristContainer.vue'
 import SearchResultItem from './components/SearchResultItem.vue'
 
-console.log("CHA DEBUG NEW VIEW")
-
 const gristContainerRef = ref(null)
 const currentRecord = ref({})
 const allRecords = ref([])

@@ -69,7 +69,11 @@ const getRefOptions = async (type) => {
 
 const fillForm = () => {
   for(let i = 0; i < fieldsMapped.value.length; i++) {
-    formModels.value[fieldsMapped.value[i]] = currentRecord.value[fieldsMapped.value[i]] || ''
+    const cell = currentRecord.value[fieldsMapped.value[i]]
+    const isSelect = formInputs.value[i].type === 'select' && formInputs.value[i].infos.type !== 'Choice'
+    const inputName = formInputs.value[i].name
+    const value = isSelect ? getSelectRefName(inputName, cell.rowId) : cell
+    formModels.value[fieldsMapped.value[i]] = value || ''
   }
 }
 
@@ -87,6 +91,11 @@ const getFormValuesCleaned = () => {
 const getSelectRefValue = (inputName, valueToFind) => {
   if (!valueToFind) return null
   return formSelects.value[inputName].find(option => option.value === valueToFind).id
+}
+
+const getSelectRefName = (inputName, valueToFind) => {
+  if (!valueToFind) return null
+  return formSelects.value[inputName].find(option => option.id === valueToFind).text
 }
 
 const saveRecord = async () => {

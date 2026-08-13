@@ -133,8 +133,9 @@ const tableRows = computed(() => {
       const type = infos.type
       const hasMultipleValues = record[column] && typeof record[column] === 'object'
       const isDSFRBadge = infos.colId.indexOf('DSFR_Badge') > -1
+      const isDSFRTag = infos.colId.indexOf('DSFR_Tag') > -1
       const value = isDSFRBadge ? valuesUtils.cleanJson(record[column]) : record[column]
-      row.push({id, type, value, isDSFRBadge, hasMultipleValues})
+      row.push({id, type, value, isDSFRBadge, isDSFRTag, hasMultipleValues})
     })
     rows.push(row)
   })
