@@ -113,7 +113,6 @@ const resetAddSearch = () => {
   searchAddEmpty.classList.add('fr-hidden')
   searchAddLoading.classList.add('fr-hidden')
   searchCreateButton.classList.add('fr-hidden')
-  isSearching = false
   searchAddResults.replaceChildren()
 }
 
