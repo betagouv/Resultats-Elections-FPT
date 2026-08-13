@@ -23,6 +23,7 @@ let allCollectivites = []
 let organisateurId = null
 let organisateurName = null
 let scrutinName = null
+const createScrutinDefaultButton = "Créer un nouveau scrutin"
 
 /* GRIST */
 grist.ready({
@@ -133,7 +134,7 @@ searchAddResults.addEventListener('change', () => {
   if (organisateurId !== null) {
     const index = allCollectivites.id.indexOf(Number(organisateurId))
     organisateurName = allCollectivites.Nom_de_collectivite_AFFICHE[index]
-    searchCreateButton.textContent += ` ${scrutinName} pour la collectivité ${organisateurName}`
+    searchCreateButton.textContent = `${createScrutinDefaultButton} ${scrutinName} pour la collectivité ${organisateurName}`
     searchCreateButton.classList.remove('fr-hidden')
   }
 })
