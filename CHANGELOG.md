@@ -1,5 +1,6 @@
 # Changelog
 
+- fix: diverses corrections suite aux dernières mises à jour [#76](https://github.com/betagouv/Resultats-Elections-FPT/pull/76)
 - fix(Vue tableau): rend l'affichage du tag dynamique en fonction du nom de la colonne et non de son type [#75](https://github.com/betagouv/Resultats-Elections-FPT/pull/75)
 - fix(Formules d'initialisation): permet de recevoir une chaine de caractères au lieu d'un JSON [#74](https://github.com/betagouv/Resultats-Elections-FPT/pull/74)
 - feat(Vue rattachement): migration de l'ancienne vue carto scrutin vers une app vue3 [#73](https://github.com/betagouv/Resultats-Elections-FPT/pull/73)

@@ -10,6 +10,7 @@ const refNamesMapped = ref()
 const typeMapped = ref()
 const hiddenFormMapped = ref()
 const selectedItems = ref([])
+const checkedIds = ref([])
 const selectedType = ref('')
 const isLoading = ref(false)
 const isSaving = ref(false)
@@ -19,7 +20,6 @@ const reRender = ref(0)
 /* Grist data */
 const searchColumnName = 'Nom_de_collectivite_AFFICHE'
 const typeScrutinsOptions = [
-  { text: 'Sélectionner une option', value: '', disabled: true },
   { text: 'CAP A', value: 'CAP A' },
   { text: 'CAP B', value: 'CAP B' },
   { text: 'CAP C', value: 'CAP C' },
@@ -38,7 +38,7 @@ const hasNoForm = computed(() => displayView.value !== 'form')
 /* Selected items */
 const selectedIds = computed(() => selectedItems.value.map((item) => item.id))
 const selectedCountLabel = computed(() =>
-  selectedItems.value.length > 0 ? selectedItems.value.length : 'Aucune'
+  checkedIds.value.length > 0 ? checkedIds.value.length : 'Aucune'
 )
 const selectedCheckboxes = computed(() =>
   selectedItems.value.map((item) => ({
@@ -53,11 +53,7 @@ const selectedCheckboxes = computed(() =>
 const addCollectivite = (item) => {
   if (selectedIds.value.includes(item.id)) return
   selectedItems.value.push(item)
-}
-
-const onSelectedChange = (values) => {
-  const nextIds = values || []
-  selectedItems.value = selectedItems.value.filter((item) => nextIds.includes(item.id))
+  checkedIds.value.push(item.id)
 }
 
 /* Form */
@@ -71,6 +67,7 @@ const fillForm = () => {
       name: names[index] || '',
     }))
     .sort((a, b) => a.name.localeCompare(b.name))
+  checkedIds.value = selectedItems.value.map((item) => item.id)
 
   selectedType.value = typeMapped.value ? currentRecord.value[typeMapped.value] || '' : ''
 }
@@ -80,7 +77,7 @@ const saveRecord = async () => {
   isSaving.value = true
   try {
     const fields = {
-      [refIdsMapped.value]: `[${selectedIds.value.toString()}]`,
+      [refIdsMapped.value]: `[${checkedIds.value.toString()}]`,
     }
     if (typeMapped.value) {
       fields[typeMapped.value] = selectedType.value
@@ -202,9 +199,8 @@ const onRecords = (params) => {
             </legend>
             <DsfrCheckboxSet
               v-if="selectedCheckboxes.length > 0"
-              :model-value="selectedIds"
+              v-model="checkedIds"
               :options="selectedCheckboxes"
-              @update:model-value="onSelectedChange"
             />
           </fieldset>
 
