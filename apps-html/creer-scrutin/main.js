@@ -23,6 +23,7 @@ let allCollectivites = []
 let organisateurId = null
 let organisateurName = null
 let scrutinName = null
+let isSearching = false
 const createScrutinDefaultButton = "Créer un nouveau scrutin"
 
 /* GRIST */
@@ -112,10 +113,13 @@ const resetAddSearch = () => {
   searchAddEmpty.classList.add('fr-hidden')
   searchAddLoading.classList.add('fr-hidden')
   searchCreateButton.classList.add('fr-hidden')
+  isSearching = false
   searchAddResults.replaceChildren()
 }
 
 searchAddButton.addEventListener('click', async () => {
+  if (isSearching) return
+  isSearching = true
   resetAddSearch()
   const searchValue = searchAddInput.value.toLowerCase().trim()
   if (searchValue.length === 0) return
@@ -126,6 +130,7 @@ searchAddButton.addEventListener('click', async () => {
   if (filteredCollectivites.length === 0)
     searchAddEmpty.classList.remove('fr-hidden')
   else displaySearchResults(filteredCollectivites)
+  isSearching = false
 })
 
 searchAddResults.addEventListener('change', () => {
