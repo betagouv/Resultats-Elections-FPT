@@ -19,7 +19,6 @@ const reRender = ref(0)
 /* Grist data */
 const searchColumnName = 'Nom_de_collectivite_AFFICHE'
 const typeScrutinsOptions = [
-  { text: 'Sélectionner une option', value: '', disabled: true },
   { text: 'CAP A', value: 'CAP A' },
   { text: 'CAP B', value: 'CAP B' },
   { text: 'CAP C', value: 'CAP C' },
