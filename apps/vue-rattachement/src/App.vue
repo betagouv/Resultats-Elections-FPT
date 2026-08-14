@@ -60,7 +60,7 @@ const addCollectivite = (item) => {
 /* Form */
 const fillForm = () => {
   const ids = currentRecord.value[refIdsMapped.value] || []
-  const names = currentRecord.value[refNamesMapped.value] || []
+  const names = currentRecord.value[refNamesMapped.value].split(',')
 
   selectedItems.value = ids
     .map((id, index) => ({

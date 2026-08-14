@@ -207,6 +207,12 @@ const getExcelType = (type) => {
                 <li v-for="item in currentRecord[data]" :key="item">{{ getPrettyValue(item) }}</li>
               </ul>
             </div>
+            <div v-else-if="currentRecord[data] && data.indexOf('DSFR_List') > -1">
+              <p class="fr-mb-0">{{ getPrettyLabel(data) }} :</p>
+              <ul v-if="currentRecord[data].length > 0" class="fr-mb-3w">
+                <li v-for="item in currentRecord[data].split(',')" :key="item">{{ getPrettyValue(item) }}</li>
+              </ul>
+            </div>
             <p v-else class="fr-mb-0">{{ getPrettyLabel(data) }} : {{ getPrettyValue(currentRecord[data]) }}</p>
           </li>
         </ul>
