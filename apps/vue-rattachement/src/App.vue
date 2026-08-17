@@ -2,6 +2,7 @@
 import { ref, computed } from 'vue'
 import GristContainer from '@shared/components/GristContainer.vue'
 import CollectiviteSearch from './components/CollectiviteSearch.vue'
+import valuesUtils from '@shared/utils/values'
 
 const currentRecord = ref({})
 const nameMapped = ref()
@@ -60,7 +61,7 @@ const addCollectivite = (item) => {
 /* Form */
 const fillForm = () => {
   const ids = currentRecord.value[refIdsMapped.value] || []
-  const names = currentRecord.value[refNamesMapped.value].split(',')
+  const names = currentRecord.value[refNamesMapped.value] ? valuesUtils.cleanJson(currentRecord.value[refNamesMapped.value]).list : []
 
   selectedItems.value = ids
     .map((id, index) => ({
