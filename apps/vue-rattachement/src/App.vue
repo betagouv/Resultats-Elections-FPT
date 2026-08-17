@@ -7,6 +7,7 @@ const currentRecord = ref({})
 const nameMapped = ref()
 const refIdsMapped = ref()
 const refNamesMapped = ref()
+const refSourcesMapped = ref()
 const typeMapped = ref()
 const hiddenFormMapped = ref()
 const selectedItems = ref([])
@@ -77,7 +78,7 @@ const saveRecord = async () => {
   isSaving.value = true
   try {
     const fields = {
-      [refIdsMapped.value]: `[${checkedIds.value.toString()}]`,
+      [refSourcesMapped.value]: `[${checkedIds.value.toString()}]`,
     }
     if (typeMapped.value) {
       fields[typeMapped.value] = selectedType.value
@@ -106,6 +107,10 @@ const gristColumns = [
   {
     name: 'Name',
     description: 'Nom de la collectivite',
+  },
+  {
+    name: 'RefSources',
+    description: 'Identifiant',
   },
   {
     name: 'RefIds',
@@ -143,6 +148,7 @@ const onRecords = (params) => {
   nameMapped.value = mapping['Name']
   refIdsMapped.value = mapping['RefIds']
   refNamesMapped.value = mapping['RefNames']
+  refSourcesMapped.value = mapping['RefSources']
   typeMapped.value = mapping['Type'] || null
   hiddenFormMapped.value = mapping['HiddenForm'] || null
   fillForm()
