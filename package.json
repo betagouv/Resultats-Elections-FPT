@@ -52,7 +52,6 @@
   },
   "devDependencies": {
     "@playwright/test": "^1.62.1",
-    "@types/node": "^26.2.0",
     "@vitejs/plugin-vue": "^5.0.4",
     "dotenv": "^17.4.2",
     "http-server": "^14.1.1",
