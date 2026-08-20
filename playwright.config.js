@@ -1,8 +1,10 @@
 import { defineConfig, devices } from '@playwright/test'
 import dotenv from 'dotenv'
 import path from 'path'
-dotenv.config({ path: path.resolve(import.meta.dirname, '.env') })
 import mockedLogin from './playwright/mockedLogin.js'
+
+// Import env config
+dotenv.config({ path: path.resolve(import.meta.dirname, '.env') })
 
 // https://playwright.dev/docs/test-configuration
 export default defineConfig({
