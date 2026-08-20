@@ -1,4 +1,4 @@
-const mockedLogin = () => ({
+const getCookieSession = () => ({
   "cookies": [
     {
       "name": "grist_core",
@@ -14,4 +14,4 @@ const mockedLogin = () => ({
   "origins": []
 })
 
-export default mockedLogin
+export default getCookieSession

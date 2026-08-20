@@ -1,7 +1,7 @@
 import { defineConfig, devices } from '@playwright/test'
 import dotenv from 'dotenv'
 import path from 'path'
-import mockedLogin from './playwright/mockedLogin.js'
+import getCookieSession from './playwright/session.js'
 
 // Import env config
 dotenv.config({ path: path.resolve(import.meta.dirname, '.env') })
@@ -28,7 +28,7 @@ export default defineConfig({
     trace: 'on-first-retry',
 
     /* Force une connexion en tant que propriétaire pour tous les tests */
-    storageState: mockedLogin(),
+    storageState: getCookieSession(),
   },
 
   /* Configure projects for major browsers */
