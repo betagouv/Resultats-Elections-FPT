@@ -1,9 +1,23 @@
 import { test, expect } from '@playwright/test'
+import helper from '../playwright/helper.js'
+import mockedLogin from '../playwright/mockedLogin.js'
 
-const url = "https://grist.numerique.gouv.fr/o/dgcl/rqTZnqCnMA8U/Bac-a-sable-Charline-Playwright/p/10"
+// Création des URLs
+const url = helper.getUrl("accueil")
+const urlPref = url + helper.viewAsPref
+const urlAdmin = url + helper.viewAsAdmin
 
-test('la page est affichée', async ({ page }) => {
-  await page.goto(url)
+// Force une connexion en tant que propriétaire
+test.use({ storageState: mockedLogin })
+
+test('la page d\'accueil s\’affiche pour un utilisateur PREF', async ({ page }) => {
+  await page.goto(urlPref)
+  const widget = page.locator('iframe').contentFrame().locator('iframe').contentFrame()
+  await expect(widget.locator('[data-testid="title"]')).toBeVisible({ timeout: 15000 })
+})
+
+test('la page d\'accueil s\’affiche pour un utilisateur ADMIN', async ({ page }) => {
+  await page.goto(urlAdmin)
   const widget = page.locator('iframe').contentFrame().locator('iframe').contentFrame()
   await expect(widget.locator('[data-testid="title"]')).toBeVisible({ timeout: 15000 })
 })
