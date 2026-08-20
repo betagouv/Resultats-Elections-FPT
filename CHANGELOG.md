@@ -1,5 +1,6 @@
 # Changelog
 
+- core: Met en place des tests e2e [#80](https://github.com/betagouv/Resultats-Elections-FPT/pull/80)
 - fix(Rattachement): corrige le rattachement des collectivités triées par ordre alphabétique [#79](https://github.com/betagouv/Resultats-Elections-FPT/pull/79)
 - fix(Créer un scrutin): la recherche peut être lancée plusieurs fois consécutives [#78](https://github.com/betagouv/Resultats-Elections-FPT/pull/78)
 - fix(App HTML): ajoute une query à l'url du fichier js [#77](https://github.com/betagouv/Resultats-Elections-FPT/pull/77)
