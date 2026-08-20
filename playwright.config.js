@@ -1,17 +1,10 @@
-// @ts-check
-import { defineConfig, devices } from '@playwright/test';
+import { defineConfig, devices } from '@playwright/test'
+import dotenv from 'dotenv'
+import path from 'path'
+dotenv.config({ path: path.resolve(import.meta.dirname, '.env') })
+import mockedLogin from './playwright/mockedLogin.js'
 
-/**
- * Read environment variables from file.
- * https://github.com/motdotla/dotenv
- */
-import dotenv from 'dotenv';
-import path from 'path';
-dotenv.config({ path: path.resolve(import.meta.dirname, '.env') });
-
-/**
- * @see https://playwright.dev/docs/test-configuration
- */
+// https://playwright.dev/docs/test-configuration
 export default defineConfig({
   testDir: './tests/',
   /* Run tests in files in parallel */
@@ -31,6 +24,9 @@ export default defineConfig({
 
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on-first-retry',
+
+    /* Force une connexion en tant que propriétaire pour tous les tests */
+    storageState: mockedLogin(),
   },
 
   /* Configure projects for major browsers */

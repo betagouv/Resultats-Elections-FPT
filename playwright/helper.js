@@ -10,4 +10,8 @@ const getUrl = (page) => {
   return `https://grist.numerique.gouv.fr/o/dgcl/${docId}/p/${pagesID[page]}`
 }
 
-export default { getUrl, viewAsPref, viewAsAdmin }
+const getWidget = (page) => {
+  return page.locator('iframe').contentFrame().locator('iframe').contentFrame()
+}
+
+export default { getUrl, getWidget, viewAsPref, viewAsAdmin }
