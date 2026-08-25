@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="../styles/app.css" />
   </head>
   <body>
-    <main class="fr-container fr-p-3w">
+    <main class="fr-container fr-p-3w" data-testid="saisie-scrutin-formulaire">
 
       <div class="fr-hidden fr-alert fr-alert--success fr-mb-3w" data-name="js-form-not-editable-alert">
         <h3 class="fr-alert__title">
@@ -47,7 +47,7 @@
           </div>
         </fieldset>
 
-        <button class="fr-btn fr-mt-2w" type="submit">
+        <button class="fr-btn fr-mt-2w" type="submit" data-testid="saisie-scrutin-submit">
           Enregistrer les modifications
         </button>
       </form>

@@ -11,7 +11,17 @@ const getCookieSession = () => ({
       "sameSite": "Lax"
     }
   ],
-  "origins": []
+  "origins": [
+    {
+      "origin": "https://grist.numerique.gouv.fr",
+      "localStorage": [
+        {
+          "name": "maintainanceStartDateAgreement",
+          "value": "2026-08-27T10:30:00.000Z"
+        }
+      ]
+    }
+  ]
 })
 
 export default getCookieSession

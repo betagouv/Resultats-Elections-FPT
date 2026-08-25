@@ -104,6 +104,7 @@ const generateInputText = (column, type, classToAdd) => {
   input.setAttribute('type', type)
   input.setAttribute('name', column.colId)
   input.setAttribute('id', column.colId)
+  input.setAttribute('data-testid', 'saisie-scrutin-input')
   input.classList.add('fr-input')
 
   if (type === 'number') {
