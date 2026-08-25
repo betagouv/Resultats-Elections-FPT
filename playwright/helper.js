@@ -15,4 +15,6 @@ const generatePrefViewAs = (number) => {
   return users
 }
 
-export default { getUrl, getWidgetHtmlBuilder, getCustomWidget, generatePrefViewAs, viewAsPref, viewAsAdmin }
+const getUserEmail = (viewAsPref) => decodeURIComponent(viewAsPref.replace('?aclAsUser_=', ''))
+
+export default { getUrl, getWidgetHtmlBuilder, getCustomWidget, generatePrefViewAs, getUserEmail, viewAsPref, viewAsAdmin }
