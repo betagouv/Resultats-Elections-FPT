@@ -8,7 +8,8 @@ const getCustomWidget = (page, number) => page.locator('iframe').nth(number || 0
 
 const generatePrefViewAs = (number) => {
   const users = []
-  for (let i = 0; i < number; i++) {
+  for (let i = 1; i < number; i++) {
+    if (i === 20) continue // Pas de PREF-20
     users.push(`?aclAsUser_=dgcl.test.pref-${i}%40beta.gouv.fr`)
   }
   return users
