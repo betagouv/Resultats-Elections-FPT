@@ -14,6 +14,7 @@ const portMap = {
   'vue-recherche': 5178,
   'vue-iframe': 5179,
   'vue-rattachement': 5180,
+  'vue-saisie': 5181,
 }
 
 // Détection du mode pour choisir l'app
