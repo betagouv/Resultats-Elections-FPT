@@ -25,8 +25,8 @@ const gristConfiguration = {
 }
 
 /* LEGENDES */
-const legends = computedAsync(async () => getLegends(await grist.getOption(configurationName)), [])
 const getLegends = (configuration) => configuration ? configuration.split(';') : []
+const legends = computedAsync(async () => getLegends(await grist.getOption(configurationName)), [])
 const votesLegend = computed(() => legends.value[0] || 'Résultats des votes')
 const syndicatsLegend = computed(() => legends.value[1] || 'Voix des organisations syndicales')
 
