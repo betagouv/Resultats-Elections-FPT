@@ -1,5 +1,6 @@
 # Changelog
 
+- core: améliore la configuration des tests automatisés [#81](https://github.com/betagouv/Resultats-Elections-FPT/pull/81)
 - core: Met en place des tests e2e [#80](https://github.com/betagouv/Resultats-Elections-FPT/pull/80)
 - fix(Rattachement): corrige le rattachement des collectivités triées par ordre alphabétique [#79](https://github.com/betagouv/Resultats-Elections-FPT/pull/79)
 - fix(Créer un scrutin): la recherche peut être lancée plusieurs fois consécutives [#78](https://github.com/betagouv/Resultats-Elections-FPT/pull/78)

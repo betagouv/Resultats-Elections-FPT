@@ -7,12 +7,12 @@ const urlAdmin = url + helper.viewAsAdmin
 
 test('la page d\'accueil s\’affiche pour un utilisateur PREF', async ({ page }) => {
   await page.goto(urlPref)
-  const widget = helper.getWidget(page)
+  const widget = helper.getWidgetHtmlBuilder(page)
   await expect(widget.getByTestId('title')).toBeVisible({ timeout: 15000 })
 })
 
 test('la page d\'accueil s\’affiche pour un utilisateur ADMIN', async ({ page }) => {
   await page.goto(urlAdmin)
-  const widget = helper.getWidget(page)
+  const widget = helper.getWidgetHtmlBuilder(page)
   await expect(widget.getByTestId('title')).toBeVisible({ timeout: 15000 })
 })

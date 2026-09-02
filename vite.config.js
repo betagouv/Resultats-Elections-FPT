@@ -41,7 +41,8 @@ export default defineConfig(({ mode }) => {
     },
     server: {
       port: appConfig.port,
-      strictPort: false
+      strictPort: false,
+      host: true
     },
     resolve: {
       alias: {
