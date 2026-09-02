@@ -174,8 +174,9 @@ const getExcelType = (type) => {
         description="À renseigner dans le formulaire à droite"
         title-tag="p"
         to="/"
+        data-testid="fiche-tile"
       />
-      <div v-else-if="tableColumnsInfos?.length > 0">
+      <div v-else-if="tableColumnsInfos?.length > 0" data-testid="fiche-content">
         <div class="fr-grid-row fr-grid-row--gutters fr-grid-row--top fr-mb-3w">
           <div
             :class="{
@@ -200,14 +201,14 @@ const getExcelType = (type) => {
           </li>
         </ul>
         <ul class="fr-pl-0 fr-mb-3w app-list--unstyled">
-          <li v-for="data in dataMapped" :key="data" class="fr-pb-0 fr-mb-1w">
+          <li v-for="data in dataMapped" :key="data" class="fr-pb-0 fr-mb-1w" data-testid="fiche-field-value">
             <div v-if="currentRecord[data] && typeof currentRecord[data] === 'object' && currentRecord[data].length > 0">
-              <p class="fr-mb-0">{{ getPrettyLabel(data) }} :</p>
-              <ul v-if="currentRecord[data].length > 0" class="fr-mb-3w">
+              <p class="fr-mb-0" data-testid="fiche-simple-value-label">{{ getPrettyLabel(data) }} :</p>
+              <ul v-if="currentRecord[data].length > 0" class="fr-mb-3w" data-testid="fiche-simple-value-list">
                 <li v-for="item in currentRecord[data]" :key="item">{{ getPrettyValue(item) }}</li>
               </ul>
             </div>
-            <p v-else class="fr-mb-0">{{ getPrettyLabel(data) }} : {{ getPrettyValue(currentRecord[data]) }}</p>
+            <p v-else class="fr-mb-0" data-testid="fiche-simple-value-single">{{ getPrettyLabel(data) }} : {{ getPrettyValue(currentRecord[data]) }}</p>
           </li>
         </ul>
         <DsfrButton 
