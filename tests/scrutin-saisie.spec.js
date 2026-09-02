@@ -51,9 +51,9 @@ test("CST : l'absence de candidat désactive les champs et est enregistrée", as
   const iframeFiche = helper.getCustomWidget(page, 1)
   const iframeSaisie = helper.getCustomWidget(page, 2)
   await iframeList.getByTestId('recherche-item').nth(2).click()
-  // Je vérifie les champs de votes et de syndicats sont saisissables
-  const votesFields = iframeSaisie.getByTestId('saisie-field-votes').or(iframeSaisie.getByTestId('saisie-field-syndicats'))
-  await expect(votesFields.first()).toBeEnabled({ timeout: 15000 })
+  // Je vérifie les champs des deux groupes sont saisissables
+  const groupsFields = iframeSaisie.getByTestId('saisie-field-firstGroup').or(iframeSaisie.getByTestId('saisie-field-secondGroup'))
+  await expect(groupsFields.first()).toBeEnabled({ timeout: 15000 })
   // Je saisie le nombre d'inscrits qui reste obligatoire
   const formIndexInscrits = 0
   await iframeSaisie.getByTestId('saisie-field-required').nth(formIndexInscrits).fill("100")
@@ -61,8 +61,8 @@ test("CST : l'absence de candidat désactive les champs et est enregistrée", as
   // force: true car l'input DSFR est masqué sous son label qui intercepte le clic
   const formIndexAbsenceCandidat = 1
   await iframeSaisie.getByTestId('saisie-field-required').nth(formIndexAbsenceCandidat).check({ force: true })
-  // Je vérifie que tous les champs de votes et de syndicats sont désactivés
-  for (const field of await votesFields.all()) {
+  // Je vérifie que tous les champs des deux groupes sont désactivés
+  for (const field of await groupsFields.all()) {
     await expect(field).toBeDisabled()
   }
   // Enregistre les données

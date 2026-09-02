@@ -8,10 +8,10 @@ import FormSaisie from './components/FormSaisie.vue'
 /* INFORMATIONS */
 const currentRecord = ref({})
 const titleMapped = ref()
-const nombreInscritsMapped = ref()
-const absenceCandidatMapped = ref()
-const resultatsMapped = ref([])
-const syndicatsMapped = ref([])
+const requiredFieldMapped = ref()
+const disabledCheckboxeMapped = ref()
+const firstGroupMapped = ref([])
+const secondGroupMapped = ref([])
 const hiddenFormMapped = ref()
 const formModels = ref({})
 const isLoading = ref(false)
@@ -27,21 +27,21 @@ const gristConfiguration = {
 /* LEGENDES */
 const getLegends = (configuration) => configuration ? configuration.split(';') : []
 const legends = computedAsync(async () => getLegends(await grist.getOption(configurationName)), [])
-const votesLegend = computed(() => legends.value[0] || 'Résultats des votes')
-const syndicatsLegend = computed(() => legends.value[1] || 'Voix des organisations syndicales')
+const firstGroupLegend = computed(() => legends.value[0] || 'Résultats des votes')
+const secondGroupLegend = computed(() => legends.value[1] || 'Voix des organisations syndicales')
 
 /* TABLE */
 const tableColumnsInfos = computedAsync(async () => await grist.getOption('tableColumnInfos'), [])
 
 /* FORMULAIRE */
-const requiredFields = computed(() => [nombreInscritsMapped.value, absenceCandidatMapped.value].filter(field => field))
-const candidatFields = computed(() => [...resultatsMapped.value, ...syndicatsMapped.value])
-const allFields = computed(() => [...requiredFields.value, ...candidatFields.value])
+const requiredFields = computed(() => [requiredFieldMapped.value, disabledCheckboxeMapped.value].filter(field => field))
+const groupsFields = computed(() => [...firstGroupMapped.value, ...secondGroupMapped.value])
+const allFields = computed(() => [...requiredFields.value, ...groupsFields.value])
 
 const requiredInputs = computed(() => getFormInputs(requiredFields.value))
-const votesInputs = computed(() => getFormInputs(resultatsMapped.value))
-const syndicatsInputs = computed(() => getFormInputs(syndicatsMapped.value))
-const candidatInputs = computed(() => [...votesInputs.value, ...syndicatsInputs.value])
+const firstGroupInputs = computed(() => getFormInputs(firstGroupMapped.value))
+const secondGroupInputs = computed(() => getFormInputs(secondGroupMapped.value))
+const groupsInputs = computed(() => [...firstGroupInputs.value, ...secondGroupInputs.value])
 
 const getFormInputs = (fields) => {
   if (tableColumnsInfos.value.length <= 0) return []
@@ -67,25 +67,25 @@ const fillForm = () => {
     const cell = currentRecord.value[field]
     formModels.value[field] = cell ?? ''
   }
-  if (hasNoCandidat.value) emptyCandidatInputs()
+  if (areGroupsDisabled.value) emptyGroupsInputs()
 }
 
-/* ABSENCE DE CANDIDAT */
-const hasNoCandidat = computed(() => absenceCandidatMapped.value ? formModels.value[absenceCandidatMapped.value] === true : false)
+/* DESACTIVATION DES GROUPES DE CHAMPS */
+const areGroupsDisabled = computed(() => disabledCheckboxeMapped.value ? formModels.value[disabledCheckboxeMapped.value] === true : false)
 
-watch(hasNoCandidat, (isChecked) => {
-  if (isChecked) emptyCandidatInputs()
-  else fillCandidatInputs()
+watch(areGroupsDisabled, (isChecked) => {
+  if (isChecked) emptyGroupsInputs()
+  else fillGroupsInputs()
 })
 
-const emptyCandidatInputs = () => {
-  for (const input of candidatInputs.value) {
+const emptyGroupsInputs = () => {
+  for (const input of groupsInputs.value) {
     formModels.value[input.name] = input.type === 'checkbox' ? false : ''
   }
 }
 
-const fillCandidatInputs = () => {
-  for (const input of candidatInputs.value) {
+const fillGroupsInputs = () => {
+  for (const input of groupsInputs.value) {
     formModels.value[input.name] = currentRecord.value[input.name] ?? ''
   }
 }
@@ -96,8 +96,8 @@ const getFormValuesCleaned = () => {
   for (const input of requiredInputs.value) {
     values[input.name] = getInputValue(input)
   }
-  for (const input of candidatInputs.value) {
-    values[input.name] = hasNoCandidat.value ? null : getInputValue(input)
+  for (const input of groupsInputs.value) {
+    values[input.name] = areGroupsDisabled.value ? null : getInputValue(input)
   }
   return values
 }
@@ -133,23 +133,23 @@ const gristColumns = [
     description: 'Titre du formulaire',
   },
   {
-    name: 'nombreInscrits',
-    description: "Nombre d'inscrits",
+    name: 'requiredField',
+    description: "Nombre d'inscrits seul champ obligatoire",
     optional: true,
   },
   {
-    name: 'absenceCandidat',
-    description: "Colonne s'il n'y a pas de candidat",
+    name: 'disabledCheckboxe',
+    description: 'Checboxe qui désactive les groupes de champs si cochée',
     optional: true,
   },
   {
-    name: 'resultats',
-    description: 'Colonnes qui comptabilisent les votes',
+    name: 'firstGroup',
+    description: 'Premier groupe de champs',
     allowMultiple: true,
   },
   {
-    name: 'syndicats',
-    description: 'Colonnes qui comptabilisent les voix des syndicats',
+    name: 'secondGroup',
+    description: 'Second groupe de champs',
     allowMultiple: true,
   },
   {
@@ -167,10 +167,10 @@ const onRecord = (record) => {
 const onRecords = (params) => {
   const { mapping } = params
   titleMapped.value = mapping['title']
-  nombreInscritsMapped.value = mapping['nombreInscrits']
-  absenceCandidatMapped.value = mapping['absenceCandidat']
-  resultatsMapped.value = mapping['resultats'] || []
-  syndicatsMapped.value = mapping['syndicats'] || []
+  requiredFieldMapped.value = mapping['requiredField']
+  disabledCheckboxeMapped.value = mapping['disabledCheckboxe']
+  firstGroupMapped.value = mapping['firstGroup'] || []
+  secondGroupMapped.value = mapping['secondGroup'] || []
   hiddenFormMapped.value = mapping['hiddenForm']
   fillForm()
 }
@@ -195,12 +195,12 @@ const updateViewFromConfiguration = (configurations) => {
         :display-view="displayView"
         :title="currentRecord[titleMapped]"
         :required-inputs="requiredInputs"
-        :votes-inputs="votesInputs"
-        :syndicats-inputs="syndicatsInputs"
-        :votes-legend="votesLegend"
-        :syndicats-legend="syndicatsLegend"
+        :first-group-inputs="firstGroupInputs"
+        :second-group-inputs="secondGroupInputs"
+        :first-group-legend="firstGroupLegend"
+        :second-group-legend="secondGroupLegend"
         :form-models="formModels"
-        :has-no-candidat="hasNoCandidat"
+        :are-groups-disabled="areGroupsDisabled"
         :is-loading="isLoading"
         @back="displayView = 'form'"
         @save="saveRecord"

@@ -1,7 +1,7 @@
 <script setup>
 import FormField from './FormField.vue'
 
-defineProps(['displayView', 'title', 'requiredInputs', 'votesInputs', 'syndicatsInputs', 'votesLegend', 'syndicatsLegend', 'formModels', 'hasNoCandidat', 'isLoading'])
+defineProps(['displayView', 'title', 'requiredInputs', 'firstGroupInputs', 'secondGroupInputs', 'firstGroupLegend', 'secondGroupLegend', 'formModels', 'areGroupsDisabled', 'isLoading'])
 const emit = defineEmits(['back', 'save', 'update:field'])
 </script>
 
@@ -21,21 +21,21 @@ const emit = defineEmits(['back', 'save', 'update:field'])
       </div>
     </fieldset>
     <fieldset class="fr-fieldset fr-mb-2w">
-      <legend class="fr-fieldset__legend">{{ votesLegend }} :</legend>
+      <legend class="fr-fieldset__legend">{{ firstGroupLegend }} :</legend>
       <div class="fr-fieldset__element">
         <div class="fr-grid-row fr-grid-row--gutters">
-          <div v-for="input in votesInputs" :key="input.name" class="fr-col-12 fr-mb-2w">
-            <FormField :input="input" :model-value="formModels[input.name]" :disabled="hasNoCandidat" @update:model-value="(value) => emit('update:field', input.name, value)" data-dgcl-testid="saisie-field-votes" />
+          <div v-for="input in firstGroupInputs" :key="input.name" class="fr-col-12 fr-mb-2w">
+            <FormField :input="input" :model-value="formModels[input.name]" :disabled="areGroupsDisabled" @update:model-value="(value) => emit('update:field', input.name, value)" data-dgcl-testid="saisie-field-firstGroup" />
           </div>
         </div>
       </div>
     </fieldset>
     <fieldset class="fr-fieldset fr-mb-2w">
-      <legend class="fr-fieldset__legend">{{ syndicatsLegend }} :</legend>
+      <legend class="fr-fieldset__legend">{{ secondGroupLegend }} :</legend>
       <div class="fr-fieldset__element">
         <div class="fr-grid-row fr-grid-row--gutters">
-          <div v-for="input in syndicatsInputs" :key="input.name" class="fr-col-6 fr-mb-2w">
-            <FormField :input="input" :model-value="formModels[input.name]" :disabled="hasNoCandidat" @update:model-value="(value) => emit('update:field', input.name, value)" data-dgcl-testid="saisie-field-syndicats" />
+          <div v-for="input in secondGroupInputs" :key="input.name" class="fr-col-6 fr-mb-2w">
+            <FormField :input="input" :model-value="formModels[input.name]" :disabled="areGroupsDisabled" @update:model-value="(value) => emit('update:field', input.name, value)" data-dgcl-testid="saisie-field-secondGroup" />
           </div>
         </div>
       </div>
