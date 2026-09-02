@@ -16,7 +16,7 @@ const emit = defineEmits(['back', 'save', 'update:field'])
     <fieldset class="fr-fieldset fr-mb-2w">
       <div class="fr-fieldset__element">
         <div v-for="input in requiredInputs" :key="input.name" class="fr-mb-2w">
-          <FormField :input="input" :model-value="formModels[input.name]" @update:model-value="(value) => emit('update:field', input.name, value)" data-testid="saisie-field-required" />
+          <FormField :input="input" :model-value="formModels[input.name]" @update:model-value="(value) => emit('update:field', input.name, value)" data-dgcl-testid="saisie-field-required" />
         </div>
       </div>
     </fieldset>
@@ -25,7 +25,7 @@ const emit = defineEmits(['back', 'save', 'update:field'])
       <div class="fr-fieldset__element">
         <div class="fr-grid-row fr-grid-row--gutters">
           <div v-for="input in votesInputs" :key="input.name" class="fr-col-12 fr-mb-2w">
-            <FormField :input="input" :model-value="formModels[input.name]" :disabled="hasNoCandidat" @update:model-value="(value) => emit('update:field', input.name, value)" data-testid="saisie-field-votes" />
+            <FormField :input="input" :model-value="formModels[input.name]" :disabled="hasNoCandidat" @update:model-value="(value) => emit('update:field', input.name, value)" data-dgcl-testid="saisie-field-votes" />
           </div>
         </div>
       </div>
@@ -35,11 +35,11 @@ const emit = defineEmits(['back', 'save', 'update:field'])
       <div class="fr-fieldset__element">
         <div class="fr-grid-row fr-grid-row--gutters">
           <div v-for="input in syndicatsInputs" :key="input.name" class="fr-col-6 fr-mb-2w">
-            <FormField :input="input" :model-value="formModels[input.name]" :disabled="hasNoCandidat" @update:model-value="(value) => emit('update:field', input.name, value)" data-testid="saisie-field-syndicats" />
+            <FormField :input="input" :model-value="formModels[input.name]" :disabled="hasNoCandidat" @update:model-value="(value) => emit('update:field', input.name, value)" data-dgcl-testid="saisie-field-syndicats" />
           </div>
         </div>
       </div>
     </fieldset>
-    <DsfrButton @click="emit('save')" :disabled="isLoading" data-testid="saisie-submit">Enregistrer les modifications</DsfrButton>
+    <DsfrButton @click="emit('save')" :disabled="isLoading" data-dgcl-testid="saisie-submit">Enregistrer les modifications</DsfrButton>
   </form>
 </template>
