@@ -174,9 +174,8 @@ const getExcelType = (type) => {
         description="À renseigner dans le formulaire à droite"
         title-tag="p"
         to="/"
-        data-testid="fiche-tile"
       />
-      <div v-else-if="tableColumnsInfos?.length > 0" data-testid="fiche-content">
+      <div v-else-if="tableColumnsInfos?.length > 0">
         <div class="fr-grid-row fr-grid-row--gutters fr-grid-row--top fr-mb-3w">
           <div
             :class="{
@@ -208,7 +207,7 @@ const getExcelType = (type) => {
                 <li v-for="item in currentRecord[data]" :key="item">{{ getPrettyValue(item) }}</li>
               </ul>
             </div>
-            <p v-else class="fr-mb-0">{{ getPrettyLabel(data) }} : <span data-testid="fiche-simple-value">{{ getPrettyValue(currentRecord[data]) }}</span></p>
+            <p v-else class="fr-mb-0">{{ getPrettyLabel(data) }} : {{ getPrettyValue(currentRecord[data]) }}</p>
           </li>
         </ul>
         <DsfrButton 
