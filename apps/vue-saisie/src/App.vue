@@ -43,7 +43,7 @@ const secondGroupInputs = computed(() => getFormInputs(secondGroupMapped.value))
 const groupsInputs = computed(() => [...firstGroupInputs.value, ...secondGroupInputs.value])
 
 const getFormInputs = (fields) => {
-  if (tableColumnsInfos.value.length <= 0) return []
+  if (!tableColumnsInfos.value) return []
   return fields.reduce((inputs, field) => {
     const infos = gristUtils.getColumnInfos(field, tableColumnsInfos.value)
     if (infos) inputs.push({ infos, type: gristUtils.getHtmlType(infos.type), name: infos.colId })
