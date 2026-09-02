@@ -37,7 +37,6 @@ const tableColumnsInfos = computedAsync(async () => await grist.getOption('table
 const requiredFields = computed(() => [requiredFieldMapped.value, disabledCheckboxeMapped.value].filter(field => field))
 const groupsFields = computed(() => [...firstGroupMapped.value, ...secondGroupMapped.value])
 const allFields = computed(() => [...requiredFields.value, ...groupsFields.value])
-
 const requiredInputs = computed(() => getFormInputs(requiredFields.value))
 const firstGroupInputs = computed(() => getFormInputs(firstGroupMapped.value))
 const secondGroupInputs = computed(() => getFormInputs(secondGroupMapped.value))
@@ -47,15 +46,9 @@ const getFormInputs = (fields) => {
   if (tableColumnsInfos.value.length <= 0) return []
   return fields.reduce((inputs, field) => {
     const infos = gristUtils.getColumnInfos(field, tableColumnsInfos.value)
-    if (infos) inputs.push({ infos, type: getInputType(infos.type), name: infos.colId })
+    if (infos) inputs.push({ infos, type: gristUtils.getHtmlType(infos.type), name: infos.colId })
     return inputs
   }, [])
-}
-
-// Seuls les nombres et les cases à cocher sont saisis ici, les autres colonnes sont traitées comme du texte
-const getInputType = (type) => {
-  const htmlType = gristUtils.getHtmlType(type)
-  return htmlType === 'number' || htmlType === 'checkbox' ? htmlType : 'text'
 }
 
 const updateField = (name, value) => {
@@ -121,7 +114,6 @@ const saveRecord = async () => {
   } catch (error) {
     displayView.value = 'error'
   } finally {
-    fillForm()
     isLoading.value = false
   }
 }
@@ -172,7 +164,6 @@ const onRecords = (params) => {
   firstGroupMapped.value = mapping['firstGroup'] || []
   secondGroupMapped.value = mapping['secondGroup'] || []
   hiddenFormMapped.value = mapping['hiddenForm']
-  fillForm()
 }
 
 const onConfiguration = (configurations) => updateViewFromConfiguration(configurations)
