@@ -1,5 +1,6 @@
 # Changelog
 
+- fix(Vue saisie): erreur au chargement de la vue si pas d'infos de la table enregistrée [#83](https://github.com/betagouv/Resultats-Elections-FPT/pull/83)
 - feat(Saisie de scrutin): passage du custom widget en vue3 [#82](https://github.com/betagouv/Resultats-Elections-FPT/pull/82)
 - core: améliore la configuration des tests automatisés [#81](https://github.com/betagouv/Resultats-Elections-FPT/pull/81)
 - core: Met en place des tests e2e [#80](https://github.com/betagouv/Resultats-Elections-FPT/pull/80)
