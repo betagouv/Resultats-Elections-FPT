@@ -12,6 +12,7 @@ const hasBadge = computed(() => props.showBadge && props.badge)
     class="fr-card fr-p-1w fr-my-1w"
     :class="{ selected: isSelected }"
     @click="emit('select')"
+    data-dgcl-testid="recherche-item"
   >
     <button type="button" class="fr-grid-row fr-grid-row--gutters">
       <div :class="hasBadge ? 'fr-col-6' : 'fr-col-12'">

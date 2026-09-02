@@ -29,6 +29,9 @@ export default defineConfig({
 
     /* Force une connexion en tant que propriétaire pour tous les tests */
     storageState: getCookieSession(),
+
+    /* Rename id attribute to avoid conflicts with vue-dsfr */
+    testIdAttribute: 'data-dgcl-testid',
   },
 
   /* Configure projects for major browsers */

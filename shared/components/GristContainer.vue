@@ -80,7 +80,7 @@ const saveTableColumnInfos = async () => {
 }
 </script>
 <template>
-  <main class="grist-container">
+  <main class="grist-container" data-dgcl-testid="grist-container">
     <aside v-if="configurationIsOpened" class="grist-container__configuration fr-p-2w">
       <h2>Panneau de configuration</h2>
       <button @click="closeConfiguration">Fermer le panneau de configuration</button>
