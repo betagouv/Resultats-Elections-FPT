@@ -37,4 +37,15 @@ Modification :
 - [ ] L'iframe s'affiche
 - [ ] Quand je crée une collectivité et que je vais sur la carto elle s'affiche, de même pour la vue liste des collectivité
 
+## Saisie de scrutin 
+- [x] Les widgets s'affichent
+- [x] Si la case absence de résultat est cochée les champs non obligatoires sont disabled
+- [ ] Tous les champs du formulaires sont affichés
+- [ ] Tous les champs de la vue fiche sont affichés
+- [ ] Si la case absence de résultat est cochée et que des valeurs étaient enregistrées elles sont ré-initialisée
+- [ ] Les champs s'enregistrent...
+- [ ] Controles de cohérence...
+- [ ] Badge...
+- [ ] Si je clique sur revenir au formulaire
+
 ....
