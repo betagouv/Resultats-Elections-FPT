@@ -4,14 +4,6 @@ import helper from '../playwright/helper.js'
 const cstUrl = helper.getUrl("saisieScrutinCST")
 const cstPrefUrl = cstUrl + helper.viewAsPref
 
-test.afterEach(async ({ page }) => {
-  console.log(`Finished ${test.info().title} with status ${test.info().status}`);
-
-  if (test.info().status !== test.info().expectedStatus)
-    console.log(`Did not run as expected, ended up at ${page.url()}`);
-});
-
-
 test("CST : la page s'affiche", async ({ page }) => {
   await page.goto(cstPrefUrl)
   const iframeList = helper.getCustomWidget(page, 0)
