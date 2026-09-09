@@ -32,7 +32,7 @@ const generateExcelData = () => {
     const rowFormatted = []
     for(const cell of row) {
       rowFormatted.push({
-        type: String,
+        type: formatCellType(cell),
         value: formatCellValue(cell),
       })
     }
@@ -41,11 +41,16 @@ const generateExcelData = () => {
   return data
 }
 
+const formatCellType = (cell) => {
+  const isNumber = cell.type === 'Number' || cell.isPercent
+  return isNumber ? Number : String
+}
+
 const formatCellValue = (cell) => {
   if (cell.isDSFRBadge) return cell.value.text
   else if(cell.type === 'Bool') return cell.value ? 'Oui' : 'Non'
   else if(!cell.value) return ''
-  else return cell.value.toString()
+  else return cell.value
 }
 
 /* SEARCH */
