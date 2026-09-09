@@ -44,4 +44,13 @@ const cleanJson = (value) => {
   }
 }
 
-export default { isInString, prettify, cleanUrl, cleanJson }
+const isPercent = (columnInfos) => {
+  const widgetOptions = columnInfos?.widgetOptions
+  if (!widgetOptions) return false
+  const widgetInfos = JSON.parse(widgetOptions)
+  return widgetInfos?.numMode === "percent"
+}
+
+const prettifyToPercent = (value) => `${value * 100} %`
+
+export default { isInString, prettify, cleanUrl, cleanJson, isPercent, prettifyToPercent }
