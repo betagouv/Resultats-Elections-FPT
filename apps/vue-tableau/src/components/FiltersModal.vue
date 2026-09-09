@@ -65,7 +65,7 @@ onBeforeUpdate(prefillInputs)
 <template>
   <DsfrModal :opened="isOpen" @close="emit('close')">
     <div>
-      <p class="fr-h6">Utilisez les filtres ci-dessous pour affiner la liste des collectivités affichées dans le tableau</p>
+      <p class="fr-h6">Utilisez les filtres ci-dessous pour affiner la liste des lignes affichées dans le tableau</p>
       <form>
         <div v-for="filter in filterInfos" :key="filter">
           <DsfrRadioButtonSet 
