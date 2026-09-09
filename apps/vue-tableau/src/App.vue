@@ -21,11 +21,6 @@ const filtersStore = useFiltersStore()
 const gristContainerRef = ref(null)
 
 /* EXPORT */
-const excelButtonLabel = computed(() => {
-  const rowsName = tableRows.value.length > 1 ? `${tableRowName.value}s` : tableRowName.value
-  return `Télécharger les ${tableRows.value.length} ${rowsName} (Excel)`
-})
-
 const generateExcelData = () => {
   const data = []
   const headers = []
@@ -221,7 +216,7 @@ const backToTop = () => {
           <div class="fr-grid-row fr-grid-row--right fr-grid-row--middle fr-ml-2w">
             <ExcelDownloadButton
               v-if="tableIsReady"
-              :label="excelButtonLabel"
+              label="Télécharger le tableau"
               file-name="liste-collectivites.xlsx"
               :get-data="generateExcelData"
               class="fr-mr-0"
