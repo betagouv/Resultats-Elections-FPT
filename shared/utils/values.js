@@ -53,4 +53,20 @@ const isPercent = (columnInfos) => {
 
 const prettifyToPercent = (value) => `${value * 100} %`
 
-export default { isInString, prettify, cleanUrl, cleanJson, isPercent, prettifyToPercent }
+const getExcelCellFormat = (cell) => {
+  if (cell.isPercent) return '0.00%'
+  return null
+}
+
+const getExcelCellType = (cell) => {
+  if (cell.type === 'Int' || cell.type === 'Numeric' || cell.isPercent) return Number
+  if (cell.type === 'Bool') return Boolean
+  else return String
+}
+
+const getExcelCellValue = (cell) => {
+  if (cell.isDSFRBadge) return cell.value.text
+  else return cell.value || cell
+}
+
+export default { isInString, prettify, cleanUrl, cleanJson, isPercent, prettifyToPercent, getExcelCellFormat, getExcelCellType, getExcelCellValue }

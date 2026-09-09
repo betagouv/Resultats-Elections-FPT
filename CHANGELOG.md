@@ -1,5 +1,6 @@
 # Changelog
 
+- fix(Vue tableau et fiche): gère le pourcentage des champs [#86](https://github.com/betagouv/Resultats-Elections-FPT/pull/86)
 - fix(Vue fiche): permet l'affichage des valeurs en pourcentage [#85](https://github.com/betagouv/Resultats-Elections-FPT/pull/85)
 - fix(Vue tableau): remplace le "collectivité" en dur par la valeur de la première colonne du tableau [#84](https://github.com/betagouv/Resultats-Elections-FPT/pull/84)
 - fix(Vue saisie): erreur au chargement de la vue si pas d'infos de la table enregistrée [#83](https://github.com/betagouv/Resultats-Elections-FPT/pull/83)

@@ -24,6 +24,7 @@ const clickCheckboxeCursor = () => {
       <p class="fr-mb-0">{{ value }}</p>
     </li>
   </ul>
+  <p v-else-if="cell.isPercent" class="fr-mb-0">{{ cell.value * 100 }} %</p>
   <p class="fr-mb-0" v-else>{{ cell.value }}</p>
 </template>
 

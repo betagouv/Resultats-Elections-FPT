@@ -126,14 +126,19 @@ const generateExcelData = () => {
   const row = dataMapped.value.map((data, index) => {
     const columnInfo = gristUtils.getColumnInfos(data, tableColumnsInfos.value)
     const value = currentRecord.value[data]
+    const cellInfos = {
+      ...columnInfo,
+      isPercent: valuesUtils.isPercent(columnInfo),
+    }
     const isList = typeof value === 'object' && value
     if (isList) {
       cellToSplit.columnIndex = index
       cellToSplit.list = value
     }
     return {
-      type: getExcelType(columnInfo.type),
-      value: isList ? null : value, 
+      type: valuesUtils.getExcelCellType(cellInfos),
+      value: isList ? null : valuesUtils.getExcelCellValue(value), 
+      format: valuesUtils.getExcelCellFormat(cellInfos),
     }
   })
   if (cellToSplit.columnIndex !== null) {
@@ -153,12 +158,6 @@ const generateExcelData = () => {
   excelData.push(headersColumns)
   excelData.push(...rows)
   return excelData
-}
-
-const getExcelType = (type) => {
-  if (type === 'Int' || type === 'Numeric') return Number
-  if (type === 'Bool') return Boolean
-  else return String
 }
 </script>
 <template>

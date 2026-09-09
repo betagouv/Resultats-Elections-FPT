@@ -21,11 +21,6 @@ const filtersStore = useFiltersStore()
 const gristContainerRef = ref(null)
 
 /* EXPORT */
-const excelButtonLabel = computed(() => {
-  const rowsName = tableRows.value.length > 1 ? `${tableRowName.value}s` : tableRowName.value
-  return `Télécharger les ${tableRows.value.length} ${rowsName} (Excel)`
-})
-
 const generateExcelData = () => {
   const data = []
   const headers = []
@@ -37,20 +32,14 @@ const generateExcelData = () => {
     const rowFormatted = []
     for(const cell of row) {
       rowFormatted.push({
-        type: String,
-        value: formatCellValue(cell),
+        type: valuesUtils.getExcelCellType(cell),
+        value: valuesUtils.getExcelCellValue(cell),
+        format: valuesUtils.getExcelCellFormat(cell),
       })
     }
     data.push(rowFormatted)
   }
   return data
-}
-
-const formatCellValue = (cell) => {
-  if (cell.isDSFRBadge) return cell.value.text
-  else if(cell.type === 'Bool') return cell.value ? 'Oui' : 'Non'
-  else if(!cell.value) return ''
-  else return cell.value.toString()
 }
 
 /* SEARCH */
@@ -138,7 +127,8 @@ const tableRows = computed(() => {
       const isDSFRBadge = infos.colId.indexOf('DSFR_Badge') > -1
       const isDSFRTag = infos.colId.indexOf('DSFR_Tag') > -1
       const value = isDSFRBadge ? valuesUtils.cleanJson(record[column]) : record[column]
-      row.push({id, type, value, isDSFRBadge, isDSFRTag, hasMultipleValues})
+      const isPercent = valuesUtils.isPercent(infos)
+      row.push({id, type, value, isDSFRBadge, isDSFRTag, hasMultipleValues, isPercent})
     })
     rows.push(row)
   })
@@ -221,7 +211,7 @@ const backToTop = () => {
           <div class="fr-grid-row fr-grid-row--right fr-grid-row--middle fr-ml-2w">
             <ExcelDownloadButton
               v-if="tableIsReady"
-              :label="excelButtonLabel"
+              label="Télécharger le tableau (Excel)"
               file-name="liste-collectivites.xlsx"
               :get-data="generateExcelData"
               class="fr-mr-0"
