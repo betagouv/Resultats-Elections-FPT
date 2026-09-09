@@ -133,7 +133,8 @@ const tableRows = computed(() => {
       const isDSFRBadge = infos.colId.indexOf('DSFR_Badge') > -1
       const isDSFRTag = infos.colId.indexOf('DSFR_Tag') > -1
       const value = isDSFRBadge ? valuesUtils.cleanJson(record[column]) : record[column]
-      row.push({id, type, value, isDSFRBadge, isDSFRTag, hasMultipleValues})
+      const isPercent = valuesUtils.isPercent(infos)
+      row.push({id, type, value, isDSFRBadge, isDSFRTag, hasMultipleValues, isPercent})
     })
     rows.push(row)
   })
