@@ -34,6 +34,7 @@ const generateExcelData = () => {
       rowFormatted.push({
         type: formatCellType(cell),
         value: formatCellValue(cell),
+        format: formatCellFormat(cell),
       })
     }
     data.push(rowFormatted)
@@ -41,6 +42,10 @@ const generateExcelData = () => {
   return data
 }
 
+const formatCellFormat = (cell) => {
+  if (cell.isPercent) return '0.00%'
+  return null
+}
 const formatCellType = (cell) => {
   const isNumber = cell.type === 'Number' || cell.isPercent
   return isNumber ? Number : String
