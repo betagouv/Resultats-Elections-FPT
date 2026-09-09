@@ -211,7 +211,7 @@ const backToTop = () => {
           <div class="fr-grid-row fr-grid-row--right fr-grid-row--middle fr-ml-2w">
             <ExcelDownloadButton
               v-if="tableIsReady"
-              label="Télécharger le tableau"
+              label="Télécharger le tableau (Excel)"
               file-name="liste-collectivites.xlsx"
               :get-data="generateExcelData"
               class="fr-mr-0"

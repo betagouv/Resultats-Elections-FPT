@@ -25,8 +25,6 @@ const downloadExcel = async () => {
     tertiary
     :label="buttonLabel"
     :disabled="isDownloading"
-    :icon-right="true"
-    icon="ri-file-excel-2-fill"
     @click="downloadExcel"
   />
 </template>
