@@ -22,7 +22,7 @@ const gristContainerRef = ref(null)
 
 /* EXPORT */
 const excelButtonLabel = computed(() => {
-  const rowsName = tableRows.value.length > 1 ? 'collectivités' : 'collectivité'
+  const rowsName = tableRows.value.length > 1 ? `${tableRowName.value}s` : tableRowName.value
   return `Télécharger les ${tableRows.value.length} ${rowsName} (Excel)`
 })
 
@@ -81,10 +81,13 @@ const deleteFilter = (filter) => {
 }
 
 /* TABLE */
-const tableIsReady = computed(() => {
-  return tableRows.value.length >= 0 && tableHeader.value.length > 0
-})
+const tableIsReady = computed(() => tableRows.value.length >= 0 && tableHeader.value.length > 0 )
 const tableColumnsInfos = computedAsync(async () => await grist.getOption('tableColumnInfos'), [])
+const tableRowName = computed(() => {
+  if (!firstColumnMapped.value || !tableColumnsInfos.value) return 'Ligne'
+  const columnInfo = gristUtils.getColumnInfos(firstColumnMapped.value, tableColumnsInfos.value)
+  return columnInfo.label.toLowerCase()
+})
 
 const allColumnsMapped = computed(() => {
   if(!firstColumnMapped.value || !otherColumnsMapped.value ) return []
@@ -211,7 +214,7 @@ const backToTop = () => {
             v-model="search" 
             class="vue-tableau__search-bar"
             button-text="Rechercher" 
-            placeholder="Rechercher une collectivité par son nom" 
+            placeholder="Rechercher" 
             @search="onSearch()" 
             @update:modelValue="onSearchUpdate()"
           />
@@ -228,7 +231,7 @@ const backToTop = () => {
       </div>
       <div class="fr-pt-3w fr-px-3w fr-grid-row fr-grid-row--left fr-grid-row--middle">
         <p class="fr-mb-0 fr-mr-2w">
-          {{ tableRows.length }} {{ tableRows.length > 1 ? 'collectivités' : 'collectivité' }}
+          {{ tableRows.length }} {{ tableRows.length > 1 ? `${tableRowName}s` : tableRowName }}
         </p>
         <DsfrTag v-if="isSearching" :label="`Recherche : ${trimSearch}`" class="vue-tableau__filter-tag fr-ml-0 fr-mr-1w" icon="ri-close-circle-fill" selectable @click="deleteFilter('search')" />
         <DsfrTag v-for="filter in filtersStore.getActiveFilters" class="vue-tableau__filter-tag fr-mr-1w" :key="filter.id" :label="`${filter.name} : ${filter.valueToDisplay}`" icon="ri-close-circle-fill" selectable @click="deleteFilter(filter)" />
