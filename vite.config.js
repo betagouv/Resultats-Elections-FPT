@@ -45,6 +45,11 @@ export default defineConfig(({ mode }) => {
       strictPort: false,
       host: true
     },
+    optimizeDeps: {
+      include: [
+        'write-excel-file/browser'
+      ],
+    },
     resolve: {
       alias: {
         '@': `${__dirname}${appConfig.root}/src`,
