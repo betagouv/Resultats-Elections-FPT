@@ -1,6 +1,7 @@
 <script setup>
 import { ref, computed } from 'vue'
 import { computedAsync } from '@vueuse/core'
+import { DsfrAlert, DsfrButton, DsfrInput, DsfrSelect } from '@gouvminint/vue-dsfr'
 import gristUtils from '@shared/utils/grist.js'
 import GristContainer from '@shared/components/GristContainer.vue'
 

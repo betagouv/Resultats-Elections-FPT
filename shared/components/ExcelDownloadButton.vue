@@ -1,5 +1,6 @@
 <script setup>
 import { ref, computed } from 'vue'
+import { DsfrButton } from '@gouvminint/vue-dsfr'
 
 defineOptions({ inheritAttrs: false })
 

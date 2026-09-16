@@ -1,5 +1,6 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
+import { DsfrButton, DsfrCheckbox, DsfrSearchBar } from '@gouvminint/vue-dsfr'
 import valuesUtils from '@shared/utils/values.js'
 import gristUtils from '@shared/utils/grist.js'
 

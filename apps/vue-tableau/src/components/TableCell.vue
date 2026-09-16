@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue'
+import { DsfrBadge, DsfrCheckbox, DsfrTag } from '@gouvminint/vue-dsfr'
 import IconCheck from '@shared/components/IconCheck.vue'
 
 const props = defineProps(['cell', 'colKey', 'isSelected', 'isFirstColumn'])

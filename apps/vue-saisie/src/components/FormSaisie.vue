@@ -1,4 +1,5 @@
 <script setup>
+import { DsfrAlert, DsfrButton } from '@gouvminint/vue-dsfr'
 import FormField from './FormField.vue'
 
 defineProps(['displayView', 'title', 'requiredInputs', 'firstGroupInputs', 'secondGroupInputs', 'firstGroupLegend', 'secondGroupLegend', 'formModels', 'areGroupsDisabled', 'isLoading'])

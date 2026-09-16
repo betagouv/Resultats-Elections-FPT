@@ -1,5 +1,6 @@
 <script setup>
 import { computed } from 'vue'
+import { DsfrBadge } from '@gouvminint/vue-dsfr'
 const props = defineProps(['label'])
 
 const type = computed(() => {

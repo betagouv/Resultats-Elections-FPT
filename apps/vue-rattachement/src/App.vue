@@ -1,5 +1,6 @@
 <script setup>
 import { ref, computed } from 'vue'
+import { DsfrAlert, DsfrButton, DsfrCheckboxSet, DsfrSelect } from '@gouvminint/vue-dsfr'
 import GristContainer from '@shared/components/GristContainer.vue'
 import CollectiviteSearch from './components/CollectiviteSearch.vue'
 
