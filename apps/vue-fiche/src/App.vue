@@ -1,6 +1,7 @@
 <script setup>
 import { ref, computed } from 'vue'
 import { computedAsync } from '@vueuse/core'
+import { DsfrAlert, DsfrButton, DsfrModal, DsfrTile } from '@gouvminint/vue-dsfr'
 import StatusBadge from '@shared/components/StatusBadge.vue'
 import valuesUtils from '@shared/utils/values.js'
 import gristUtils from '@shared/utils/grist.js'

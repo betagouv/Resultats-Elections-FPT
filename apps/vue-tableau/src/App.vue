@@ -6,7 +6,7 @@ import valuesUtils from '@shared/utils/values.js'
 import GristContainer from '@shared/components/GristContainer.vue'
 import ExcelDownloadButton from '@shared/components/ExcelDownloadButton.vue'
 import { useFiltersStore } from '@/store/filters'
-import { DsfrButton } from '@gouvminint/vue-dsfr'
+import { DsfrButton, DsfrDataTable, DsfrSearchBar, DsfrTag } from '@gouvminint/vue-dsfr'
 import FiltersModal from './components/FiltersModal.vue'
 import TableCell from './components/TableCell.vue'
 

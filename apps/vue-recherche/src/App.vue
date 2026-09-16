@@ -1,6 +1,7 @@
 <script setup>
 import { ref, computed } from 'vue'
 import { computedAsync, useInfiniteScroll } from '@vueuse/core'
+import { DsfrButton, DsfrSearchBar } from '@gouvminint/vue-dsfr'
 import valuesUtils from '@shared/utils/values.js'
 import gristUtils from '@shared/utils/grist.js'
 import GristContainer from '@shared/components/GristContainer.vue'

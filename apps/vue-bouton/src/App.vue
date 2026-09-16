@@ -1,5 +1,6 @@
 <script setup>
 import { ref, computed } from 'vue'
+import { DsfrButton } from '@gouvminint/vue-dsfr'
 import GristContainer from '@shared/components/GristContainer.vue'
 
 const buttonMapped = ref()

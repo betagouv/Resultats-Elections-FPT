@@ -1,4 +1,6 @@
 <script setup>
+import { DsfrCheckbox, DsfrInput } from '@gouvminint/vue-dsfr'
+
 defineProps(['input', 'modelValue', 'disabled'])
 const emit = defineEmits(['update:modelValue'])
 </script>

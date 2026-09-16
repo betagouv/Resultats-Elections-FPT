@@ -1,5 +1,6 @@
 <script setup>
 import { reactive, computed, onBeforeUpdate } from 'vue'
+import { DsfrButton, DsfrModal, DsfrRadioButtonSet } from '@gouvminint/vue-dsfr'
 import gristUtils from '@shared/utils/grist.js'
 import { useFiltersStore } from '@/store/filters'
 
