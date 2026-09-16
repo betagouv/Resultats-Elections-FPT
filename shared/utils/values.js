@@ -66,7 +66,7 @@ const getExcelCellType = (cell) => {
 
 const getExcelCellValue = (cell) => {
   if (cell.isDSFRBadge) return cell.value.text
-  else return cell.value || cell
+  else return cell.value
 }
 
 export default { isInString, prettify, cleanUrl, cleanJson, isPercent, prettifyToPercent, getExcelCellFormat, getExcelCellType, getExcelCellValue }
