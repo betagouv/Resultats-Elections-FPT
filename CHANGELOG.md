@@ -1,5 +1,6 @@
 # Changelog
 
+- fix(Vue fiche): corrige le responsive de l'export Excel et les valeurs enregistrées [#88](https://github.com/betagouv/Resultats-Elections-FPT/pull/88)
 - fix: corrige les exports excel pour les valeurs à "0" [#87](https://github.com/betagouv/Resultats-Elections-FPT/pull/87)
 - fix(Vue tableau et fiche): gère le pourcentage des champs [#86](https://github.com/betagouv/Resultats-Elections-FPT/pull/86)
 - fix(Vue fiche): permet l'affichage des valeurs en pourcentage [#85](https://github.com/betagouv/Resultats-Elections-FPT/pull/85)
