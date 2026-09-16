@@ -1,5 +1,6 @@
 <script setup>
 import { DsfrBadge, DsfrCheckbox, DsfrTag } from '@gouvminint/vue-dsfr'
+import valuesUtils from '@shared/utils/values'
 import IconCheck from '@shared/components/IconCheck.vue'
 
 const props = defineProps(['cell', 'colKey', 'isSelected', 'isFirstColumn'])
@@ -24,7 +25,7 @@ const clickCheckboxeCursor = () => {
       <p class="fr-mb-0">{{ value }}</p>
     </li>
   </ul>
-  <p v-else-if="cell.isPercent" class="fr-mb-0">{{ cell.value * 100 }} %</p>
+  <p v-else-if="cell.isPercent" class="fr-mb-0">{{ valuesUtils.prettifyToPercent(cell.value) }}</p>
   <p class="fr-mb-0" v-else>{{ cell.value }}</p>
 </template>
 
