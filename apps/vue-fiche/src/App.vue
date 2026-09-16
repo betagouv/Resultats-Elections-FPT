@@ -129,6 +129,7 @@ const generateExcelData = () => {
     const cellInfos = {
       ...columnInfo,
       isPercent: valuesUtils.isPercent(columnInfo),
+      value: value,
     }
     const isList = typeof value === 'object' && value
     if (isList) {
@@ -137,7 +138,7 @@ const generateExcelData = () => {
     }
     return {
       type: valuesUtils.getExcelCellType(cellInfos),
-      value: isList ? null : valuesUtils.getExcelCellValue(value), 
+      value: isList ? null : valuesUtils.getExcelCellValue(cellInfos), 
       format: valuesUtils.getExcelCellFormat(cellInfos),
     }
   })
