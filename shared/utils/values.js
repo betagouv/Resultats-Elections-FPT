@@ -51,7 +51,11 @@ const isPercent = (columnInfos) => {
   return widgetInfos?.numMode === "percent"
 }
 
-const prettifyToPercent = (value) => `${value * 100} %`
+const prettifyToPercent = (value) => {
+  const percentage = value * 100
+  const percentTwoDecimals = percentage.toFixed(2)
+  return `${percentTwoDecimals} %`
+}
 
 const getExcelCellFormat = (cell) => {
   if (cell.isPercent) return '0.00%'
