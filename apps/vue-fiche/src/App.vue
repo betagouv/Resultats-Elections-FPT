@@ -173,17 +173,12 @@ const generateExcelData = () => {
         data-dgcl-testid="fiche-tile"
       />
       <div v-else-if="tableColumnsInfos?.length > 0" data-dgcl-testid="fiche-content">
-        <div class="fr-grid-row fr-grid-row--gutters fr-grid-row--top fr-mb-3w">
-          <div
-            :class="{
-              'fr-col-6': showDownloadButton,
-              'fr-col-12': !showDownloadButton,
-            }"
-          >
+        <div class="vue-fiche__top-container fr-mb-3w">
+          <div>
             <h1 data-js="title" class="fr-mb-1w fr-h6">{{ currentRecord[titleMapped] }}</h1>
             <StatusBadge v-if="badgeMapped" :label="currentRecord[badgeMapped]" />
           </div>
-          <div v-if="showDownloadButton" class="fr-col-6 fr-grid-row fr-grid-row--right">
+          <div v-if="showDownloadButton">
             <ExcelDownloadButton
               label="Télécharger les données (Excel)"
               :file-name="excelFileName"
@@ -228,3 +223,17 @@ const generateExcelData = () => {
     </main>
   </GristContainer>
 </template>
+
+<style scoped>
+.vue-fiche__top-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: top;
+}
+@media (max-width: 300px) {
+  .vue-fiche__top-container {
+    row-gap: 1rem;
+    flex-direction: column;
+  }
+}
+</style>
