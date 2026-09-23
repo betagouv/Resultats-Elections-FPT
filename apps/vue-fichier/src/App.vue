@@ -1,6 +1,8 @@
 <script setup>
 import { ref, computed } from 'vue'
 import { computedAsync } from '@vueuse/core'
+import { DsfrBadge } from '@gouvminint/vue-dsfr'
+import valuesUtils from '@shared/utils/values.js'
 import GristContainer from '@shared/components/GristContainer.vue'
 import ImportFile from './components/ImportFile.vue'
 
@@ -12,6 +14,8 @@ const scrutinMapped = ref()
 /* OPTIONS */
 const tableColumnsInfos = computedAsync(async () => await grist.getOption('tableColumnInfos'), [])
 const fileName = computedAsync(async () => await grist.getOption(configurationName), '')
+const badge = computed(() => valuesUtils.cleanJson(currentRecord?.value?.[badgeMapped?.value]))
+const hasFile = computed(() => currentRecord?.value?.[fileMapped?.value])
 
 /* CONFIGURATION */
 const configurationName = 'fileName'
@@ -74,9 +78,12 @@ const updateViewFromConfiguration = (configurations) => {
     @update:options="onOptions"
   >
     <main class="fr-p-3w">
-      <h1 class="fr-h6">{{ title }} :</h1>
-      <ImportFile :row-id="currentRecord.id" :file-column="fileMapped" />
-      <pre>{{ currentRecord }}</pre>
+      <div class="fr-mb-2w">
+        <h1 class="fr-h6 fr-mb-1w">{{ title }} :</h1>
+        <DsfrBadge :label="badge.text" :type="badge.type" />
+      </div>
+      <ImportFile v-if="!hasFile" :row-id="currentRecord.id" :file-column="fileMapped" />
+      <pre>{{ currentRecord[fileMapped] }}</pre>
     </main>
   </GristContainer>
 </template>
