@@ -46,7 +46,7 @@ const updateRecordFile = async (attachmentIds) => {
 </script>
 
 <template>
-  <div>
+  <div class="import-file">
     <DsfrFileUpload
       v-model="fileInput"
       :disabled="isUploading"
@@ -57,3 +57,9 @@ const updateRecordFile = async (attachmentIds) => {
     <p v-else-if="uploadError" class="fr-mt-2w">{{ uploadError }}</p>
   </div>
 </template>
+
+<style>
+.import-file .fr-label {
+  display: none !important;
+}
+</style>

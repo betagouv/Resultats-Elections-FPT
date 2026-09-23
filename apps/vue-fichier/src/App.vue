@@ -85,10 +85,8 @@ const updateViewFromConfiguration = (configurations) => {
     @update:options="onOptions"
   >
     <main class="fr-p-3w">
-      <div class="fr-mb-2w">
-        <h1 class="fr-h6 fr-mb-1w">{{ title }} :</h1>
-        <DsfrBadge :label="badge.text" :type="badge.type" />
-      </div>
+      <DsfrBadge :label="badge.text" :type="badge.type" class="fr-mb-1w" />
+      <p class="fr-label fr-mb-1w">{{ title }} :</p>
       <ImportFile v-if="!hasFile" :row-id="currentRecord.id" :file-column="fileMapped" />
       <DisplayFile
         v-else
