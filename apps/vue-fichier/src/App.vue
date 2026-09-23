@@ -1,11 +1,11 @@
 <script setup>
 import { ref, computed } from 'vue'
 import { computedAsync } from '@vueuse/core'
-import { DsfrBadge, DsfrButton } from '@gouvminint/vue-dsfr'
+import { DsfrBadge } from '@gouvminint/vue-dsfr'
 import valuesUtils from '@shared/utils/values.js'
-import gristUtils from '@shared/utils/grist.js'
 import GristContainer from '@shared/components/GristContainer.vue'
 import ImportFile from './components/ImportFile.vue'
+import DisplayFile from './components/DisplayFile.vue'
 
 const currentRecord = ref({})
 const fileMapped = ref()
@@ -30,21 +30,6 @@ const title = computed(() => {
   if (!currentRecord?.value[scrutinMapped?.value] || !fileName?.value) return ''
   return `${fileName.value} de ${currentRecord.value[scrutinMapped.value]}`
 })
-
-/* ACTIONS */
-const displayFile = async () => {
-  if (!currentRecord?.value?.[fileMapped?.value].length === 0) return
-  const attachmentId = currentRecord.value[fileMapped.value][0]
-  const { baseUrl, token } = await grist.docApi.getAccessToken({ readOnly: false })
-  const url = `${baseUrl}/attachments/${attachmentId}/download?auth=${token}`
-  window.open(url, '_blank')
-}
-
-const deleteFile = async () => {
-  const tableId = await gristUtils.getCurrentTableID()
-  const fields = { [fileMapped.value]: ['L'] }
-  await grist.docApi.applyUserActions([['UpdateRecord', tableId, currentRecord.value.id, fields]])
-}
 
 /* GRIST */
 const gristColumns = [
@@ -99,21 +84,12 @@ const updateViewFromConfiguration = (configurations) => {
         <DsfrBadge :label="badge.text" :type="badge.type" />
       </div>
       <ImportFile v-if="!hasFile" :row-id="currentRecord.id" :file-column="fileMapped" />
-      <div v-else>
-        <DsfrButton 
-          secondary
-          label="Voir le fichier"
-          icon="fr-icon-file-download-fill"
-          class="fr-mr-1v"
-          @click="displayFile"
-        />
-        <DsfrButton
-          tertiary
-          label="Supprimer"
-          icon="fr-icon-delete-bin-line"
-          @click="deleteFile"
-        />
-      </div>
+      <DisplayFile
+        v-else
+        :row-id="currentRecord.id"
+        :file-column="fileMapped"
+        :attachments="currentRecord[fileMapped]"
+      />
     </main>
   </GristContainer>
 </template>
