@@ -11,6 +11,7 @@ const currentRecord = ref({})
 const fileMapped = ref()
 const badgeMapped = ref()
 const scrutinMapped = ref()
+const nomMapped = ref()
 
 /* OPTIONS */
 const tableColumnsInfos = computedAsync(async () => await grist.getOption('tableColumnInfos'), [])
@@ -45,6 +46,10 @@ const gristColumns = [
     name: 'scrutin',
     description: 'Scrutin',
   },
+  {
+    name: 'nom',
+    description: 'Nom du fichier',
+  },
 ]
 
 const onRecord = (record) => {
@@ -56,6 +61,7 @@ const onRecords = (params) => {
   fileMapped.value = mapping['fichier']
   badgeMapped.value = mapping['badge']
   scrutinMapped.value = mapping['scrutin']
+  nomMapped.value = mapping['nom']
 }
 
 const onConfiguration = (configurations) => updateViewFromConfiguration(configurations)
@@ -89,6 +95,7 @@ const updateViewFromConfiguration = (configurations) => {
         :row-id="currentRecord.id"
         :file-column="fileMapped"
         :attachments="currentRecord[fileMapped]"
+        :file-name="currentRecord[nomMapped]"
       />
     </main>
   </GristContainer>

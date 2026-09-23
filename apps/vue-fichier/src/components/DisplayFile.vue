@@ -2,7 +2,7 @@
 import { DsfrButton } from '@gouvminint/vue-dsfr'
 import gristUtils from '@shared/utils/grist.js'
 
-const props = defineProps(['rowId', 'fileColumn', 'attachments'])
+const props = defineProps(['rowId', 'fileColumn', 'attachments', 'fileName'])
 
 const displayFile = async () => {
   if (!props.attachments?.length) return
@@ -20,6 +20,7 @@ const deleteFile = async () => {
 </script>
 
 <template>
+  <p class="fr-hint-text fr-mb-1w">{{ fileName }}</p>
   <div>
     <DsfrButton
       secondary
