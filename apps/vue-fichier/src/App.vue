@@ -2,6 +2,7 @@
 import { ref, computed } from 'vue'
 import { computedAsync } from '@vueuse/core'
 import GristContainer from '@shared/components/GristContainer.vue'
+import ImportFile from './components/ImportFile.vue'
 
 const currentRecord = ref({})
 const fileMapped = ref()
@@ -74,7 +75,8 @@ const updateViewFromConfiguration = (configurations) => {
   >
     <main class="fr-p-3w">
       <h1 class="fr-h6">{{ title }} :</h1>
-      <p>{{ currentRecord }}</p>
+      <ImportFile :row-id="currentRecord.id" :file-column="fileMapped" />
+      <pre>{{ currentRecord }}</pre>
     </main>
   </GristContainer>
 </template>
