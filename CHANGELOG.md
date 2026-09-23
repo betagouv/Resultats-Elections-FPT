@@ -1,5 +1,6 @@
 # Changelog
 
+- feat(Vue fichier): création de la vue pour importer un fichier [#91](https://github.com/betagouv/Resultats-Elections-FPT/pull/91)
 - fix: affiche uniquement 2 décimales pour les pourcentages [#90](https://github.com/betagouv/Resultats-Elections-FPT/pull/90)
 - chore: importe les composants DSFR en fonction de leur usage [#89](https://github.com/betagouv/Resultats-Elections-FPT/pull/89) 
 - fix(Vue fiche): corrige le responsive de l'export Excel et les valeurs enregistrées [#88](https://github.com/betagouv/Resultats-Elections-FPT/pull/88)
