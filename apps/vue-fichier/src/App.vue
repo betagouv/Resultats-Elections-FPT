@@ -1,7 +1,7 @@
 <script setup>
 import { ref, computed } from 'vue'
 import { computedAsync } from '@vueuse/core'
-import { DsfrBadge } from '@gouvminint/vue-dsfr'
+import { DsfrBadge, DsfrButton } from '@gouvminint/vue-dsfr'
 import valuesUtils from '@shared/utils/values.js'
 import GristContainer from '@shared/components/GristContainer.vue'
 import ImportFile from './components/ImportFile.vue'
@@ -29,6 +29,15 @@ const title = computed(() => {
   if (!currentRecord?.value[scrutinMapped?.value] || !fileName?.value) return ''
   return `${fileName.value} de ${currentRecord.value[scrutinMapped.value]}`
 })
+
+/* ACTIONS */
+const displayFile = async () => {
+  if (!currentRecord?.value?.[fileMapped?.value].length === 0) return
+  const attachmentId = currentRecord.value[fileMapped.value][0]
+  const { baseUrl, token } = await grist.docApi.getAccessToken({ readOnly: false })
+  const url = `${baseUrl}/attachments/${attachmentId}/download?auth=${token}`
+  window.open(url, '_blank')
+}
 
 /* GRIST */
 const gristColumns = [
@@ -83,7 +92,14 @@ const updateViewFromConfiguration = (configurations) => {
         <DsfrBadge :label="badge.text" :type="badge.type" />
       </div>
       <ImportFile v-if="!hasFile" :row-id="currentRecord.id" :file-column="fileMapped" />
-      <pre>{{ currentRecord[fileMapped] }}</pre>
+      <div v-else>
+        <DsfrButton 
+          secondary
+          label="Télécharger le fichier"
+          icon="fr-icon-file-download-fill"
+          @click="displayFile"
+        />
+      </div>
     </main>
   </GristContainer>
 </template>
