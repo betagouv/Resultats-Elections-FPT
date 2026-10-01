@@ -73,4 +73,11 @@ const getExcelCellValue = (cell) => {
   else return cell.value
 }
 
-export default { isInString, prettify, cleanUrl, cleanJson, isPercent, prettifyToPercent, getExcelCellFormat, getExcelCellType, getExcelCellValue }
+const getExcelFileName = (prefix, titleValue) => {
+  const prefixString = String(prefix || 'informations').replace(/ /g, '-')
+  const fileNameString = String(titleValue) || ''
+  const title = fileNameString ? fileNameString.replace(/ /g, '-') : 'fiche'
+  return `${prefixString}-${title}.xlsx`
+}
+
+export default { isInString, prettify, cleanUrl, cleanJson, isPercent, prettifyToPercent, getExcelCellFormat, getExcelCellType, getExcelCellValue, getExcelFileName }

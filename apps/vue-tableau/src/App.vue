@@ -21,6 +21,8 @@ const filtersStore = useFiltersStore()
 const gristContainerRef = ref(null)
 
 /* EXPORT */
+const excelFileName = computed(() => valuesUtils.getExcelFileName('liste', tableRowName.value))
+
 const generateExcelData = () => {
   const data = []
   const headers = []
@@ -212,7 +214,7 @@ const backToTop = () => {
             <ExcelDownloadButton
               v-if="tableIsReady"
               label="Télécharger le tableau (Excel)"
-              file-name="liste-collectivites.xlsx"
+              :file-name="excelFileName"
               :get-data="generateExcelData"
               class="fr-mr-0"
             />
