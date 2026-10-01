@@ -1,5 +1,6 @@
 # Changelog
 
+- fix(Vue fiche): réinitialise la vue quand on change de record [#92](https://github.com/betagouv/Resultats-Elections-FPT/pull/92)
 - feat(Vue fichier): création de la vue pour importer un fichier [#91](https://github.com/betagouv/Resultats-Elections-FPT/pull/91)
 - fix: affiche uniquement 2 décimales pour les pourcentages [#90](https://github.com/betagouv/Resultats-Elections-FPT/pull/90)
 - chore: importe les composants DSFR en fonction de leur usage [#89](https://github.com/betagouv/Resultats-Elections-FPT/pull/89) 
