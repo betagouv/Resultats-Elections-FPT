@@ -16,6 +16,7 @@ const secondGroupMapped = ref([])
 const hiddenFormMapped = ref()
 const formModels = ref({})
 const isLoading = ref(false)
+const hasSaved = ref(false)
 const displayView = ref('form')
 
 /* CONFIGURATION */
@@ -115,6 +116,7 @@ const saveRecord = async () => {
   } catch (error) {
     displayView.value = 'error'
   } finally {
+    hasSaved.value = true
     isLoading.value = false
   }
 }
@@ -154,7 +156,9 @@ const gristColumns = [
 
 const onRecord = (record) => {
   currentRecord.value = record
+  if (!hasSaved.value) displayView.value = 'form'
   fillForm()
+  hasSaved.value = false
 }
 
 const onRecords = (params) => {
