@@ -110,7 +110,8 @@ const triggerAction = async () => {
 
 /* EXPORT */
 const excelFileName = computed(() => {
-  const title = currentRecord.value[titleMapped.value]?.replace(/ /g, '-') || 'fiche'
+  const fileNameString = String(currentRecord?.value?.[titleMapped.value]) || ''
+  const title = fileNameString ? fileNameString.replace(/ /g, '-') : 'fiche'
   return `informations-${title}.xlsx`
 })
 
