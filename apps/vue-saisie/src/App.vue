@@ -100,8 +100,10 @@ const getFormValuesCleaned = () => {
 const getInputValue = (input) => {
   const value = formModels.value[input.name]
   if (input.type === 'checkbox') return value === true
-  if (value === '' || value === null || value === undefined) return 0
-  return input.type === 'number' ? Number(value) : value
+  const isEmpty = value === '' || value === null || value === undefined
+  const isNumber = input.type === 'number'
+  if (isEmpty) return isNumber ? 0 : null
+  return isNumber ? Number(value) : value
 }
 
 const saveRecord = async () => {
