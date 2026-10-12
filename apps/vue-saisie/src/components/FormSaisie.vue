@@ -15,7 +15,7 @@ const emit = defineEmits(['back', 'save', 'update:field'])
   <form v-if="displayView === 'form'" class="fr-mb-2w">
     <h1 class="fr-h6">Modifier le scrutin {{ title }}</h1>
     <fieldset class="fr-fieldset">
-      <div class="fr-fieldset__element">
+      <div class="fr-fieldset__element fr-mb-0">
         <div v-for="input in requiredInputs" :key="input.name" class="fr-mb-2w">
           <FormField :input="input" :model-value="formModels[input.name]" @update:model-value="(value) => emit('update:field', input.name, value)" data-dgcl-testid="saisie-field-required" />
         </div>
