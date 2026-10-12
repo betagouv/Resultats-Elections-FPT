@@ -1,5 +1,6 @@
 # Changelog
 
+- feat(Vue saisie): diverses améliorations [#95](https://github.com/betagouv/Resultats-Elections-FPT/pull/95)
 - chore: met à jour l'environnement de dev [#94](https://github.com/betagouv/Resultats-Elections-FPT/pull/94)
 - fix(Excel): rend le nom dynamique en fonction de la vue et d'un titre [#93](https://github.com/betagouv/Resultats-Elections-FPT/pull/93)
 - fix(Vue fiche): réinitialise la vue quand on change de record [#92](https://github.com/betagouv/Resultats-Elections-FPT/pull/92)
