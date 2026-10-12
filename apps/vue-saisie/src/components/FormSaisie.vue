@@ -14,28 +14,28 @@ const emit = defineEmits(['back', 'save', 'update:field'])
   </div>
   <form v-if="displayView === 'form'" class="fr-mb-2w">
     <h1 class="fr-h6">Modifier le scrutin {{ title }}</h1>
-    <fieldset class="fr-fieldset fr-mb-2w">
-      <div class="fr-fieldset__element">
+    <fieldset class="fr-fieldset">
+      <div class="fr-fieldset__element fr-mb-0">
         <div v-for="input in requiredInputs" :key="input.name" class="fr-mb-2w">
           <FormField :input="input" :model-value="formModels[input.name]" @update:model-value="(value) => emit('update:field', input.name, value)" data-dgcl-testid="saisie-field-required" />
         </div>
       </div>
     </fieldset>
-    <fieldset class="fr-fieldset fr-mb-2w">
+    <fieldset class="fr-fieldset">
       <legend class="fr-fieldset__legend">{{ firstGroupLegend }} :</legend>
       <div class="fr-fieldset__element">
         <div class="fr-grid-row fr-grid-row--gutters">
-          <div v-for="input in firstGroupInputs" :key="input.name" class="fr-col-12 fr-mb-2w">
+          <div v-for="input in firstGroupInputs" :key="input.name" class="fr-col-12">
             <FormField :input="input" :model-value="formModels[input.name]" :disabled="areGroupsDisabled" @update:model-value="(value) => emit('update:field', input.name, value)" data-dgcl-testid="saisie-field-firstGroup" />
           </div>
         </div>
       </div>
     </fieldset>
-    <fieldset class="fr-fieldset fr-mb-2w">
+    <fieldset class="fr-fieldset">
       <legend class="fr-fieldset__legend">{{ secondGroupLegend }} :</legend>
       <div class="fr-fieldset__element">
         <div class="fr-grid-row fr-grid-row--gutters">
-          <div v-for="input in secondGroupInputs" :key="input.name" class="fr-col-6 fr-mb-2w">
+          <div v-for="input in secondGroupInputs" :key="input.name" class="fr-col-6">
             <FormField :input="input" :model-value="formModels[input.name]" :disabled="areGroupsDisabled" @update:model-value="(value) => emit('update:field', input.name, value)" data-dgcl-testid="saisie-field-secondGroup" />
           </div>
         </div>

@@ -65,6 +65,11 @@ const fillForm = () => {
   if (areGroupsDisabled.value) emptyGroupsInputs()
 }
 
+const hasRecordChanged = (previous, next) => {
+  if (previous.id !== next.id) return true
+  return allFields.value.some(field => (previous[field] ?? '') !== (next[field] ?? ''))
+}
+
 /* DESACTIVATION DES GROUPES DE CHAMPS */
 const areGroupsDisabled = computed(() => disabledCheckboxeMapped.value ? formModels.value[disabledCheckboxeMapped.value] === true : false)
 
@@ -100,8 +105,10 @@ const getFormValuesCleaned = () => {
 const getInputValue = (input) => {
   const value = formModels.value[input.name]
   if (input.type === 'checkbox') return value === true
-  if (value === '' || value === null || value === undefined) return null
-  return input.type === 'number' ? Number(value) : value
+  const isEmpty = value === '' || value === null || value === undefined
+  const isNumber = input.type === 'number'
+  if (isEmpty) return isNumber ? 0 : null
+  return isNumber ? Number(value) : value
 }
 
 const saveRecord = async () => {
@@ -155,7 +162,9 @@ const gristColumns = [
 ]
 
 const onRecord = (record) => {
+  const hasChanged = hasRecordChanged(currentRecord.value, record)
   currentRecord.value = record
+  if (!hasChanged) return // Prevent for reloading the form if the user update another column (example: Procès verbal)
   if (!hasSaved.value) displayView.value = 'form'
   fillForm()
   hasSaved.value = false
