@@ -164,7 +164,7 @@ const gristColumns = [
 const onRecord = (record) => {
   const hasChanged = hasRecordChanged(currentRecord.value, record)
   currentRecord.value = record
-  if (!hasChanged) return // Prevent for reloading the form is the user update another column (example: Procès verbal)
+  if (!hasChanged) return // Prevent for reloading the form if the user update another column (example: Procès verbal)
   if (!hasSaved.value) displayView.value = 'form'
   fillForm()
   hasSaved.value = false
