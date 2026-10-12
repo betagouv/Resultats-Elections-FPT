@@ -100,7 +100,7 @@ const getFormValuesCleaned = () => {
 const getInputValue = (input) => {
   const value = formModels.value[input.name]
   if (input.type === 'checkbox') return value === true
-  if (value === '' || value === null || value === undefined) return null
+  if (value === '' || value === null || value === undefined) return 0
   return input.type === 'number' ? Number(value) : value
 }
 
