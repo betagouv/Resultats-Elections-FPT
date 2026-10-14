@@ -66,10 +66,7 @@ const fillForm = () => {
   if (areGroupsDisabled.value) emptyGroupsInputs()
 }
 
-const hasRecordChanged = (previous, next) => {
-  if (previous.id !== next.id) return true
-  return allFields.value.some(field => (previous[field] ?? '') !== (next[field] ?? ''))
-}
+const hasFieldsChanged = (previous, next) => allFields.value.some(field => (previous[field] ?? '') !== (next[field] ?? ''))
 
 /* DESACTIVATION DES GROUPES DE CHAMPS */
 const areGroupsDisabled = computed(() => disabledCheckboxeMapped.value ? formModels.value[disabledCheckboxeMapped.value] === true : false)
@@ -169,9 +166,9 @@ const onRecord = (record) => {
     return
   }
   const hasSelectOtherRecord = currentRecord.value.id !== record.id
-  const hasChanged = hasRecordChanged(currentRecord.value, record)
+  const hasChanged = hasFieldsChanged(currentRecord.value, record)
   currentRecord.value = record
-  if (!hasChanged) return // Prevent for reloading the form if the user update another column (example: Procès verbal)
+  if (!hasChanged && !hasSelectOtherRecord) return // Prevent for reloading the form if the user update another column (example: Procès-verbal)
   if (hasSelectOtherRecord || !hasSaved.value) displayView.value = 'form'
   fillForm()
   hasSaved.value = false
