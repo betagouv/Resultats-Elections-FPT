@@ -1,5 +1,6 @@
 # Changelog
 
+- fix(Vue saisie): corrige le non affichage du formulaire en fonction des chargements de Grist [#96](https://github.com/betagouv/Resultats-Elections-FPT/pull/96)
 - feat(Vue saisie): diverses améliorations [#95](https://github.com/betagouv/Resultats-Elections-FPT/pull/95)
 - chore: met à jour l'environnement de dev [#94](https://github.com/betagouv/Resultats-Elections-FPT/pull/94)
 - fix(Excel): rend le nom dynamique en fonction de la vue et d'un titre [#93](https://github.com/betagouv/Resultats-Elections-FPT/pull/93)
