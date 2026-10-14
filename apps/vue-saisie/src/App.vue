@@ -18,6 +18,7 @@ const formModels = ref({})
 const isLoading = ref(false)
 const hasSaved = ref(false)
 const displayView = ref('form')
+const hasMapping = ref(false)
 
 /* CONFIGURATION */
 const configurationName = 'fieldsets-names'
@@ -162,6 +163,11 @@ const gristColumns = [
 ]
 
 const onRecord = (record) => {
+  // To fillForm in onRecords and prevent not filling form on page load
+  if (!hasMapping.value) {
+    currentRecord.value = record
+    return
+  }
   const hasChanged = hasRecordChanged(currentRecord.value, record)
   currentRecord.value = record
   if (!hasChanged) return // Prevent for reloading the form if the user update another column (example: Procès verbal)
@@ -172,12 +178,15 @@ const onRecord = (record) => {
 
 const onRecords = (params) => {
   const { mapping } = params
+  const isFirstMapping = !hasMapping.value
   titleMapped.value = mapping['title']
   requiredFieldMapped.value = mapping['requiredField']
   disabledCheckboxeMapped.value = mapping['disabledCheckboxe']
   firstGroupMapped.value = mapping['firstGroup'] || []
   secondGroupMapped.value = mapping['secondGroup'] || []
   hiddenFormMapped.value = mapping['hiddenForm']
+  hasMapping.value = true
+  if (isFirstMapping && currentRecord.value.id) fillForm()
 }
 
 const onConfiguration = (configurations) => updateViewFromConfiguration(configurations)
