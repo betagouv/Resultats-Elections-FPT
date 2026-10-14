@@ -66,7 +66,13 @@ const fillForm = () => {
   if (areGroupsDisabled.value) emptyGroupsInputs()
 }
 
-const hasFieldsChanged = (previous, next) => allFields.value.some(field => (previous[field] ?? '') !== (next[field] ?? ''))
+const hasFieldsChanged = (previousRecord, nextRecord) => {
+  return allFields.value.some(field => {
+    const previousValue = previousRecord[field] ?? ''
+    const nextValue = nextRecord[field] ?? ''
+    return previousValue !== nextValue
+  })
+}
 
 /* DESACTIVATION DES GROUPES DE CHAMPS */
 const areGroupsDisabled = computed(() => disabledCheckboxeMapped.value ? formModels.value[disabledCheckboxeMapped.value] === true : false)
