@@ -168,10 +168,11 @@ const onRecord = (record) => {
     currentRecord.value = record
     return
   }
+  const hasSelectOtherRecord = currentRecord.value.id !== record.id
   const hasChanged = hasRecordChanged(currentRecord.value, record)
   currentRecord.value = record
   if (!hasChanged) return // Prevent for reloading the form if the user update another column (example: Procès verbal)
-  if (!hasSaved.value) displayView.value = 'form'
+  if (hasSelectOtherRecord || !hasSaved.value) displayView.value = 'form'
   fillForm()
   hasSaved.value = false
 }
