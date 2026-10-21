@@ -9,7 +9,7 @@ import FormSaisie from './components/FormSaisie.vue'
 /* INFORMATIONS */
 const currentRecord = ref({})
 const titleMapped = ref()
-const requiredFieldMapped = ref()
+const requiredFieldMapped = ref([])
 const disabledCheckboxeMapped = ref()
 const firstGroupMapped = ref([])
 const secondGroupMapped = ref([])
@@ -37,7 +37,7 @@ const secondGroupLegend = computed(() => legends.value[1] || 'Voix des organisat
 const tableColumnsInfos = computedAsync(async () => await grist.getOption('tableColumnInfos'), [])
 
 /* FORMULAIRE */
-const requiredFields = computed(() => [requiredFieldMapped.value, disabledCheckboxeMapped.value].filter(field => field))
+const requiredFields = computed(() => [...requiredFieldMapped.value, disabledCheckboxeMapped.value].filter(field => field))
 const groupsFields = computed(() => [...firstGroupMapped.value, ...secondGroupMapped.value])
 const allFields = computed(() => [...requiredFields.value, ...groupsFields.value])
 const requiredInputs = computed(() => getFormInputs(requiredFields.value))
@@ -185,7 +185,7 @@ const onRecords = (params) => {
   const { mapping } = params
   const isFirstMapping = !hasMapping.value
   titleMapped.value = mapping['title']
-  requiredFieldMapped.value = mapping['requiredField']
+  requiredFieldMapped.value = [].concat(mapping['requiredField'] || []) // Handles previous single column mapping
   disabledCheckboxeMapped.value = mapping['disabledCheckboxe']
   firstGroupMapped.value = mapping['firstGroup'] || []
   secondGroupMapped.value = mapping['secondGroup'] || []
