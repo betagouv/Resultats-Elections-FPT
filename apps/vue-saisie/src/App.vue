@@ -140,8 +140,9 @@ const gristColumns = [
   },
   {
     name: 'requiredField',
-    description: "Nombre d'inscrits seul champ obligatoire",
+    description: "Champs qui ne seront pas désactivés",
     optional: true,
+    allowMultiple: true,
   },
   {
     name: 'disabledCheckboxe',
