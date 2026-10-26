@@ -6,6 +6,7 @@ const props = defineProps(['data', 'currentRecord', 'tableColumnsInfos'])
 const value = computed(() => props.currentRecord[props.data])
 const isList = computed(() => value.value && typeof value.value === 'object' && value.value.length > 0)
 const columnInfo = computed(() => props.tableColumnsInfos.find(column => column.colId === props.data))
+const isUrl = computed(() => typeof props.data === 'string' && props.data.startsWith('url_'))
 const isPercent = computed(() => columnInfo.value ? valuesUtils.isPercent(columnInfo.value) : false)
 const label = computed(() => columnInfo.value?.label || null)
 const getPrettyValue = (value) => valuesUtils.prettify(value)
@@ -20,6 +21,11 @@ const getPercentValue = (value) => valuesUtils.prettifyToPercent(value)
         <li v-for="item in value" :key="item">{{ getPrettyValue(item) }}</li>
       </ul>
     </div>
+    <p v-else-if="isUrl" class="fr-mb-0">
+      {{ label }} :
+      <a v-if="value" :href="value" target="_blank" rel="noopener noreferrer">Ouvrir le fichier</a>
+      <span v-else>Non renseigné</span>
+    </p>
     <p v-else-if="isPercent" class="fr-mb-0" data-dgcl-testid="fiche-simple-value-single">{{ label }} : {{ getPercentValue(value) }}</p>
     <p v-else class="fr-mb-0" data-dgcl-testid="fiche-simple-value-single">{{ label }} : {{ getPrettyValue(value) }}</p>
   </li>
