@@ -1,5 +1,6 @@
 # Changelog
 
+- feat(Vue fiche): ajoute le type de champ lien [#98](https://github.com/betagouv/Resultats-Elections-FPT/pull/98)
 - fix(Saisie): permet d'avoir une liste de champs obligatoires au lieu de un seul [#97](https://github.com/betagouv/Resultats-Elections-FPT/pull/97)
 - fix(Vue saisie): corrige le non affichage du formulaire en fonction des chargements de Grist [#96](https://github.com/betagouv/Resultats-Elections-FPT/pull/96)
 - feat(Vue saisie): diverses améliorations [#95](https://github.com/betagouv/Resultats-Elections-FPT/pull/95)
