@@ -36,7 +36,6 @@ const isNotFilled = computed(() => {
 
 /* INITAL DATA */
 const tableColumnsInfos = computedAsync(async () => await grist.getOption('tableColumnInfos'), [])
-const isLoaded = computed(() => tableColumnsInfos.value?.length > 0)
 
 /* GRIST */
 const gristColumns = [
@@ -173,7 +172,7 @@ const generateExcelData = () => {
         to="/"
         data-dgcl-testid="fiche-tile"
       />
-      <div v-else-if="isLoaded" data-dgcl-testid="fiche-content">
+      <div v-else-if="tableColumnsInfos?.length > 0" data-dgcl-testid="fiche-content">
         <div class="vue-fiche__top-container fr-mb-3w">
           <div>
             <h1 data-js="title" class="fr-mb-1w fr-h6">{{ currentRecord[titleMapped] }}</h1>
