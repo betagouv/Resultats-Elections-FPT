@@ -20,8 +20,16 @@ const openedFiltersModal = ref(false)
 const filtersStore = useFiltersStore()
 const gristContainerRef = ref(null)
 
+/* CONFIGURATION */
+const configurationName = 'excelFileName'
+const gristConfiguration = {
+  name: configurationName,
+  label: 'Nom du fichier Excel exporté (ex: "resultats-elections")',
+}
+const excelFileNameConfigured = computedAsync(async () => await grist.getOption(configurationName), '')
+
 /* EXPORT */
-const excelFileName = computed(() => valuesUtils.getExcelFileName('liste', tableRowName.value))
+const excelFileName = computed(() => excelFileNameConfigured.value ? valuesUtils.getExcelFileName(excelFileNameConfigured.value) : valuesUtils.getExcelFileName('liste', tableRowName.value))
 
 const generateExcelData = () => {
   const data = []
@@ -178,6 +186,7 @@ const onOptions = (options) => updateViewFromConfiguration(options)
 const updateViewFromConfiguration = (configurations) => {
   for (const configuration of configurations) {
     if (configuration.name === 'tableColumnInfos') tableColumnsInfos.value = configuration.value
+    if (configuration.name === configurationName) excelFileNameConfigured.value = configuration.value
   }
 }
 
@@ -191,7 +200,7 @@ const backToTop = () => {
 }
 </script>
 <template>
-  <GristContainer ref="gristContainerRef" @update:record="onRecord" @update:records="onRecords" :columns="gristColumns" @update:configuration="onConfiguration" @update:options="onOptions">
+  <GristContainer ref="gristContainerRef" @update:record="onRecord" @update:records="onRecords" :columns="gristColumns" :configuration="gristConfiguration" @update:configuration="onConfiguration" @update:options="onOptions">
     <div class="vue-tableau">
       <div class="fr-pt-3w fr-px-3w">
         <div class="fr-grid-row fr-grid-row--center">
