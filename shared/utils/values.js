@@ -73,11 +73,25 @@ const getExcelCellValue = (cell) => {
   else return cell.value
 }
 
-const getExcelFileName = (prefix, titleValue) => {
-  const prefixString = String(prefix || 'informations').replace(/ /g, '-')
-  const fileNameString = String(titleValue) || ''
-  const title = fileNameString ? fileNameString.replace(/ /g, '-') : 'fiche'
-  return `${prefixString}-${title}.xlsx`
+const cleanFileNamePart = (value) => {
+  return String(value)
+    .trim()
+    .normalize("NFD") // Convert string to unicode normalize : needed for accent replacement
+    .replace(/[̀-ͯ]/g, "") // Remove accents : all chars between unicode U+0300 to U+036F
+    .replace(/ +/g, '-')
 }
 
-export default { isInString, prettify, cleanUrl, cleanJson, isPercent, prettifyToPercent, getExcelCellFormat, getExcelCellType, getExcelCellValue, getExcelFileName }
+const getFileTimestamp = () => {
+  const pad = (number) => String(number).padStart(2, '0')
+  const now = new Date()
+  return `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}-${pad(now.getHours())}h${pad(now.getMinutes())}`
+}
+
+const getExcelFileName = (prefix, titleValue) => {
+  const parts = [prefix || 'informations', titleValue]
+    .filter((part) => part !== undefined && part !== null && String(part).trim() !== '')
+    .map(cleanFileNamePart)
+  return parts.join('-')
+}
+
+export default { isInString, prettify, cleanUrl, cleanJson, isPercent, prettifyToPercent, getExcelCellFormat, getExcelCellType, getExcelCellValue, getExcelFileName, getFileTimestamp }

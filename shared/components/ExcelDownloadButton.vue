@@ -1,6 +1,7 @@
 <script setup>
 import { ref, computed } from 'vue'
 import { DsfrButton } from '@gouvminint/vue-dsfr'
+import valuesUtils from '@shared/utils/values.js'
 
 defineOptions({ inheritAttrs: false })
 
@@ -13,7 +14,7 @@ const downloadExcel = async () => {
   try {
     const { default: writeExcelFile } = await import('write-excel-file/browser')
     const data = props.getData()
-    await writeExcelFile(data).toFile(props.fileName)
+    await writeExcelFile(data).toFile(`${props.fileName}-${valuesUtils.getFileTimestamp()}.xlsx`)
   } finally {
     isDownloading.value = false
   }
