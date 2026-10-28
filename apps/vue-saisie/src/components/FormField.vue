@@ -26,6 +26,7 @@ const emit = defineEmits(['update:modelValue'])
     :hint="input.infos.description"
     :disabled="disabled"
     @update:model-value="(value) => emit('update:modelValue', value)"
+    @wheel="(event) => input.type === 'number' && event.target.blur()"
   />
 </template>
 
