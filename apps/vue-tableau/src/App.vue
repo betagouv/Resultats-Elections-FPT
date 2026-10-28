@@ -31,11 +31,21 @@ const excelFileNameConfigured = computedAsync(async () => await grist.getOption(
 /* EXPORT */
 const excelFileName = computed(() => excelFileNameConfigured.value ? valuesUtils.getExcelFileName(excelFileNameConfigured.value) : valuesUtils.getExcelFileName('liste', tableRowName.value))
 
+const excelCellStyle = {
+  fontSize: 11,
+  align: 'center',
+  alignVertical: 'center',
+  wrap: true,
+  borderStyle: 'thin',
+  borderColor: '#000000',
+}
+const excelHeaderStyle = { ...excelCellStyle, backgroundColor: '#5B9BD5' }
+
 const generateExcelData = () => {
   const data = []
   const headers = []
   for(const header of tableHeader.value) {
-    headers.push({value: header.label})
+    headers.push({value: header.label, ...excelHeaderStyle})
   }
   data.push(headers)
   for(const row of tableRows.value) {
@@ -45,12 +55,22 @@ const generateExcelData = () => {
         type: valuesUtils.getExcelCellType(cell),
         value: valuesUtils.getExcelCellValue(cell),
         format: valuesUtils.getExcelCellFormat(cell),
+        ...excelCellStyle,
       })
     }
     data.push(rowFormatted)
   }
   return data
 }
+
+const getExcelColumnWidth = (cell, columnIndex) => {
+  if (columnIndex === 0) return 70
+  if (cell?.format === '0.00%') return 20
+  if (cell?.type === Number || cell?.type === Boolean) return 15
+  return 50
+}
+
+const generateExcelColumns = (data) => data[0].map((_, columnIndex) => ({ width: getExcelColumnWidth(data[1]?.[columnIndex], columnIndex) }))
 
 /* SEARCH */
 const search = ref()
@@ -225,6 +245,7 @@ const backToTop = () => {
               label="Télécharger le tableau (Excel)"
               :file-name="excelFileName"
               :get-data="generateExcelData"
+              :get-columns="generateExcelColumns"
               class="fr-mr-0"
             />
           </div>
