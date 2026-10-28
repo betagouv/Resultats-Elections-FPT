@@ -1,24 +1,22 @@
 <script setup>
 import { computed } from 'vue'
-import { computedAsync } from '@vueuse/core'
 import gristUtils from '@shared/utils/grist.js'
 
-const props = defineProps(['label', 'value'])
+const props = defineProps(['label', 'value', 'baseUrl'])
 const isEmpty = computed(() => !props.value?.length)
 
 /* Get data */
-const getUrl = (baseUrl, id) => `${baseUrl}/attachments/${id}/download`
-const getInfos = async () => {
-  const { baseUrl } = await gristUtils.getAccessToken()
-  return await Promise.all(props.value.map(async id => ({
+const getUrl = (id) => `${props.baseUrl}/attachments/${id}/download`
+const getInfos = () => {
+  return props.value.map((id, index) => ({
     id,
-    fileName: await gristUtils.getAttachmentFileName(id),
-    url: getUrl(baseUrl, id),
-  })))
+    fileName: `le fichier ${index + 1}`,
+    url: getUrl(id),
+  }))
 }
 
 /* Files */
-const attachments = computedAsync(async () => isEmpty.value ? [] : await getInfos(), [])
+const attachments = computed(() => isEmpty.value ? [] : getInfos())
 
 /* Open */
 const openLink = async (url) => {
@@ -32,7 +30,7 @@ const openLink = async (url) => {
     {{ label }} :
     <ul v-if="attachments.length">
       <li v-for="attachment in attachments" :key="attachment.id">
-        <a :href="attachment.url" target="_blank" rel="noopener noreferrer" @click.prevent="openLink(attachment.url)">{{ attachment.fileName }}</a>
+        <a :href="attachment.url" target="_blank" rel="noopener noreferrer" @click.prevent="openLink(attachment.url)">Ouvrir {{ attachment.fileName }}</a>
       </li>
     </ul>
     <span v-else>Non renseigné</span>
