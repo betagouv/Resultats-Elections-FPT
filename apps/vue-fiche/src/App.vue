@@ -207,7 +207,7 @@ const generateExcelData = () => {
           @click="opened = true" />
       </div>
       <div v-else>
-        <p>Chargement en cours...</p>
+        <p>Les informations de la table ne sont pas enregistrées</p>
       </div>
       <DsfrModal
         v-if="hasAction"
