@@ -5,16 +5,25 @@ import gristUtils from '@shared/utils/grist.js'
 
 const props = defineProps(['label', 'value'])
 const isEmpty = computed(() => !props.value?.length)
+
+/* Get data */
+const getUrl = (baseUrl, id) => `${baseUrl}/attachments/${id}/download`
 const getInfos = async () => {
+  const { baseUrl } = await gristUtils.getAccessToken()
   return await Promise.all(props.value.map(async id => ({
     id,
     fileName: await gristUtils.getAttachmentFileName(id),
+    url: getUrl(baseUrl, id),
   })))
 }
+
+/* Files */
 const attachments = computedAsync(async () => isEmpty.value ? [] : await getInfos(), [])
-const openLink = async (id) => {
-  const url = await gristUtils.getAttachmentUrl(id)
-  window.open(url, '_blank', 'noopener,noreferrer')
+
+/* Open */
+const openLink = async (url) => {
+  const urlWithToken = await gristUtils.addTokenToUrl(url)
+  window.open(urlWithToken, '_blank', 'noopener,noreferrer')
 }
 </script>
 
@@ -23,7 +32,7 @@ const openLink = async (id) => {
     {{ label }} :
     <ul v-if="attachments.length">
       <li v-for="(attachment, index) in attachments">
-        <a :key="attachment.id" href="#" @click.prevent="openLink(attachment.id)">{{ attachment.fileName }}</a>
+        <a :key="attachment.id" :href="attachment.url" target="_blank" rel="noopener noreferrer" @click.prevent="openLink(attachment.url)">{{ attachment.fileName }}</a>
       </li>
     </ul>
     <span v-else>Non renseigné</span>

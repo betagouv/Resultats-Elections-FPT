@@ -56,16 +56,16 @@ const getAttachmentFileName = async (id) => {
   return attachmentsTable.fileName[attachmentsTable.id.indexOf(id)]
 }
 
-const getAttachmentUrl = async (id) => {
-  const { baseUrl, token } = await getAccessToken()
-  return `${baseUrl}/attachments/${id}/download?auth=${token}`
+const addTokenToUrl = async (url) => {
+  const { token } = await getAccessToken()
+  return `${url}?auth=${token}`
 }
 
 export default {
   getTableColumnsInfos,
   getAccessToken,
   getAttachmentFileName,
-  getAttachmentUrl,
+  addTokenToUrl,
   getCurrentTableID,
   getColumnsInfos,
   getColumnInfos,
