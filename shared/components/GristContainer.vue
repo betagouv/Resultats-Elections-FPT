@@ -59,7 +59,6 @@ const updateConfiguration = () => {
   let newConfiguration = []
   if (props.configuration.name) newConfiguration.push({name: props.configuration.name, value: configurationInput.value})
   newConfiguration.push({name: 'tableColumnInfos', value: tableColumnInfos.value})
-  newConfiguration.push({name: 'baseUrl', value: baseUrl.value})
   emit('update:configuration', newConfiguration)
 }
 
@@ -68,17 +67,6 @@ const updateCursorPos = (cursorPos) => {
   grist.setCursorPos({ rowId: cursorPos })
 }
 defineExpose({updateCursorPos})
-
-/* Document url cache */
-const isBaseUrlLoading = ref(false)
-const baseUrl = computedAsync(async () => await grist.getOption('baseUrl'), null)
-const saveBaseUrl = async () => {
-  isBaseUrlLoading.value = true
-  const { baseUrl: url } = await gristUtils.getAccessToken()
-  baseUrl.value = url
-  grist.setOption('baseUrl', url)
-  isBaseUrlLoading.value = false
-}
 
 /* Table column infos cache */
 const isLoading = ref(false)
@@ -109,13 +97,7 @@ const saveTableColumnInfos = async () => {
         </div>
       </div>
       <div class="fr-my-2w">
-        <h3>2. URL du document</h3>
-        <p>L'URL du document est enregistrée pour être utilisée dans la vue personnalisée.</p>
-        <button @click="saveBaseUrl" :disabled="isBaseUrlLoading">{{ isBaseUrlLoading ? 'Chargement en cours...' : 'Actualiser l\'URL' }}</button>
-        <pre>{{ baseUrl || 'Aucune URL du document enregistrée' }}</pre>
-      </div>
-      <div class="fr-my-2w">
-        <h3>3. Informations de la table</h3>
+        <h3>2. Informations de la table</h3>
         <p>Les informations de la table sont enregistrées pour être utilisées dans la vue personnalisée.</p>
         <button @click="saveTableColumnInfos" :disabled="isLoading">{{ isLoading ? 'Chargement en cours...' : 'Actualiser les informations' }}</button>
         <pre>{{ tableColumnInfos || 'Aucune information de la table enregistrée' }}</pre>

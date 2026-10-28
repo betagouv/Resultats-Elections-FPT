@@ -36,7 +36,7 @@ const isNotFilled = computed(() => {
 
 /* INITAL DATA */
 const tableColumnsInfos = computedAsync(async () => await grist.getOption('tableColumnInfos'), [])
-const baseUrl = computedAsync(async () => await grist.getOption('baseUrl'), null)
+const baseUrl = computedAsync(async () => (await gristUtils.getAccessToken()).baseUrl, null)
 const isLoaded = computed(() => tableColumnsInfos.value?.length > 0 && !!baseUrl.value)
 
 /* GRIST */
@@ -88,7 +88,6 @@ const updateViewFromConfiguration = (configurations) => {
   for (const configuration of configurations) {
     if (configuration.name === configurationButtonName) showDownloadButton.value = configuration.value === 'oui'
     if (configuration.name === "tableColumnInfos") tableColumnsInfos.value = configuration.value
-    if (configuration.name === 'baseUrl') baseUrl.value = configuration.value
   }
 }
 
