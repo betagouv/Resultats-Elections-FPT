@@ -17,15 +17,13 @@ const errorsMapped = ref([])
 const actionMapped = ref()
 
 /* CONFIGURATION */
-const configurationButtonName = 'save-button'
+const configurationName = 'excelFileName'
 const gristConfiguration = {
-  name: configurationButtonName,
-  label: 'Pour afficher le bouton pour "Enregister les données" de la fiche écrivez oui, sinon laissez vide',
+  name: configurationName,
+  label: 'Pour afficher le bouton pour "Enregister les données" indiquez le prefix à donner au nom du fichier, si non laissez vide',
 }
-const showDownloadButton = computedAsync(async () => {
-  const configuration = await grist.getOption(configurationButtonName)
-  return configuration === 'oui'
-}, false)
+const excelFileNameConfigured = computedAsync(async () => await grist.getOption(configurationName), '')
+const showDownloadButton = computed(() => !!excelFileNameConfigured.value)
 
 /* RECORD */
 const currentRecord = ref({})
@@ -83,7 +81,7 @@ const onOptions = (options) => updateViewFromConfiguration(options)
 
 const updateViewFromConfiguration = (configurations) => {
   for (const configuration of configurations) {
-    if (configuration.name === configurationButtonName) showDownloadButton.value = configuration.value === 'oui'
+    if (configuration.name === configurationName) excelFileNameConfigured.value = configuration.value
     if (configuration.name === "tableColumnInfos") tableColumnsInfos.value = configuration.value
   }
 }
@@ -109,7 +107,7 @@ const triggerAction = async () => {
 }
 
 /* EXPORT */
-const excelFileName = computed(() => valuesUtils.getExcelFileName('informations', currentRecord.value?.[titleMapped.value]))
+const excelFileName = computed(() => valuesUtils.getExcelFileName(excelFileNameConfigured.value, currentRecord.value?.[titleMapped.value]))
 
 const generateExcelData = () => {
   const excelData = []
