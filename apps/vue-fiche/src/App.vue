@@ -33,8 +33,7 @@ const isNotFilled = computed(() => {
   const badge = currentRecord.value[badgeMapped.value]
   return badge ? badge.toLowerCase() === 'à renseigner' : false
 })
-
-/* INITAL DATA */
+/* TABLE */
 const tableColumnsInfos = computedAsync(async () => await grist.getOption('tableColumnInfos'), [])
 
 /* GRIST */
@@ -207,7 +206,7 @@ const generateExcelData = () => {
           @click="opened = true" />
       </div>
       <div v-else>
-        <p>Les informations de la table ne sont pas enregistrées</p>
+        <p>Chargement en cours...</p>
       </div>
       <DsfrModal
         v-if="hasAction"
