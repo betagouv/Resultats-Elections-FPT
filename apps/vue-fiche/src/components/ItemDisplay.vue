@@ -3,7 +3,7 @@ import { computed } from 'vue'
 import valuesUtils from '@shared/utils/values.js'
 import ItemAttachments from './ItemAttachments.vue'
 
-const props = defineProps(['data', 'currentRecord', 'tableColumnsInfos', 'baseUrl'])
+const props = defineProps(['data', 'currentRecord', 'tableColumnsInfos'])
 const value = computed(() => props.currentRecord[props.data])
 const isList = computed(() => value.value && typeof value.value === 'object' && value.value.length > 0)
 const isAttachment = computed(() => columnInfo.value?.type === 'Attachments')
@@ -16,7 +16,7 @@ const getPercentValue = (value) => valuesUtils.prettifyToPercent(value)
 
 <template>
   <li class="fr-pb-0 fr-mb-1w" data-dgcl-testid="fiche-field-value">
-    <ItemAttachments v-if="isAttachment" :label="label" :value="value" :base-url="baseUrl" />
+    <ItemAttachments v-if="isAttachment" :label="label" :value="value" />
     <div v-else-if="isList">
       <p class="fr-mb-0" data-dgcl-testid="fiche-simple-value-label">{{ label }} :</p>
       <ul class="fr-mb-3w" data-dgcl-testid="fiche-simple-value-list">

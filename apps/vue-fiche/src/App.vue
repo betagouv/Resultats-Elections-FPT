@@ -36,8 +36,7 @@ const isNotFilled = computed(() => {
 
 /* INITAL DATA */
 const tableColumnsInfos = computedAsync(async () => await grist.getOption('tableColumnInfos'), [])
-const baseUrl = computedAsync(async () => (await gristUtils.getAccessToken()).baseUrl, null)
-const isLoaded = computed(() => tableColumnsInfos.value?.length > 0 && !!baseUrl.value)
+const isLoaded = computed(() => tableColumnsInfos.value?.length > 0)
 
 /* GRIST */
 const gristColumns = [
@@ -200,7 +199,6 @@ const generateExcelData = () => {
             :data="data"
             :current-record="currentRecord"
             :table-columns-infos="tableColumnsInfos"
-            :base-url="baseUrl"
           />
         </ul>
         <DsfrButton 

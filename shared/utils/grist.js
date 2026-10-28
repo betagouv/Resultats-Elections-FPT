@@ -51,15 +51,15 @@ const getAccessToken = async (readOnly = true) => {
   return await grist.docApi.getAccessToken({ readOnly })
 }
 
-const addTokenToUrl = async (url) => {
-  const { token } = await getAccessToken()
-  return `${url}?auth=${token}`
+const getAttachmentUrl = async (id) => {
+  const { baseUrl, token } = await getAccessToken()
+  return `${baseUrl}/attachments/${id}/download?auth=${token}`
 }
 
 export default {
   getTableColumnsInfos,
   getAccessToken,
-  addTokenToUrl,
+  getAttachmentUrl,
   getCurrentTableID,
   getColumnsInfos,
   getColumnInfos,
