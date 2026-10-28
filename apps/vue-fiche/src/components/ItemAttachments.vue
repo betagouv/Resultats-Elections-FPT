@@ -28,7 +28,8 @@ const openLink = async (url) => {
 <template>
   <div class="fr-mb-0">
     {{ label }} :
-    <ul v-if="attachments.length">
+    <a v-if="attachments.length === 1" :href="attachments[0].url" target="_blank" rel="noopener noreferrer" @click.prevent="openLink(attachments[0].url)">Ouvrir le fichier</a>
+    <ul v-else-if="attachments.length">
       <li v-for="attachment in attachments" :key="attachment.id">
         <a :href="attachment.url" target="_blank" rel="noopener noreferrer" @click.prevent="openLink(attachment.url)">Ouvrir {{ attachment.fileName }}</a>
       </li>
