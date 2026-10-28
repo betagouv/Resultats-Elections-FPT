@@ -16,6 +16,7 @@ const portMap = {
   'vue-rattachement': 5180,
   'vue-saisie': 5181,
   'vue-fichier': 5182,
+  'vue-previsualisation': 5183,
 }
 
 // Détection du mode pour choisir l'app
