@@ -15,6 +15,7 @@ const badgeMapped = ref()
 const dataMapped = ref([])
 const errorsMapped = ref([])
 const actionMapped = ref()
+const showDataMapped = ref()
 
 /* CONFIGURATION */
 const configurationName = 'excelFileName'
@@ -27,10 +28,7 @@ const showDownloadButton = computed(() => !!excelFileNameConfigured.value)
 
 /* RECORD */
 const currentRecord = ref({})
-const isNotFilled = computed(() => {
-  const badge = currentRecord.value[badgeMapped.value]
-  return badge ? badge.toLowerCase() === 'à renseigner' : false
-})
+const showTile = computed(() => currentRecord.value[showDataMapped.value] !== true)
 /* TABLE */
 const tableColumnsInfos = computedAsync(async () => await grist.getOption('tableColumnInfos'), [])
 
@@ -60,6 +58,12 @@ const gristColumns = [
     name: 'action',
     description: 'Action',
     optional: true,
+  },
+  {
+    name: 'showData',
+    title: 'Afficher les données',
+    description: 'Si faux, affiche la tuile à la place des données',
+    type: 'Bool',
   }
 ]
 
@@ -74,6 +78,7 @@ const onRecords = (params) => {
   dataMapped.value = mapping['data']
   errorsMapped.value = mapping['errors']
   actionMapped.value = mapping['action']
+  showDataMapped.value = mapping['showData']
 }
 
 const onConfiguration = (configurations) => updateViewFromConfiguration(configurations)
@@ -161,7 +166,7 @@ const generateExcelData = () => {
   <GristContainer @update:record="onRecord" @update:records="onRecords" :columns="gristColumns" :configuration="gristConfiguration" @update:configuration="onConfiguration" @update:options="onOptions">
     <main v-if="currentRecord.id" class="fr-p-3w">
       <DsfrTile
-        v-if="isNotFilled"
+        v-if="showTile"
         :title="currentRecord[titleMapped]"
         :img-src="pictoDocumentFill"
         description="À renseigner dans le formulaire à droite"
