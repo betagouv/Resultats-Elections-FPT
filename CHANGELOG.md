@@ -1,5 +1,6 @@
 # Changelog
 
+- fix(Vue fiche): autorise le remplissage automatique dans les groupes uniquement [#102](https://github.com/betagouv/Resultats-Elections-FPT/pull/102)
 - fix: divers correctifs [#101](https://github.com/betagouv/Resultats-Elections-FPT/pull/101)
 - feat(Vue prévisualisation): création de la nouvelle vue [#100](https://github.com/betagouv/Resultats-Elections-FPT/pull/100)
 - feat(Vue fiche): permet d'avoir des liens pour une colonne de type "fichiers" [#99](https://github.com/betagouv/Resultats-Elections-FPT/pull/99)

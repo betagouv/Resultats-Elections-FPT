@@ -21,7 +21,7 @@ const emit = defineEmits(['back', 'save', 'update:field'])
         </div>
       </div>
     </fieldset>
-    <fieldset class="fr-fieldset">
+    <fieldset v-if="firstGroupInputs.length" class="fr-fieldset">
       <legend class="fr-fieldset__legend">{{ firstGroupLegend }} :</legend>
       <div class="fr-fieldset__element">
         <div class="fr-grid-row fr-grid-row--gutters">
@@ -31,7 +31,7 @@ const emit = defineEmits(['back', 'save', 'update:field'])
         </div>
       </div>
     </fieldset>
-    <fieldset class="fr-fieldset">
+    <fieldset v-if="secondGroupInputs.length" class="fr-fieldset">
       <legend class="fr-fieldset__legend">{{ secondGroupLegend }} :</legend>
       <div class="fr-fieldset__element">
         <div class="fr-grid-row fr-grid-row--gutters">

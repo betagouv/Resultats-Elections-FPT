@@ -100,18 +100,27 @@ const getFormValuesCleaned = () => {
   for (const input of requiredInputs.value) {
     values[input.name] = getInputValue(input)
   }
-  for (const input of groupsInputs.value) {
-    values[input.name] = areGroupsDisabled.value ? null : getInputValue(input)
+  for (const groupInputs of [firstGroupInputs.value, secondGroupInputs.value]) {
+    const shouldAutofill = isGroupFilled(groupInputs)
+    for (const input of groupInputs) {
+      values[input.name] = areGroupsDisabled.value ? null : getInputValue(input, shouldAutofill)
+    }
   }
   return values
 }
 
-const getInputValue = (input) => {
+const isEmptyValue = (value) => value === '' || value === null || value === undefined
+const isGroupFilled = (groupInputs) => groupInputs.some(input => {
   const value = formModels.value[input.name]
   if (input.type === 'checkbox') return value === true
-  const isEmpty = value === '' || value === null || value === undefined
+  return !isEmptyValue(value)
+})
+
+const getInputValue = (input, shouldAutofill = false) => {
+  const value = formModels.value[input.name]
+  if (input.type === 'checkbox') return value === true
   const isNumber = input.type === 'number'
-  if (isEmpty) return isNumber ? 0 : null
+  if (isEmptyValue(value)) return isNumber && shouldAutofill ? 0 : null
   return isNumber ? Number(value) : value
 }
 
