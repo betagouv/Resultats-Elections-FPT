@@ -218,7 +218,7 @@ const generateExcelData = () => {
         @close="opened = false"
       >
         <template #default>
-          <p>{{ recordAction.description }}</p>
+          <p class="vue-fiche__action-description">{{ recordAction.description }}</p>
           <DsfrButton v-if="!recordAction.isDisabled" label="Oui" @click="triggerAction" />
         </template>
       </DsfrModal>
@@ -237,5 +237,8 @@ const generateExcelData = () => {
     row-gap: 1rem;
     flex-direction: column;
   }
+}
+.vue-fiche__action-description {
+  white-space: pre-line;
 }
 </style>
