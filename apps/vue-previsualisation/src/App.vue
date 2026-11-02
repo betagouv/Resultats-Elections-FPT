@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed } from 'vue'
+import { ref } from 'vue'
 import { computedAsync } from '@vueuse/core'
 import gristUtils from '@shared/utils/grist.js'
 import GristContainer from '@shared/components/GristContainer.vue'
@@ -10,7 +10,14 @@ const isLoading = ref(false)
 const hasError = ref(false)
 
 /* FILES */
-const attachmentIds = computed(() => currentRecord.value?.[filesMapped.value] || [])
+const attachmentIds = ref([])
+
+const checkAttachmentHasChanged = () => {
+  const newAttachmentIds = currentRecord.value?.[filesMapped.value] || []
+  const needsRefresh = newAttachmentIds.join() !== attachmentIds.value.join()
+  if (needsRefresh) attachmentIds.value = newAttachmentIds
+}
+
 const files = computedAsync(async () => {
   hasError.value = false
   const ids = attachmentIds.value
@@ -37,11 +44,13 @@ const gristColumns = [
 
 const onRecord = (record) => {
   currentRecord.value = record
+  checkAttachmentHasChanged()
 }
 
 const onRecords = (params) => {
   const { mapping } = params
   filesMapped.value = mapping['fichiers']
+  checkAttachmentHasChanged()
 }
 </script>
 
