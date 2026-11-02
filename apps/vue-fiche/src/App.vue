@@ -28,7 +28,11 @@ const showDownloadButton = computed(() => !!excelFileNameConfigured.value)
 
 /* RECORD */
 const currentRecord = ref({})
-const showTile = computed(() => currentRecord.value[showDataMapped.value] !== true)
+const showTile = computed(() => {
+  if (showDataMapped.value) return currentRecord.value[showDataMapped.value] !== true
+  const badge = currentRecord.value[badgeMapped.value]
+  return badge ? badge.toLowerCase() === 'à renseigner' : false
+})
 /* TABLE */
 const tableColumnsInfos = computedAsync(async () => await grist.getOption('tableColumnInfos'), [])
 
@@ -62,8 +66,9 @@ const gristColumns = [
   {
     name: 'showData',
     title: 'Afficher les données',
-    description: 'Si faux, affiche la tuile à la place des données',
+    description: 'Affiche la tuile en fonction de la colonne au lieu du badge A renseigner.',
     type: 'Bool',
+    optional: true,
   }
 ]
 
