@@ -38,6 +38,10 @@ const prefillInputs = () => {
   }
 }
 
+const resetInputs = () => {
+  for (const key of Object.keys(inputs)) inputs[key] = ''
+}
+
 /* APPLY FILTERS */
 const applyFilters = () => {
   filtersStore.resetFilters()
@@ -79,6 +83,7 @@ onBeforeUpdate(prefillInputs)
         </div>
       </form>
       <div class="fr-grid-row fr-grid-row--center">
+        <DsfrButton class="fr-mr-2w" label="Réinitialiser les filtres" secondary @click="resetInputs" />
         <DsfrButton label="Appliquer les filtres" primary @click="applyFilters" />
       </div>
     </div>
