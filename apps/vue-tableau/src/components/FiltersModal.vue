@@ -38,6 +38,10 @@ const prefillInputs = () => {
   }
 }
 
+const resetInputs = () => {
+  for (const key of Object.keys(inputs)) inputs[key] = ''
+}
+
 /* APPLY FILTERS */
 const applyFilters = () => {
   filtersStore.resetFilters()
@@ -78,9 +82,16 @@ onBeforeUpdate(prefillInputs)
           />
         </div>
       </form>
-      <div class="fr-grid-row fr-grid-row--center">
-        <DsfrButton label="Appliquer les filtres" primary @click="applyFilters" />
+      <div class="fr-grid-row fr-grid-row--center filters-modal__actions">
+        <DsfrButton label="Réinitialiser les filtres" tertiary @click="resetInputs" />
+        <DsfrButton label="Appliquer les filtres" primary icon="ri-check-line" @click="applyFilters" />
       </div>
     </div>
   </DsfrModal>
 </template>
+
+<style>
+.filters-modal__actions {
+  gap: 1rem;
+}
+</style>
