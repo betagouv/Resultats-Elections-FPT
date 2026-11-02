@@ -49,7 +49,7 @@ const onRecord = (record) => {
 
 const onRecords = (params) => {
   const { mapping } = params
-  filesMapped.value = mapping['fichiers']
+  filesMapped.value = mapping?.['fichiers']
   checkAttachmentHasChanged()
 }
 </script>
