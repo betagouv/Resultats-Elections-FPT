@@ -1,5 +1,6 @@
 # Changelog
 
+- fix(Vue fiche): Autorise le retour à la ligne [#107](https://github.com/betagouv/Resultats-Elections-FPT/pull/107)
 - fix(Vue prévisualisation): ne recharge plus les fichiers si les pièces jointes n'ont pas changé [#106](https://github.com/betagouv/Resultats-Elections-FPT/pull/106)
 - fix: Vue tableau petites améliorations sur les filtres [#105](https://github.com/betagouv/Resultats-Elections-FPT/pull/105)
 - fix: Badge "À valider" devient bleu et plus rouge [#104](https://github.com/betagouv/Resultats-Elections-FPT/pull/104)
