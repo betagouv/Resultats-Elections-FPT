@@ -1,6 +1,7 @@
 <script setup>
-import { ref, computed } from 'vue'
+import { ref } from 'vue'
 import { computedAsync } from '@vueuse/core'
+import { DsfrButton } from '@gouvminint/vue-dsfr'
 import gristUtils from '@shared/utils/grist.js'
 import GristContainer from '@shared/components/GristContainer.vue'
 
@@ -8,10 +9,19 @@ const currentRecord = ref({})
 const filesMapped = ref()
 const isLoading = ref(false)
 const hasError = ref(false)
+const forceRetryAsync = ref(0)
 
 /* FILES */
-const attachmentIds = computed(() => currentRecord.value?.[filesMapped.value] || [])
+const attachmentIds = ref([])
+
+const checkAttachmentHasChanged = () => {
+  const newAttachmentIds = currentRecord.value?.[filesMapped.value] || []
+  const needsRefresh = newAttachmentIds.join() !== attachmentIds.value.join()
+  if (needsRefresh) attachmentIds.value = newAttachmentIds
+}
+
 const files = computedAsync(async () => {
+  forceRetryAsync.value // Clic "Réessayer"
   hasError.value = false
   const ids = attachmentIds.value
   if (!ids.length) return []
@@ -37,11 +47,13 @@ const gristColumns = [
 
 const onRecord = (record) => {
   currentRecord.value = record
+  checkAttachmentHasChanged()
 }
 
 const onRecords = (params) => {
   const { mapping } = params
-  filesMapped.value = mapping['fichiers']
+  filesMapped.value = mapping?.['fichiers']
+  checkAttachmentHasChanged()
 }
 </script>
 
@@ -49,7 +61,10 @@ const onRecords = (params) => {
   <GristContainer :columns="gristColumns" @update:record="onRecord" @update:records="onRecords">
     <main>
       <p v-if="isLoading" class="fr-p-3w">Chargement en cours...</p>
-      <p v-else-if="hasError" class="fr-p-3w">Les fichiers n'ont pas pu être chargés</p>
+      <div v-else-if="hasError" class="fr-p-3w">
+        <p>Une erreur est survenue lors du chargement de la prévisualisation.</p>
+        <DsfrButton label="Réessayer" secondary icon="ri-refresh-line" @click="forceRetryAsync++" />
+      </div>
       <p v-else-if="!files.length" class="fr-p-3w">Aucun fichier n'a été ajouté</p>
       <template v-else>
         <iframe v-for="file in files" :key="file.id" :src="file.url" :title="file.title" class="vue-previsualisation__file"></iframe>
