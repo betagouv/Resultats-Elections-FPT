@@ -82,10 +82,16 @@ onBeforeUpdate(prefillInputs)
           />
         </div>
       </form>
-      <div class="fr-grid-row fr-grid-row--center">
-        <DsfrButton class="fr-mr-2w" label="Réinitialiser les filtres" secondary @click="resetInputs" />
-        <DsfrButton label="Appliquer les filtres" primary @click="applyFilters" />
+      <div class="fr-grid-row fr-grid-row--center filters-modal__actions">
+        <DsfrButton label="Réinitialiser les filtres" tertiary @click="resetInputs" />
+        <DsfrButton label="Appliquer les filtres" primary icon="ri-check-line" @click="applyFilters" />
       </div>
     </div>
   </DsfrModal>
 </template>
+
+<style>
+.filters-modal__actions {
+  gap: 1rem;
+}
+</style>

@@ -230,7 +230,7 @@ const backToTop = () => {
           </div>
         </div>
       </div>
-      <div class="fr-pt-3w fr-px-3w fr-grid-row fr-grid-row--left fr-grid-row--middle">
+      <div class="fr-pt-3w fr-px-3w fr-grid-row fr-grid-row--left fr-grid-row--middle vue-tableau__filters">
         <p class="fr-mb-0 fr-mr-2w">
           {{ tableRows.length }} {{ tableRows.length > 1 ? `${tableRowName}s` : tableRowName }}
         </p>
@@ -296,6 +296,10 @@ const backToTop = () => {
   position: sticky !important;
   left: 0px;
   z-index: 3;
+}
+
+.vue-tableau__filters {
+  row-gap: 0.5rem;
 }
 
 .vue-tableau__filter-tag {
