@@ -1,3 +1,5 @@
+import valuesUtils from '@shared/utils/values.js'
+
 const getTableColumnsInfos = async () => {
   const [allTables, allColumns, tableName] = await Promise.all([
     grist.docApi.fetchTable('_grist_Tables'),
@@ -47,6 +49,22 @@ const getTable = async (name) => {
   return await grist.docApi.fetchTable(name)
 }
 
+const getCellInfos = (record, column, columnsInfos) => {
+  const infos = getColumnInfos(column, columnsInfos) || {}
+  const rawValue = record[column]
+  const isDSFRBadge = infos.colId?.indexOf('DSFR_Badge') > -1
+  const isDSFRTag = infos.colId?.indexOf('DSFR_Tag') > -1
+  return {
+    id: record.id,
+    type: infos.type,
+    value: isDSFRBadge ? valuesUtils.cleanJson(rawValue) : rawValue,
+    isDSFRBadge,
+    isDSFRTag,
+    hasMultipleValues: rawValue && typeof rawValue === 'object',
+    isPercent: valuesUtils.isPercent(infos),
+  }
+}
+
 const getAccessToken = async (readOnly = true) => {
   return await grist.docApi.getAccessToken({ readOnly })
 }
@@ -60,6 +78,7 @@ export default {
   getTableColumnsInfos,
   getAccessToken,
   getAttachmentUrl,
+  getCellInfos,
   getCurrentTableID,
   getColumnsInfos,
   getColumnInfos,
