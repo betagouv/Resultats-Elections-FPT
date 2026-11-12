@@ -35,7 +35,7 @@ const previewFiles = async () => {
   isLoading.value = true
   hasError.value = false
   try {
-    const { baseUrl, token } = await gristUtils.getAccessToken()
+    const { baseUrl, token } = await getToken()
     // Ignore la réponse si la ligne a changé pendant la récupération du token
     if (currentAttachmentIds !== attachmentIds.value) return
     fileUrls.value = currentAttachmentIds.map((id) => `${baseUrl}/attachments/${id}/download?auth=${token}&inline=1`)
@@ -44,6 +44,29 @@ const previewFiles = async () => {
   } finally {
     isLoading.value = false
   }
+}
+
+/* TOKEN */
+const tokenStorageKey = 'vue-previsualisation:token'
+const tokenExpirationMargin = 60 * 1000 // Renouvelle le token 1 minute avant son expiration
+
+const getSavedToken = () => {
+  const savedToken = JSON.parse(localStorage.getItem(tokenStorageKey))
+  if (savedToken?.expiresAt > Date.now() + tokenExpirationMargin) return savedToken
+  return null
+}
+
+const saveToken = (token) => {
+  localStorage.setItem(tokenStorageKey, JSON.stringify(token))
+}
+
+const getToken = async () => {
+  const savedToken = getSavedToken()
+  if (savedToken) return savedToken
+  const { baseUrl, token, ttlMsecs } = await gristUtils.getAccessToken()
+  const newToken = { baseUrl, token, expiresAt: Date.now() + ttlMsecs }
+  saveToken(newToken)
+  return newToken
 }
 
 /* GRIST */
