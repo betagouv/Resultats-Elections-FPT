@@ -17,6 +17,7 @@ const portMap = {
   'vue-saisie': 5181,
   'vue-fichier': 5182,
   'vue-previsualisation': 5183,
+  'vue-export': 5184,
 }
 
 // Détection du mode pour choisir l'app
