@@ -1,40 +1,50 @@
 <script setup>
-import { ref } from 'vue'
-import { computedAsync } from '@vueuse/core'
+import { ref, computed } from 'vue'
 import { DsfrButton } from '@gouvminint/vue-dsfr'
 import gristUtils from '@shared/utils/grist.js'
 import GristContainer from '@shared/components/GristContainer.vue'
 
 const currentRecord = ref({})
 const filesMapped = ref()
-const isLoading = ref(false)
-const hasError = ref(false)
-const forceRetryAsync = ref(0)
 
 /* FILES */
 const attachmentIds = ref([])
+const fileUrls = ref([])
+const isLoading = ref(false)
+const hasError = ref(false)
+const buttonPreviewLabel = computed(() => attachmentIds.value.length > 1 ? 'Prévisualiser les fichiers' : 'Prévisualiser le fichier')
+
+const resetPreviews = () => {
+  fileUrls.value = []
+  isLoading.value = false
+  hasError.value = false
+}
 
 const checkAttachmentHasChanged = () => {
   const newAttachmentIds = currentRecord.value?.[filesMapped.value] || []
   const needsRefresh = newAttachmentIds.join() !== attachmentIds.value.join()
-  if (needsRefresh) attachmentIds.value = newAttachmentIds
+  if (needsRefresh) {
+    attachmentIds.value = newAttachmentIds
+    resetPreviews()
+  }
 }
 
-const files = computedAsync(async () => {
-  forceRetryAsync.value // Clic "Réessayer"
+const previewFiles = async () => {
+  if (isLoading.value) return
+  const currentAttachmentIds = attachmentIds.value
+  isLoading.value = true
   hasError.value = false
-  const ids = attachmentIds.value
-  if (!ids.length) return []
-  const { baseUrl, token } = await gristUtils.getAccessToken()
-  return ids.map((id, index) => ({
-    id,
-    title: `Fichier ${index + 1}`,
-    url: `${baseUrl}/attachments/${id}/download?auth=${token}&inline=1`,
-  }))
-}, [], {
-  evaluating: isLoading,
-  onError: () => { hasError.value = true },
-})
+  try {
+    const { baseUrl, token } = await gristUtils.getAccessToken()
+    // Ignore la réponse si la ligne a changé pendant la récupération du token
+    if (currentAttachmentIds !== attachmentIds.value) return
+    fileUrls.value = currentAttachmentIds.map((id) => `${baseUrl}/attachments/${id}/download?auth=${token}&inline=1`)
+  } catch {
+    hasError.value = true
+  } finally {
+    isLoading.value = false
+  }
+}
 
 /* GRIST */
 const gristColumns = [
@@ -60,14 +70,20 @@ const onRecords = (params) => {
 <template>
   <GristContainer :columns="gristColumns" @update:record="onRecord" @update:records="onRecords">
     <main>
-      <p v-if="isLoading" class="fr-p-3w">Chargement en cours...</p>
-      <div v-else-if="hasError" class="fr-p-3w">
-        <p>Une erreur est survenue lors du chargement de la prévisualisation.</p>
-        <DsfrButton label="Réessayer" secondary icon="ri-refresh-line" @click="forceRetryAsync++" />
-      </div>
-      <p v-else-if="!files.length" class="fr-p-3w">Aucun fichier n'a été ajouté</p>
+      <p v-if="!attachmentIds.length" class="fr-p-3w">Aucun fichier n'a été ajouté</p>
       <template v-else>
-        <iframe v-for="file in files" :key="file.id" :src="file.url" :title="file.title" class="vue-previsualisation__file"></iframe>
+        <p v-if="hasError" class="fr-px-3w fr-pt-3w fr-mb-0">Une erreur est survenue lors du chargement de la prévisualisation.</p>
+        <template v-if="fileUrls.length">
+          <iframe v-for="(url, index) in fileUrls" :key="url" :src="url" :title="`Fichier ${index + 1}`" class="vue-previsualisation__file"></iframe>
+        </template>
+        <DsfrButton
+          v-else
+          :label="buttonPreviewLabel"
+          icon="ri-eye-line"
+          class="fr-m-3w"
+          :disabled="isLoading"
+          @click="previewFiles"
+        />
       </template>
     </main>
   </GristContainer>
