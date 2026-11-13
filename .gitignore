@@ -359,3 +359,12 @@ auto-imports.d.ts
 
 # Warp
 .warp/
+
+# Consolidation nationale (générés)
+/consolidation/data/
+/dist/vue-national/
+__pycache__/
+.pytest_cache/
+
+# Python
+.venv/
