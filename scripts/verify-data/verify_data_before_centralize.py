@@ -3,7 +3,7 @@
 # requires-python = ">=3.11"
 # dependencies = ["requests==2.34.2"]
 # ///
-"""Check one Grist document before running sync_to_sqlite.py. Read-only. See README.md."""
+"""Check one Grist document before centralizing its data. Read-only. See README.md."""
 
 import argparse
 import logging
@@ -22,13 +22,30 @@ from config import (
     SERVER,
     TABLES,
     TIMEOUT,
-    load_departments,
 )
 
-# Shared with the sync, so both scripts fetch the data the same way.
-from sync_to_sqlite import describe_error, fetch_doc_name, fetch_records
-
 log = logging.getLogger("verify_data_before_centralize")
+
+
+# --- Grist -----------------------------------------------------------------------
+
+
+def fetch_doc_name(session, doc_id):
+    response = session.get(f"{SERVER}/api/docs/{doc_id}", timeout=TIMEOUT)
+    response.raise_for_status()
+    return response.json().get("name", "?")
+
+
+def fetch_records(session, doc_id, table):
+    response = session.get(f"{SERVER}/api/docs/{doc_id}/tables/{table}/records", timeout=TIMEOUT)
+    response.raise_for_status()
+    return response.json()["records"]
+
+
+def describe_error(exc):
+    if isinstance(exc, requests.HTTPError):
+        return f"HTTP {exc.response.status_code}: {exc.response.text[:200]}"
+    return str(exc)
 
 
 # --- Checks ----------------------------------------------------------------------
@@ -128,7 +145,7 @@ def print_verify_results(doc_id, problems):
 
 
 def parse_args(argv):
-    parser = argparse.ArgumentParser(description="Check one Grist document before running sync_to_sqlite.py (read-only).")
+    parser = argparse.ArgumentParser(description="Check one Grist document before centralizing its data (read-only).")
     parser.add_argument("--doc-id", required=True, help="Id of the Grist document to check")
     parser.add_argument("--uuid", action="store_true",
                         help="Also check the rows: every row has a UUID, no UUID used twice (fetches all the rows)")
@@ -145,14 +162,6 @@ def main(argv=None):
     if not api_key:
         log.error("GRIST_API_KEY environment variable is not set")
         return 2
-
-    # Verfiy the file needed for the document after
-    try:
-        departments = load_departments()
-    except (OSError, ValueError) as exc:
-        log.error("%s", exc)
-        return 2
-    log.info("Departments file: %d department(s)", len(departments))
 
     session = requests.Session()
     session.headers["Authorization"] = f"Bearer {api_key}"
