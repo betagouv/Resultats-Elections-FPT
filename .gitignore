@@ -367,3 +367,10 @@ auto-imports.d.ts
 # Python
 __pycache__/
 *.py[cod]
+
+# Centralized data (SQLite databases and CSV exports)
+*.db
+*.db-wal
+*.db-shm
+*.csv
+*.csv.tmp
