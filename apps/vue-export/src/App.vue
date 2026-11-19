@@ -81,7 +81,7 @@ const updateViewFromConfiguration = (configurations) => {
       <p v-if="!dataMapped.length">Aucune colonne sélectionnée pour l'export</p>
       <ExcelDownloadButton
         v-else
-        label="Télécharger les données (Excel)"
+        label="Télécharger"
         :file-name="excelFileName"
         :get-data="generateExcelData"
       />
