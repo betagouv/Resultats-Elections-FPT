@@ -363,3 +363,7 @@ auto-imports.d.ts
 # Grist attachments archives and doc id lists (sensitive data)
 *.tar
 *.txt
+
+# Python
+__pycache__/
+*.py[cod]
