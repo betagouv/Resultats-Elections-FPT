@@ -10,6 +10,7 @@ import logging
 import os
 import sys
 import tarfile
+import time
 
 import requests
 
@@ -18,6 +19,7 @@ log = logging.getLogger("restore_attachments")
 CHECK_TIMEOUT = 30
 UPLOAD_TIMEOUT = 600
 SERVER = "https://grist.numerique.gouv.fr"
+COOLDOWN_SECONDS = 15  # pause between two archive uploads
 
 
 def read_doc_ids(path):
@@ -123,8 +125,11 @@ def main(argv=None):
         if args.dry_run:
             continue
 
-        for archive in archives:
+        for archive_index, archive in enumerate(archives):
             name = os.path.basename(archive)
+            if archive_index > 0:  # no cooldown before the first archive of each document
+                log.info("  cooldown %ds", COOLDOWN_SECONDS)
+                time.sleep(COOLDOWN_SECONDS)
             try:
                 result = restore_archive(session, server, doc_id, archive)
             except (requests.RequestException, ValueError) as exc:
