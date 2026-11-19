@@ -1,5 +1,6 @@
 # Changelog
 
+- fix(Vue export): change le libellé du bouton [#111](https://github.com/betagouv/Resultats-Elections-FPT/pull/111)
 - feat(Vue export): création d'une nouvelle vue pour exporter une table [#110](https://github.com/betagouv/Resultats-Elections-FPT/pull/110)
 - fix(Vue prévisualisation): améliore les performances pour ne pas charger le token à chaque fois [#109](https://github.com/betagouv/Resultats-Elections-FPT/pull/109)
 - fix(Vue fiche): Rend la colonne d'affichage non obligatoire [#108](https://github.com/betagouv/Resultats-Elections-FPT/pull/108)
