@@ -359,3 +359,11 @@ auto-imports.d.ts
 
 # Warp
 .warp/
+
+# Grist attachments archives and doc id lists (sensitive data)
+*.tar
+*.txt
+
+# Python
+__pycache__/
+*.py[cod]
