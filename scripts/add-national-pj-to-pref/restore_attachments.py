@@ -17,6 +17,7 @@ log = logging.getLogger("restore_attachments")
 
 CHECK_TIMEOUT = 30
 UPLOAD_TIMEOUT = 600
+SERVER = "https://grist.numerique.gouv.fr"
 
 
 def read_doc_ids(path):
@@ -61,7 +62,6 @@ def parse_args(argv):
     parser = argparse.ArgumentParser(
         description="Upload a Grist attachments .tar archive into a list of documents."
     )
-    parser.add_argument("--server", required=True, help="Grist base URL, e.g. https://grist.numerique.gouv.fr")
     parser.add_argument("--docs", required=True, help="Text file with one docId per line")
     parser.add_argument("--archive", required=True, help="Attachments .tar archive")
     parser.add_argument("--dry-run", action="store_true", help="Only check access to each doc, upload nothing")
@@ -86,11 +86,7 @@ def main(argv=None):
         log.error("No docId found in %s", args.docs)
         return 2
 
-    if not args.server.startswith("https://"):
-        log.error("--server must start with https:// (the API key would be sent unencrypted): %s", args.server)
-        return 2
-
-    server = args.server.rstrip("/")
+    server = SERVER
     session = requests.Session()
     session.headers["Authorization"] = f"Bearer {api_key}"
 
