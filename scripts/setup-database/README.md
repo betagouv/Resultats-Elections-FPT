@@ -38,8 +38,7 @@ to the table (see below) with the PostgreSQL type matching its Grist type:
 | Int                   | `BIGINT`                                |
 | Numeric               | `FLOAT` (double precision)              |
 | Bool                  | `BOOLEAN`                               |
-| Date                  | `DATE`                                  |
-| DateTime              | `TIMESTAMP WITH TIME ZONE`              |
+| Date, DateTime        | `TEXT`, and add the column to `DATETIME_COLUMNS` in [`../centralize-data/config.py`](../centralize-data/config.py) (stored as `2024-11-19 07:06:40`, UTC) |
 | Ref                   | `INTEGER` (referenced row id, empty if 0) |
 | RefList, ChoiceList   | `JSONB` (list)                          |
 
