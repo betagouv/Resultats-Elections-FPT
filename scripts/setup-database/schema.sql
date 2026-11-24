@@ -8,7 +8,7 @@ CREATE TABLE IF NOT EXISTS sync_log (
     department TEXT NOT NULL,
     table_name TEXT NOT NULL,
     status TEXT NOT NULL,
-    error TEXT,
+    message TEXT,
     PRIMARY KEY (id)
 );
 
