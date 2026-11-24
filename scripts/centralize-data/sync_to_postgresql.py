@@ -25,12 +25,12 @@ from config import (
     DEFAULT_UUID_COLUMN,
     PAUSE_SECONDS,
     SERVER,
+    SYNC_CRON_TABLE,
+    SYNC_DOCUMENTS_TABLE,
     SYNC_LOG_TABLE,
     TABLE_PAUSE_SECONDS,
     TABLES,
     TIMEOUT,
-    get_departement_id,
-    get_doc_txt_config,
 )
 
 log = logging.getLogger("sync_to_postgresql")
@@ -71,15 +71,48 @@ def load_tables(conn):
         WHERE table_schema = current_schema() AND table_name = ANY(%s)
         ORDER BY table_name, ordinal_position
         """,
-        (names + [SYNC_LOG_TABLE],),
+        (names + [SYNC_LOG_TABLE, SYNC_DOCUMENTS_TABLE, SYNC_CRON_TABLE],),
     ).fetchall()
     columns = {}
     for table, column, data_type in rows:
         columns.setdefault(table, {})[column] = data_type
-    missing = [name for name in names + [SYNC_LOG_TABLE] if name not in columns]
+    required = names + [SYNC_LOG_TABLE, SYNC_DOCUMENTS_TABLE, SYNC_CRON_TABLE]
+    missing = [name for name in required if name not in columns]
     if missing:
         raise ValueError(f"table(s) {', '.join(missing)} not found: create them with scripts/setup-database")
     return {scrutin_type: columns[table_name(scrutin_type)] for scrutin_type in TABLES.values()}
+
+
+def load_documents(conn, group):
+    """Return the documents to sync of a cron group: {doc_id: (department, cron group, Grist department id)}.
+
+    A document is synced if it is enabled in sync_documents and its cron group is enabled in sync_cron.
+    The Grist department id is the row id of the department in Referentiel_departements, used to filter the rows.
+    """
+    query = sql.SQL(
+        "SELECT d.doc_id, d.department, d.cron_group, d.grist_department_id FROM {documents} d "
+        "JOIN {cron} c ON c.cron_group = d.cron_group "
+        "WHERE d.enabled AND c.enabled AND d.cron_group = %s ORDER BY d.department"
+    ).format(documents=sql.Identifier(SYNC_DOCUMENTS_TABLE), cron=sql.Identifier(SYNC_CRON_TABLE))
+    rows = conn.execute(query, (group,)).fetchall()
+    return {doc_id: (department, cron_group, grist_id) for doc_id, department, cron_group, grist_id in rows}
+
+
+def is_group_enabled(conn, group):
+    """Return True if the cron group is enabled in sync_cron, False if disabled, None if it is not there."""
+    query = sql.SQL("SELECT enabled FROM {} WHERE cron_group = %s").format(sql.Identifier(SYNC_CRON_TABLE))
+    row = conn.execute(query, (group,)).fetchone()
+    return row[0] if row else None
+
+
+def is_document_enabled(conn, doc_id):
+    """True if the document is enabled in sync_documents (it can be switched off during a run).
+
+    A document removed from sync_documents counts as disabled.
+    """
+    query = sql.SQL("SELECT enabled FROM {} WHERE doc_id = %s").format(sql.Identifier(SYNC_DOCUMENTS_TABLE))
+    row = conn.execute(query, (doc_id,)).fetchone()
+    return bool(row and row[0])
 
 
 def write_sync_log(conn, department, scrutin_type, status, message):
@@ -239,13 +272,14 @@ def store_rows(conn, scrutin_type, columns, department, rows, synced_at):
 # --- Run -----------------------------------------------------------------------
 
 
-def sync_table(session, conn, columns, doc_id, department, grist_table, scrutin_type, uuid_column):
+def sync_table(session, conn, columns, doc_id, department, grist_department_id, grist_table, scrutin_type,
+               uuid_column):
     """Fetch one Grist table of a document and write it to PostgreSQL, in its own transaction.
 
     Return a summary of the changes, e.g. "12 added, 3 updated, 0 deleted".
     """
     # Only the rows of the department given for this document are fetched.
-    filters = {COL_DEPARTMENT: [get_departement_id(department)]}
+    filters = {COL_DEPARTMENT: [grist_department_id]}
     records = fetch_records(session, doc_id, grist_table, filters)
     synced_at = datetime.now(timezone.utc)
 
@@ -259,32 +293,45 @@ def sync_table(session, conn, columns, doc_id, department, grist_table, scrutin_
 
 
 def sync_all_documents(session, database_url, tables, docs, uuid_column):
-    """Sync every table of every document ({doc_id: department}), one table at a time.
+    """Sync every table of every document (as returned by load_documents), one table at a time.
 
     Each attempt is recorded in the sync log table. A failed table does not stop the others: if the database
-    connection is lost, the next table reconnects. Return the number of failed tables.
+    connection is lost, the next table reconnects. A document switched off skips its other tables; a cron
+    group switched off stops the run. Return the number of failed tables.
     """
     doc_ids = list(docs)
     started = time.monotonic()
     failures = 0
     conn = None
+    stopped = False
     try:
         for index, doc_id in enumerate(doc_ids, start=1):
+            if stopped:
+                break
             time.sleep(PAUSE_SECONDS)
-            log.info("[%d/%d] %s (department %s)", index, len(doc_ids), doc_id, docs[doc_id])
+            department, group, grist_department_id = docs[doc_id]
+            log.info("[%d/%d] %s (department %s)", index, len(doc_ids), doc_id, department)
             for grist_table, scrutin_type in TABLES.items():
                 time.sleep(TABLE_PAUSE_SECONDS)
                 try:
                     conn = reconnect_if_needed(conn, database_url)
-                    summary = sync_table(session, conn, tables[scrutin_type], doc_id, docs[doc_id], grist_table,
-                                         scrutin_type, uuid_column)
+                    if not is_group_enabled(conn, group):
+                        log.warning("  cron group switched off in %s: the run is stopped", SYNC_CRON_TABLE)
+                        stopped = True
+                        break
+                    if not is_document_enabled(conn, doc_id):
+                        log.warning("  %s switched off in %s: its other tables are skipped", doc_id,
+                                    SYNC_DOCUMENTS_TABLE)
+                        break
+                    summary = sync_table(session, conn, tables[scrutin_type], doc_id, department,
+                                         grist_department_id, grist_table, scrutin_type, uuid_column)
                 except (requests.RequestException, ValueError, KeyError, psycopg.Error) as exc:
                     reason = describe_error(exc)
                     log.error("  %s failed: %s (previous data kept)", scrutin_type, reason)
-                    write_sync_log(conn, docs[doc_id], scrutin_type, "error", reason)
+                    write_sync_log(conn, department, scrutin_type, "error", reason)
                     failures += 1
                 else:
-                    write_sync_log(conn, docs[doc_id], scrutin_type, "success", summary)
+                    write_sync_log(conn, department, scrutin_type, "success", summary)
     finally:
         if conn is not None:
             conn.close()
@@ -297,7 +344,8 @@ def parse_args(argv):
     parser = argparse.ArgumentParser(
         description="Copy the scrutins tables (CAP, CCP, CST) of a list of Grist documents into PostgreSQL."
     )
-    parser.add_argument("--docs", required=True, help="File with one `docId,department` per line (e.g. abc123,95)")
+    parser.add_argument("--group", type=int, required=True,
+                        help=f"Cron group to sync: the documents of this cron_group in {SYNC_DOCUMENTS_TABLE}")
     parser.add_argument("--uuid-column", default=DEFAULT_UUID_COLUMN,
                         help=f"Column holding the row UUID (default: {DEFAULT_UUID_COLUMN})")
     return parser.parse_args(argv)
@@ -318,23 +366,27 @@ def main(argv=None):
         return 2
 
     try:
-        docs = get_doc_txt_config(args.docs)
-    except (OSError, ValueError) as exc:
-        log.error("%s", exc)
-        return 2
-    if not docs:
-        log.error("No docId found in %s", args.docs)
-        return 2
-
-    try:
         with open_db(database_url) as conn:
             tables = load_tables(conn)
+            group_enabled = is_group_enabled(conn, args.group)
+            docs = load_documents(conn, args.group)
     except psycopg.Error as exc:
         log.error("Cannot connect to the database: %s", exc)
         return 2
     except ValueError as exc:
         log.error("%s", exc)
         return 2
+
+    if group_enabled is None:
+        log.error("Cron group %s not found in %s", args.group, SYNC_CRON_TABLE)
+        return 2
+    if not group_enabled:
+        log.info("Cron group %s is disabled in %s: nothing to sync", args.group, SYNC_CRON_TABLE)
+        return 0
+    if not docs:
+        log.info("No enabled document in %s (group %s): nothing to sync", SYNC_DOCUMENTS_TABLE, args.group)
+        return 0
+    log.info("%d enabled document(s) in %s (group %s)", len(docs), SYNC_DOCUMENTS_TABLE, args.group)
 
     session = requests.Session()
     session.headers["Authorization"] = f"Bearer {api_key}"

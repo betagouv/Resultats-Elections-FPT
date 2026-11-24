@@ -1,18 +1,18 @@
 # Centralize data
 
-Copy the scrutins tables (CAP, CCP, CST) of a list of Grist documents into
-PostgreSQL, with all their columns, e.g. to build dashboards in Metabase.
+Copy the scrutins tables (CAP, CCP, CST) of the Grist documents listed in the
+`sync_documents` table into PostgreSQL, e.g. to build dashboards in Metabase.
 
-[`sync_to_postgresql.py`](sync_to_postgresql.py) does one pass over all the
-documents then stops: it is meant to run as a cron job (e.g. every 10 minutes
-on Scalingo).
+[`sync_to_postgresql.py`](sync_to_postgresql.py) does one pass over the
+enabled documents then stops: it is meant to run as a cron job (e.g. every 10
+minutes on Scalingo).
 
 The PostgreSQL tables are created beforehand from
 [`schema.sql`](../setup-database/schema.sql) by
 [`setup-database`](../setup-database/README.md): the sync only writes the
 rows.
 
-The settings (Grist server, tables, departments, pauses, PostgreSQL tables)
+The settings (Grist server, tables, pauses, PostgreSQL tables)
 are in [`config.py`](config.py).
 
 ## Context
@@ -36,7 +36,7 @@ Each table has the sync columns, then all the Grist columns with the same names
 
 | Column       | Type        | Content                                                                    |
 | ------------ | ----------- | -------------------------------------------------------------------------- |
-| `department` | text        | department of the document, from the documents file (`01`, `2A`, `971`…)  |
+| `department` | text        | department of the document, from `sync_documents` (`01`, `2A`, `971`…)    |
 | `uuid`       | text        | `UUID` of the row                                                          |
 | `grist_id`   | integer     | Grist row id (not unique across documents)                                 |
 | `synced_at`  | timestamptz | last successful fetch of the row                                           |
@@ -59,16 +59,15 @@ Only the rows of the department given for each document are fetched (Grist
 API `filter` on `Collectivite_organisatrice__Prefecture`).
 
 `Collectivite_organisatrice__Prefecture` holds the Grist row id of
-`Referentiel_departements` (e.g. `96` for `95 – Val-d’Oise`). The mapping row id
-→ department is `DEPARTMENTS` in [`config.py`](config.py) (e.g. `96: "95"`).
-`Referentiel_departements` itself is not read: the mapping must have
-the same ids as the documents (they are all copies of the same document).
-Update it if `Referentiel_departements` changes.
+`Referentiel_departements` (e.g. `96` for `95 – Val-d’Oise`): it is given for
+each document in `sync_documents.grist_department_id`, next to its department.
+`Referentiel_departements` itself is not read: the row id is visible in Grist,
+in the `id` column of `Referentiel_departements`.
 
 ### Incremental sync
 
 - the Grist document id is not stored: a document is identified by its
-  department, given once per document in the documents file;
+  department, given once per document in `sync_documents`;
 - a row is identified by its UUID (`uuid`, primary key), unique across the
   documents;
 - each document only reads, updates and deletes the rows of its department;
@@ -97,21 +96,69 @@ declared inside the script and installed automatically by
 
 A PostgreSQL database set up with
 [`setup-database`](../setup-database/README.md): the sync refuses to start
-if `resultats_cap`, `resultats_ccp`, `resultats_cst` or `sync_log` is missing.
+if `resultats_cap`, `resultats_ccp`, `resultats_cst`, `sync_log`,
+`sync_documents` or `sync_cron` is missing.
 
-## Documents file
+## Documents
 
-One `docId,department` line per document, with exactly one department:
+The documents to sync are listed in the `sync_documents` table, edited by hand
+in the database (`psql`, or `scalingo --app <app> pgsql-console` on Scalingo):
 
+| Column       | Content                                                                 |
+| ------------ | ----------------------------------------------------------------------- |
+| `doc_id`     | Grist document id (primary key)                                         |
+| `department` | its department (`01`, `2A`…), once per table: it identifies the rows of the document |
+| `grist_department_id` | row id of the department in `Referentiel_departements` (e.g. `96` for `95`), used to filter the rows |
+| `enabled`    | `true`: the document is synced; `false` by default                      |
+| `cron_group` | its cron group in `sync_cron` (`--group`), `1` by default               |
+
+The cron groups are listed in the `sync_cron` table, also edited by hand.
+Group `1` is created with the tables, disabled:
+
+| Column       | Content                                                   |
+| ------------ | --------------------------------------------------------- |
+| `cron_group` | the group number, given to the cron job with `--group`    |
+| `enabled`    | `true`: its documents are synced; `false` by default      |
+
+Nothing is synced until you enable it: a new document or group is disabled.
+
+```sql
+-- add documents (to group 1), then enable them and the group
+INSERT INTO sync_documents (doc_id, department, grist_department_id) VALUES ('abc123', '95', 96), ('def456', '2A', 20);
+UPDATE sync_documents SET enabled = true WHERE doc_id IN ('abc123', 'def456');
+UPDATE sync_cron SET enabled = true WHERE cron_group = 1;
+-- leave one document out, or put it back
+UPDATE sync_documents SET enabled = false WHERE doc_id = 'def456';
+-- create a second group, enabled, and move documents to it
+INSERT INTO sync_cron (cron_group, enabled) VALUES (2, true);
+UPDATE sync_documents SET cron_group = 2 WHERE department IN ('2A', '2B');
+-- stop a whole cron job, or put it back
+UPDATE sync_cron SET enabled = false WHERE cron_group = 2;
+-- stop everything
+UPDATE sync_cron SET enabled = false;
 ```
-abc123,95
-def456,2A
-```
 
-It is read by `get_doc_txt_config` in [`config.py`](config.py). The script
-refuses to start if a line does not have exactly one department, or a doc id or
-a department is given twice (the department identifies the rows of the document
-in PostgreSQL). A department not in `DEPARTMENTS` makes that document fail.
+A document is synced if it is enabled and its group is enabled. Both are
+checked before each table, so they also act on a run in progress: a document
+switched off skips its other tables, a group switched off stops the run. The
+rows left out stay in PostgreSQL as they were, with their old `synced_at`.
+
+A document can only be in a group that exists in `sync_cron`.
+
+A wrong `grist_department_id` fetches the rows of another department, or none:
+check it in Grist.
+
+### Cron groups
+
+A run waits about 16 s per document (see `PAUSE_SECONDS` below), plus the
+Grist calls: with many documents, it lasts longer than the cron interval, and
+two runs would overlap. Split the documents into groups, one cron job per
+group, e.g. every 10 minutes:
+
+```sh
+uv run scripts/centralize-data/sync_to_postgresql.py --group 1
+uv run scripts/centralize-data/sync_to_postgresql.py --group 2
+```
 
 ## Run
 
@@ -131,12 +178,12 @@ the app: Scalingo replaces it with the URL of the PostgreSQL add-on.
 From the root of the repository:
 
 ```sh
-uv run --env-file .env scripts/centralize-data/sync_to_postgresql.py --docs docs.txt
+uv run --env-file .env scripts/centralize-data/sync_to_postgresql.py --group 1
 ```
 
 | Option          | Description                                            |
 | --------------- | ------------------------------------------------------ |
-| `--docs`        | File with one `docId,department` per line (see above)  |
+| `--group`       | Cron group to sync (required): the documents of this `cron_group` |
 | `--uuid-column` | Column holding the row UUID (default: `UUID`)          |
 
 The script waits `PAUSE_SECONDS` before each document and
@@ -176,5 +223,6 @@ No retry within a run: failed tables are recorded in `sync_log`, and retried
 at the next run.
 
 Exit code: `0` if every table of every document is OK, `1` if a table failed,
-`2` if the configuration is wrong (API key, database URL, documents file,
-database connection, missing table).
+`2` if the configuration is wrong (API key, database URL, database
+connection, missing table, `--group` missing or not in `sync_cron`). A disabled group, or
+no enabled document, is not an error: the run logs it and stops with `0`.
