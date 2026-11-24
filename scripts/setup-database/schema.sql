@@ -2,6 +2,24 @@
 -- Edit this file by hand, then apply it with setup_database.py.
 -- IF NOT EXISTS: applying it again never changes an existing table.
 
+-- Cron jobs: one row per group of documents, edited by hand. enabled = false stops the whole group.
+CREATE TABLE IF NOT EXISTS sync_cron (
+    cron_group INTEGER NOT NULL,  -- the cron job run with --group <cron_group>
+    enabled BOOLEAN NOT NULL DEFAULT false,  -- false: no document of the group is synced (checked before each table)
+    PRIMARY KEY (cron_group)
+);
+
+INSERT INTO sync_cron (cron_group) VALUES (1) ON CONFLICT DO NOTHING;
+
+-- Grist documents to sync: one row per document, edited by hand (INSERT / UPDATE).
+CREATE TABLE IF NOT EXISTS sync_documents (
+    doc_id TEXT NOT NULL,
+    department TEXT NOT NULL UNIQUE,  -- identifies the rows of the document in the resultats tables
+    enabled BOOLEAN NOT NULL DEFAULT false,  -- false: the document is not synced (checked before each table)
+    cron_group INTEGER NOT NULL DEFAULT 1 REFERENCES sync_cron (cron_group),  -- its group in sync_cron
+    PRIMARY KEY (doc_id)
+);
+
 CREATE TABLE IF NOT EXISTS sync_log (
     id BIGSERIAL NOT NULL,
     synced_at TIMESTAMP WITH TIME ZONE NOT NULL,
