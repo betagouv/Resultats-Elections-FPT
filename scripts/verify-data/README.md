@@ -34,7 +34,7 @@ of the repository (`GRIST_API_KEY=...`).
 From the root of the repository:
 
 ```sh
-uv run --env-file .env scripts/verify-data/verify_data_before_sync.py \
+uv run --env-file .env scripts/verify-data/verify_data.py \
   --doc-id abc123 \
   [--uuid]
 ```

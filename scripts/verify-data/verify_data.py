@@ -24,7 +24,7 @@ from config import (
     TIMEOUT,
 )
 
-log = logging.getLogger("verify_data_before_sync")
+log = logging.getLogger("verify_data")
 
 
 # --- Grist -----------------------------------------------------------------------

@@ -33,7 +33,7 @@ from config import (
     TIMEOUT,
 )
 
-log = logging.getLogger("sync_to_postgresql")
+log = logging.getLogger("sync_data")
 
 # Columns added by the sync to every table, before the Grist columns
 SYNC_COLUMNS = ["department", "uuid", "grist_id", "synced_at"]

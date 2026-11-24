@@ -1,4 +1,4 @@
-"""Settings of verify_data_before_sync.py. See README.md."""
+"""Settings of verify_data.py. See README.md."""
 
 SERVER = "https://grist.numerique.gouv.fr"
 TIMEOUT = 60  # seconds, for each Grist API call
