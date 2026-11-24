@@ -11,9 +11,10 @@ import sys
 
 import psycopg
 
-from config import SCHEMA_FILE
-
 log = logging.getLogger("setup_database")
+
+# SQL file creating the tables of the sync, next to this script
+SCHEMA_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "schema.sql")
 
 
 def main():
