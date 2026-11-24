@@ -1,4 +1,4 @@
--- Tables of the sync (scripts/centralize-data). See README.md.
+-- Tables of the sync (scripts/sync_data). See README.md.
 -- Edit this file by hand, then apply it with setup_database.py.
 -- IF NOT EXISTS: applying it again never changes an existing table.
 

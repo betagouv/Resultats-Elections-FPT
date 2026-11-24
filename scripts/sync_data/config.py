@@ -1,4 +1,4 @@
-"""Settings of the centralize-data scripts. See README.md."""
+"""Settings of the sync_data scripts. See README.md."""
 
 # --- Grist ---------------------------------------------------------------
 

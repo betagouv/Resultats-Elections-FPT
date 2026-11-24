@@ -1,7 +1,7 @@
 # Verify data
 
-Check one Grist document before centralizing its data with
-[`centralize-data`](../centralize-data/README.md). Read-only: the script never
+Check one Grist document before syncing its data with
+[`sync_data`](../sync_data/README.md). Read-only: the script never
 modifies the document.
 
 Run it by hand on each document before adding it to the sync.
@@ -34,7 +34,7 @@ of the repository (`GRIST_API_KEY=...`).
 From the root of the repository:
 
 ```sh
-uv run --env-file .env scripts/verify-data/verify_data_before_centralize.py \
+uv run --env-file .env scripts/verify-data/verify_data_before_sync.py \
   --doc-id abc123 \
   [--uuid]
 ```

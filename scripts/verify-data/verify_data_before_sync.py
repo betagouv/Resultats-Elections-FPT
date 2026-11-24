@@ -3,7 +3,7 @@
 # requires-python = ">=3.11"
 # dependencies = ["requests==2.34.2"]
 # ///
-"""Check one Grist document before centralizing its data. Read-only. See README.md."""
+"""Check one Grist document before syncing its data. Read-only. See README.md."""
 
 import argparse
 import logging
@@ -24,7 +24,7 @@ from config import (
     TIMEOUT,
 )
 
-log = logging.getLogger("verify_data_before_centralize")
+log = logging.getLogger("verify_data_before_sync")
 
 
 # --- Grist -----------------------------------------------------------------------
@@ -145,7 +145,7 @@ def print_verify_results(doc_id, problems):
 
 
 def parse_args(argv):
-    parser = argparse.ArgumentParser(description="Check one Grist document before centralizing its data (read-only).")
+    parser = argparse.ArgumentParser(description="Check one Grist document before syncing its data (read-only).")
     parser.add_argument("--doc-id", required=True, help="Id of the Grist document to check")
     parser.add_argument("--uuid", action="store_true",
                         help="Also check the rows: every row has a UUID, no UUID used twice (fetches all the rows)")

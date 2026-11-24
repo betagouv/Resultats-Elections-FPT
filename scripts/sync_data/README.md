@@ -1,4 +1,4 @@
-# Centralize data
+# Sync data
 
 Copy the scrutins tables (CAP, CCP, CST) of the Grist documents listed in the
 `sync_documents` table into PostgreSQL, e.g. to build dashboards in Metabase.
@@ -156,8 +156,8 @@ two runs would overlap. Split the documents into groups, one cron job per
 group, e.g. every 10 minutes:
 
 ```sh
-uv run scripts/centralize-data/sync_to_postgresql.py --group 1
-uv run scripts/centralize-data/sync_to_postgresql.py --group 2
+uv run scripts/sync_data/sync_to_postgresql.py --group 1
+uv run scripts/sync_data/sync_to_postgresql.py --group 2
 ```
 
 ## Run
@@ -178,7 +178,7 @@ the app: Scalingo replaces it with the URL of the PostgreSQL add-on.
 From the root of the repository:
 
 ```sh
-uv run --env-file .env scripts/centralize-data/sync_to_postgresql.py --group 1
+uv run --env-file .env scripts/sync_data/sync_to_postgresql.py --group 1
 ```
 
 | Option          | Description                                            |

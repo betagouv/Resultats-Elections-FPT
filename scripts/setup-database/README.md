@@ -1,7 +1,7 @@
 # Setup database
 
 Create the PostgreSQL tables used by
-[`centralize-data`](../centralize-data/README.md). The sync never creates or
+[`sync_data`](../sync_data/README.md). The sync never creates or
 changes a table: it refuses to start if one is missing.
 
 The tables are defined in [`schema.sql`](schema.sql):
@@ -10,7 +10,7 @@ The tables are defined in [`schema.sql`](schema.sql):
 | ------------------------------------------------- | ------------------------------------------- |
 | `resultats_cap`, `resultats_ccp`, `resultats_cst` | the rows of the Grist scrutins tables       |
 | `sync_log`                                        | one entry per synced table of each document |
-| `sync_documents`                                  | the Grist documents to sync, filled by hand (see [`centralize-data`](../centralize-data/README.md#documents)) |
+| `sync_documents`                                  | the Grist documents to sync, filled by hand (see [`sync_data`](../sync_data/README.md#documents)) |
 | `sync_cron`                                       | the cron groups, each one enabled or not (group `1` is created with the table, disabled) |
 
 ## schema.sql
@@ -40,7 +40,7 @@ to the table (see below) with the PostgreSQL type matching its Grist type:
 | Int                   | `BIGINT`                                |
 | Numeric               | `FLOAT` (double precision)              |
 | Bool                  | `BOOLEAN`                               |
-| Date, DateTime        | `TEXT`, and add the column to `DATETIME_COLUMNS` in [`../centralize-data/config.py`](../centralize-data/config.py) (stored as `2024-11-19 07:06:40`, UTC) |
+| Date, DateTime        | `TEXT`, and add the column to `DATETIME_COLUMNS` in [`../sync_data/config.py`](../sync_data/config.py) (stored as `2024-11-19 07:06:40`, UTC) |
 | Ref                   | `INTEGER` (referenced row id, empty if 0) |
 | RefList, ChoiceList   | `JSONB` (list)                          |
 
