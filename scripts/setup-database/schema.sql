@@ -15,6 +15,7 @@ INSERT INTO sync_cron (cron_group) VALUES (1) ON CONFLICT DO NOTHING;
 CREATE TABLE IF NOT EXISTS sync_documents (
     doc_id TEXT NOT NULL,
     department TEXT NOT NULL UNIQUE,  -- identifies the rows of the document in the resultats tables
+    grist_department_id INTEGER NOT NULL,  -- row id of the department in Referentiel_departements (e.g. 96 for 95)
     enabled BOOLEAN NOT NULL DEFAULT false,  -- false: the document is not synced (checked before each table)
     cron_group INTEGER NOT NULL DEFAULT 1 REFERENCES sync_cron (cron_group),  -- its group in sync_cron
     PRIMARY KEY (doc_id)
