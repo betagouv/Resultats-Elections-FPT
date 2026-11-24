@@ -292,6 +292,12 @@ def sync_table(session, conn, columns, doc_id, department, grist_department_id, 
     return summary
 
 
+def pause(seconds, before):
+    """Wait between two Grist calls, to avoid overloading the Grist server."""
+    log.info("Pause %ss before %s", seconds, before)
+    time.sleep(seconds)
+
+
 def sync_all_documents(session, database_url, tables, docs, uuid_column):
     """Sync every table of every document (as returned by load_documents), one table at a time.
 
@@ -308,11 +314,11 @@ def sync_all_documents(session, database_url, tables, docs, uuid_column):
         for index, doc_id in enumerate(doc_ids, start=1):
             if stopped:
                 break
-            time.sleep(PAUSE_SECONDS)
             department, group, grist_department_id = docs[doc_id]
+            pause(PAUSE_SECONDS, f"document {doc_id}")
             log.info("[%d/%d] %s (department %s)", index, len(doc_ids), doc_id, department)
             for grist_table, scrutin_type in TABLES.items():
-                time.sleep(TABLE_PAUSE_SECONDS)
+                pause(TABLE_PAUSE_SECONDS, f"table {scrutin_type}")
                 try:
                     conn = reconnect_if_needed(conn, database_url)
                     if not is_group_enabled(conn, group):
