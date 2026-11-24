@@ -1,5 +1,6 @@
 # Changelog
 
+- feat(Scripts): ajoute les scripts pour manipuler les données entre nos documents grist et la future DB [#113](https://github.com/betagouv/Resultats-Elections-FPT/pull/113)
 - feat(Script): ajoute les scripts pour permettre le ré-import de pj vers les documents dupliqués [#112](https://github.com/betagouv/Resultats-Elections-FPT/pull/112)
 - fix(Vue export): change le libellé du bouton [#111](https://github.com/betagouv/Resultats-Elections-FPT/pull/111)
 - feat(Vue export): création d'une nouvelle vue pour exporter une table [#110](https://github.com/betagouv/Resultats-Elections-FPT/pull/110)
