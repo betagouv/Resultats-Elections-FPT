@@ -360,9 +360,9 @@ auto-imports.d.ts
 # Warp
 .warp/
 
-# Grist attachments archives and doc id lists (sensitive data)
+# Grist attachments archives (sensitive data)
 *.tar
-*.txt
+scripts/add-national-pj-to-pref/*.txt
 
 # Python
 __pycache__/
