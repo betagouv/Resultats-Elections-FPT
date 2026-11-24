@@ -1,0 +1,7 @@
+{
+  "jobs": [
+    {
+      "command": "*/10 * * * * python centralize-data/sync_to_postgresql.py --group 1"
+    }
+  ]
+}
