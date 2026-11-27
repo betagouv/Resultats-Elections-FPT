@@ -10,7 +10,7 @@ The tables are defined in [`schema.sql`](schema.sql):
 | ------------------------------------------------- | ------------------------------------------- |
 | `resultats_cap`, `resultats_ccp`, `resultats_cst` | the rows of the Grist scrutins tables       |
 | `sync_log`                                        | one entry per synced table of each document |
-| `sync_documents`                                  | the Grist documents to sync, filled by hand (see [`sync_data`](../sync_data/README.md#documents)) |
+| `sync_documents`                                  | the departments to sync (one row per department, several can share a Grist document), filled by hand (see [`sync_data`](../sync_data/README.md#documents)) |
 | `sync_cron`                                       | the cron groups, each one enabled or not (group `1` is created with the table, disabled) |
 
 ## schema.sql
