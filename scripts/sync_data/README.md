@@ -206,7 +206,7 @@ After each table of each document, the script adds an entry to the
 | `department` | text        | department given for the document (`95`, `2A`…) |
 | `table_name` | text        | PostgreSQL table (`resultats_cap`…)             |
 | `status`     | text        | `success` or `error`                            |
-| `message`    | text        | on success, the changes (`12 added, 3 updated, 0 deleted`); on error, the reason of the failure |
+| `message`    | text        | on success, the changes (`3 updated, 12 added, 0 deleted - cron number 1`); on error, the reason of the failure |
 
 E.g. the failures of the last 24 hours:
 

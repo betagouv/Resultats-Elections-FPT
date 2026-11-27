@@ -279,7 +279,7 @@ def sync_table(session, conn, columns, doc_id, department, grist_department_id, 
                uuid_column):
     """Fetch one Grist table of a document and write it to PostgreSQL, in its own transaction.
 
-    Return a summary of the changes, e.g. "12 added, 3 updated, 0 deleted".
+    Return a summary of the changes, e.g. "3 updated, 12 added, 0 deleted".
     """
     # Only the rows of the department given for this document are fetched.
     filters = {COL_DEPARTMENT: [grist_department_id]}
@@ -289,8 +289,8 @@ def sync_table(session, conn, columns, doc_id, department, grist_department_id, 
     check_uuid_column(records, scrutin_type, uuid_column)
     rows = extract_rows(records, columns, scrutin_type, uuid_column)
     with conn.transaction():  # commit on success, rollback on error: the table keeps its previous rows
-        counts = store_rows(conn, scrutin_type, columns, department, rows, synced_at)
-    summary = "%d added, %d updated, %d deleted" % counts
+        added, updated, deleted = store_rows(conn, scrutin_type, columns, department, rows, synced_at)
+    summary = "%d updated, %d added, %d deleted" % (updated, added, deleted)
     log.info("  %s: %s", scrutin_type, summary)
     return summary
 
@@ -301,7 +301,7 @@ def pause(seconds, before):
     time.sleep(seconds)
 
 
-def sync_all_documents(session, database_url, tables, docs, uuid_column):
+def sync_all_documents(session, database_url, tables, docs, uuid_column, cron_group):
     """Sync every table of every department (as returned by load_documents), one table at a time.
 
     Each attempt is recorded in the sync log table. A failed table does not stop the others: if the database
@@ -319,7 +319,7 @@ def sync_all_documents(session, database_url, tables, docs, uuid_column):
                 break
             doc_id, group, grist_department_id = docs[department]
             pause(PAUSE_SECONDS, f"department {department}")
-            log.info("[%d/%d] department %s (document %s)", index, len(departments), department, doc_id)
+            log.info("[%d/%d] department %s (cron number %s)", index, len(departments), department, cron_group)
             for grist_table, scrutin_type in TABLES.items():
                 pause(TABLE_PAUSE_SECONDS, f"table {scrutin_type}")
                 try:
@@ -340,12 +340,13 @@ def sync_all_documents(session, database_url, tables, docs, uuid_column):
                     write_sync_log(conn, department, scrutin_type, "error", reason)
                     failures += 1
                 else:
-                    write_sync_log(conn, department, scrutin_type, "success", summary)
+                    write_sync_log(conn, department, scrutin_type, "success", f"{summary} - cron {cron_group}")
     finally:
         if conn is not None:
             conn.close()
 
-    log.info("Sync done in %.0fs: %d failed table(s), see %s", time.monotonic() - started, failures, SYNC_LOG_TABLE)
+    log.info("Sync cron number %s done in %.0fs: %d failed table(s), see %s", cron_group, time.monotonic() - started,
+             failures, SYNC_LOG_TABLE)
     return failures
 
 
@@ -399,7 +400,7 @@ def main(argv=None):
 
     session = requests.Session()
     session.headers["Authorization"] = f"Bearer {api_key}"
-    failures = sync_all_documents(session, database_url, tables, docs, args.uuid_column)
+    failures = sync_all_documents(session, database_url, tables, docs, args.uuid_column, args.group)
     return 1 if failures else 0
 
 
