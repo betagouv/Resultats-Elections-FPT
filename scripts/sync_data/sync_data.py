@@ -340,7 +340,7 @@ def sync_all_documents(session, database_url, tables, docs, uuid_column, cron_gr
                     write_sync_log(conn, department, scrutin_type, "error", reason)
                     failures += 1
                 else:
-                    write_sync_log(conn, department, scrutin_type, "success", summary)
+                    write_sync_log(conn, department, scrutin_type, "success", f"{summary} - cron {cron_group}")
     finally:
         if conn is not None:
             conn.close()
