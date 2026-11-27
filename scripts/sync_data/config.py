@@ -26,13 +26,16 @@ DATETIME_COLUMNS = ["Horodatage_modification"]
 
 # --- PostgreSQL ----------------------------------------------------------
 
+DB_CONNECT_TIMEOUT = 30  # seconds, to connect to the database
+
 # One PostgreSQL table per scrutin type: resultats_cap, resultats_ccp, resultats_cst
 DB_TABLE_PREFIX = "resultats_"
 
 # Table with one entry per synced table of each document (status, error…)
 SYNC_LOG_TABLE = "sync_log"
 
-# Table listing the Grist documents to sync: doc_id, department, grist_department_id, enabled, cron_group
+# Table listing the departments to sync (one row per department): department, doc_id, grist_department_id,
+# enabled, cron_group. Several departments can share the same doc_id.
 SYNC_DOCUMENTS_TABLE = "sync_documents"
 
 # Table listing the cron groups: cron_group, enabled

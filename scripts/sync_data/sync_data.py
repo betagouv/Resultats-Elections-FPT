@@ -21,6 +21,7 @@ from psycopg.types.json import Jsonb
 from config import (
     COL_DEPARTMENT,
     DATETIME_COLUMNS,
+    DB_CONNECT_TIMEOUT,
     DB_TABLE_PREFIX,
     DEFAULT_UUID_COLUMN,
     PAUSE_SECONDS,
@@ -44,7 +45,8 @@ SYNC_COLUMNS = ["department", "uuid", "grist_id", "synced_at"]
 
 def open_db(url):
     # autocommit: each query commits on its own, unless it runs in a `with conn.transaction()` block.
-    return psycopg.connect(url, autocommit=True)
+    # connect_timeout: fail instead of hanging when the database cannot be reached.
+    return psycopg.connect(url, autocommit=True, connect_timeout=DB_CONNECT_TIMEOUT)
 
 
 def reconnect_if_needed(conn, url):
@@ -84,18 +86,19 @@ def load_tables(conn):
 
 
 def load_documents(conn, group):
-    """Return the documents to sync of a cron group: {doc_id: (department, cron group, Grist department id)}.
+    """Return the departments to sync of a cron group: {department: (doc_id, cron group, Grist department id)}.
 
-    A document is synced if it is enabled in sync_documents and its cron group is enabled in sync_cron.
+    A department is synced if it is enabled in sync_documents and its cron group is enabled in sync_cron.
+    Several departments can share the same Grist document (doc_id).
     The Grist department id is the row id of the department in Referentiel_departements, used to filter the rows.
     """
     query = sql.SQL(
-        "SELECT d.doc_id, d.department, d.cron_group, d.grist_department_id FROM {documents} d "
+        "SELECT d.department, d.doc_id, d.cron_group, d.grist_department_id FROM {documents} d "
         "JOIN {cron} c ON c.cron_group = d.cron_group "
         "WHERE d.enabled AND c.enabled AND d.cron_group = %s ORDER BY d.department"
     ).format(documents=sql.Identifier(SYNC_DOCUMENTS_TABLE), cron=sql.Identifier(SYNC_CRON_TABLE))
     rows = conn.execute(query, (group,)).fetchall()
-    return {doc_id: (department, cron_group, grist_id) for doc_id, department, cron_group, grist_id in rows}
+    return {department: (doc_id, cron_group, grist_id) for department, doc_id, cron_group, grist_id in rows}
 
 
 def is_group_enabled(conn, group):
@@ -105,13 +108,13 @@ def is_group_enabled(conn, group):
     return row[0] if row else None
 
 
-def is_document_enabled(conn, doc_id):
-    """True if the document is enabled in sync_documents (it can be switched off during a run).
+def is_department_enabled(conn, department):
+    """True if the department is enabled in sync_documents (it can be switched off during a run).
 
-    A document removed from sync_documents counts as disabled.
+    A department removed from sync_documents counts as disabled.
     """
-    query = sql.SQL("SELECT enabled FROM {} WHERE doc_id = %s").format(sql.Identifier(SYNC_DOCUMENTS_TABLE))
-    row = conn.execute(query, (doc_id,)).fetchone()
+    query = sql.SQL("SELECT enabled FROM {} WHERE department = %s").format(sql.Identifier(SYNC_DOCUMENTS_TABLE))
+    row = conn.execute(query, (department,)).fetchone()
     return bool(row and row[0])
 
 
@@ -299,24 +302,24 @@ def pause(seconds, before):
 
 
 def sync_all_documents(session, database_url, tables, docs, uuid_column):
-    """Sync every table of every document (as returned by load_documents), one table at a time.
+    """Sync every table of every department (as returned by load_documents), one table at a time.
 
     Each attempt is recorded in the sync log table. A failed table does not stop the others: if the database
-    connection is lost, the next table reconnects. A document switched off skips its other tables; a cron
+    connection is lost, the next table reconnects. A department switched off skips its other tables; a cron
     group switched off stops the run. Return the number of failed tables.
     """
-    doc_ids = list(docs)
+    departments = list(docs)
     started = time.monotonic()
     failures = 0
     conn = None
     stopped = False
     try:
-        for index, doc_id in enumerate(doc_ids, start=1):
+        for index, department in enumerate(departments, start=1):
             if stopped:
                 break
-            department, group, grist_department_id = docs[doc_id]
-            pause(PAUSE_SECONDS, f"document {doc_id}")
-            log.info("[%d/%d] %s (department %s)", index, len(doc_ids), doc_id, department)
+            doc_id, group, grist_department_id = docs[department]
+            pause(PAUSE_SECONDS, f"department {department}")
+            log.info("[%d/%d] department %s (document %s)", index, len(departments), department, doc_id)
             for grist_table, scrutin_type in TABLES.items():
                 pause(TABLE_PAUSE_SECONDS, f"table {scrutin_type}")
                 try:
@@ -325,8 +328,8 @@ def sync_all_documents(session, database_url, tables, docs, uuid_column):
                         log.warning("  cron group switched off in %s: the run is stopped", SYNC_CRON_TABLE)
                         stopped = True
                         break
-                    if not is_document_enabled(conn, doc_id):
-                        log.warning("  %s switched off in %s: its other tables are skipped", doc_id,
+                    if not is_department_enabled(conn, department):
+                        log.warning("  department %s switched off in %s: its other tables are skipped", department,
                                     SYNC_DOCUMENTS_TABLE)
                         break
                     summary = sync_table(session, conn, tables[scrutin_type], doc_id, department,
@@ -390,9 +393,9 @@ def main(argv=None):
         log.info("Cron group %s is disabled in %s: nothing to sync", args.group, SYNC_CRON_TABLE)
         return 0
     if not docs:
-        log.info("No enabled document in %s (group %s): nothing to sync", SYNC_DOCUMENTS_TABLE, args.group)
+        log.info("No enabled department in %s (group %s): nothing to sync", SYNC_DOCUMENTS_TABLE, args.group)
         return 0
-    log.info("%d enabled document(s) in %s (group %s)", len(docs), SYNC_DOCUMENTS_TABLE, args.group)
+    log.info("%d enabled department(s) in %s (group %s)", len(docs), SYNC_DOCUMENTS_TABLE, args.group)
 
     session = requests.Session()
     session.headers["Authorization"] = f"Bearer {api_key}"

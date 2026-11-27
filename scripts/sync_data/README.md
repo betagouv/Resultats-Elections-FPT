@@ -66,8 +66,8 @@ in the `id` column of `Referentiel_departements`.
 
 ### Incremental sync
 
-- the Grist document id is not stored: a document is identified by its
-  department, given once per document in `sync_documents`;
+- the Grist document id is not stored in the resultats tables: the rows are
+  identified by their department, given once in `sync_documents`;
 - a row is identified by its UUID (`uuid`, primary key), unique across the
   documents;
 - each document only reads, updates and deletes the rows of its department;
@@ -101,15 +101,17 @@ if `resultats_cap`, `resultats_ccp`, `resultats_cst`, `sync_log`,
 
 ## Documents
 
-The documents to sync are listed in the `sync_documents` table, edited by hand
-in the database (`psql`, or `scalingo --app <app> pgsql-console` on Scalingo):
+The departments to sync are listed in the `sync_documents` table, one row per
+department, edited by hand in the database (`psql`, or
+`scalingo --app <app> pgsql-console` on Scalingo). Several departments can
+share the same Grist document: each one only fetches its own rows.
 
 | Column       | Content                                                                 |
 | ------------ | ----------------------------------------------------------------------- |
-| `doc_id`     | Grist document id (primary key)                                         |
-| `department` | its department (`01`, `2A`…), once per table: it identifies the rows of the document |
+| `department` | the department (`01`, `2A`…), primary key: it identifies its rows in the resultats tables |
+| `doc_id`     | Grist document holding the rows of the department (can be the same for several departments) |
 | `grist_department_id` | row id of the department in `Referentiel_departements` (e.g. `96` for `95`), used to filter the rows |
-| `enabled`    | `true`: the document is synced; `false` by default                      |
+| `enabled`    | `true`: the department is synced; `false` by default                    |
 | `cron_group` | its cron group in `sync_cron` (`--group`), `1` by default               |
 
 The cron groups are listed in the `sync_cron` table, also edited by hand.
@@ -120,16 +122,16 @@ Group `1` is created with the tables, disabled:
 | `cron_group` | the group number, given to the cron job with `--group`    |
 | `enabled`    | `true`: its documents are synced; `false` by default      |
 
-Nothing is synced until you enable it: a new document or group is disabled.
+Nothing is synced until you enable it: a new department or group is disabled.
 
 ```sql
--- add documents (to group 1), then enable them and the group
-INSERT INTO sync_documents (doc_id, department, grist_department_id) VALUES ('abc123', '95', 96), ('def456', '2A', 20);
-UPDATE sync_documents SET enabled = true WHERE doc_id IN ('abc123', 'def456');
+-- add departments (to group 1), from the same document, then enable them and the group
+INSERT INTO sync_documents (doc_id, department, grist_department_id) VALUES ('abc123', '95', 96), ('abc123', '2A', 20);
+UPDATE sync_documents SET enabled = true WHERE department IN ('95', '2A');
 UPDATE sync_cron SET enabled = true WHERE cron_group = 1;
--- leave one document out, or put it back
-UPDATE sync_documents SET enabled = false WHERE doc_id = 'def456';
--- create a second group, enabled, and move documents to it
+-- leave one department out, or put it back
+UPDATE sync_documents SET enabled = false WHERE department = '2A';
+-- create a second group, enabled, and move departments to it
 INSERT INTO sync_cron (cron_group, enabled) VALUES (2, true);
 UPDATE sync_documents SET cron_group = 2 WHERE department IN ('2A', '2B');
 -- stop a whole cron job, or put it back
@@ -138,21 +140,21 @@ UPDATE sync_cron SET enabled = false WHERE cron_group = 2;
 UPDATE sync_cron SET enabled = false;
 ```
 
-A document is synced if it is enabled and its group is enabled. Both are
-checked before each table, so they also act on a run in progress: a document
+A department is synced if it is enabled and its group is enabled. Both are
+checked before each table, so they also act on a run in progress: a department
 switched off skips its other tables, a group switched off stops the run. The
 rows left out stay in PostgreSQL as they were, with their old `synced_at`.
 
-A document can only be in a group that exists in `sync_cron`.
+A department can only be in a group that exists in `sync_cron`.
 
 A wrong `grist_department_id` fetches the rows of another department, or none:
 check it in Grist.
 
 ### Cron groups
 
-A run waits about 16 s per document (see `PAUSE_SECONDS` below), plus the
-Grist calls: with many documents, it lasts longer than the cron interval, and
-two runs would overlap. Split the documents into groups, one cron job per
+A run waits about 16 s per department (see `PAUSE_SECONDS` below), plus the
+Grist calls: with many departments, it lasts longer than the cron interval, and
+two runs would overlap. Split the departments into groups, one cron job per
 group, e.g. every 10 minutes:
 
 ```sh
@@ -183,11 +185,11 @@ uv run --env-file .env scripts/sync_data/sync_data.py --group 1
 
 | Option          | Description                                            |
 | --------------- | ------------------------------------------------------ |
-| `--group`       | Cron group to sync (required): the documents of this `cron_group` |
+| `--group`       | Cron group to sync (required): the departments of this `cron_group` |
 | `--uuid-column` | Column holding the row UUID (default: `UUID`)          |
 
-The script waits `PAUSE_SECONDS` before each document and
-`TABLE_PAUSE_SECONDS` before each table of a document (in
+The script waits `PAUSE_SECONDS` before each department and
+`TABLE_PAUSE_SECONDS` before each table of a department (in
 `config.py`), to avoid overloading the Grist server. The duration of the run
 and the number of failed tables are logged at the end.
 
