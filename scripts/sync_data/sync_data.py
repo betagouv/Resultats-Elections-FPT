@@ -301,7 +301,7 @@ def pause(seconds, before):
     time.sleep(seconds)
 
 
-def sync_all_documents(session, database_url, tables, docs, uuid_column):
+def sync_all_documents(session, database_url, tables, docs, uuid_column, cron_group):
     """Sync every table of every department (as returned by load_documents), one table at a time.
 
     Each attempt is recorded in the sync log table. A failed table does not stop the others: if the database
@@ -319,7 +319,7 @@ def sync_all_documents(session, database_url, tables, docs, uuid_column):
                 break
             doc_id, group, grist_department_id = docs[department]
             pause(PAUSE_SECONDS, f"department {department}")
-            log.info("[%d/%d] department %s (document %s)", index, len(departments), department, doc_id)
+            log.info("[%d/%d] department %s (cron number %s)", index, len(departments), department, cron_group)
             for grist_table, scrutin_type in TABLES.items():
                 pause(TABLE_PAUSE_SECONDS, f"table {scrutin_type}")
                 try:
@@ -345,7 +345,8 @@ def sync_all_documents(session, database_url, tables, docs, uuid_column):
         if conn is not None:
             conn.close()
 
-    log.info("Sync done in %.0fs: %d failed table(s), see %s", time.monotonic() - started, failures, SYNC_LOG_TABLE)
+    log.info("Sync cron number %s done in %.0fs: %d failed table(s), see %s", cron_group, time.monotonic() - started,
+             failures, SYNC_LOG_TABLE)
     return failures
 
 
@@ -399,7 +400,7 @@ def main(argv=None):
 
     session = requests.Session()
     session.headers["Authorization"] = f"Bearer {api_key}"
-    failures = sync_all_documents(session, database_url, tables, docs, args.uuid_column)
+    failures = sync_all_documents(session, database_url, tables, docs, args.uuid_column, args.group)
     return 1 if failures else 0
 
 
