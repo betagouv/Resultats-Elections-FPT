@@ -279,7 +279,7 @@ def sync_table(session, conn, columns, doc_id, department, grist_department_id, 
                uuid_column):
     """Fetch one Grist table of a document and write it to PostgreSQL, in its own transaction.
 
-    Return a summary of the changes, e.g. "12 added, 3 updated, 0 deleted".
+    Return a summary of the changes, e.g. "3 updated, 12 added, 0 deleted".
     """
     # Only the rows of the department given for this document are fetched.
     filters = {COL_DEPARTMENT: [grist_department_id]}
@@ -289,8 +289,8 @@ def sync_table(session, conn, columns, doc_id, department, grist_department_id, 
     check_uuid_column(records, scrutin_type, uuid_column)
     rows = extract_rows(records, columns, scrutin_type, uuid_column)
     with conn.transaction():  # commit on success, rollback on error: the table keeps its previous rows
-        counts = store_rows(conn, scrutin_type, columns, department, rows, synced_at)
-    summary = "%d added, %d updated, %d deleted" % counts
+        added, updated, deleted = store_rows(conn, scrutin_type, columns, department, rows, synced_at)
+    summary = "%d updated, %d added, %d deleted" % (updated, added, deleted)
     log.info("  %s: %s", scrutin_type, summary)
     return summary
 
