@@ -1,0 +1,10 @@
+{
+  "jobs": [
+    {
+      "command": "*/10 * * * * python sync_data/sync_group.py --group 1"
+    },
+    {
+      "command": "*/10 * * * * python sync_data/sync_all.py"
+    }
+  ]
+}
