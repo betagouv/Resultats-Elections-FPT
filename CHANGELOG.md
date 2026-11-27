@@ -1,5 +1,6 @@
 # Changelog
 
+- fix(Script): améliore les logs en indiquant le numéro du cron associé [#115](https://github.com/betagouv/Resultats-Elections-FPT/pull/115)
 - feat(Script sync): permettre d'utiliser un même document pour plusieurs départements [#114](https://github.com/betagouv/Resultats-Elections-FPT/pull/114)
 - feat(Scripts): ajoute les scripts pour manipuler les données entre nos documents grist et la future DB [#113](https://github.com/betagouv/Resultats-Elections-FPT/pull/113)
 - feat(Script): ajoute les scripts pour permettre le ré-import de pj vers les documents dupliqués [#112](https://github.com/betagouv/Resultats-Elections-FPT/pull/112)
