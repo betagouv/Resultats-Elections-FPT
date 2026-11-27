@@ -2,6 +2,18 @@
   "jobs": [
     {
       "command": "*/10 * * * * python sync_data/sync_data.py --group 1"
+    },
+    {
+      "command": "2-59/10 * * * * python sync_data/sync_data.py --group 2"
+    },
+    {
+      "command": "4-59/10 * * * * python sync_data/sync_data.py --group 3"
+    },
+    {
+      "command": "6-59/10 * * * * python sync_data/sync_data.py --group 4"
+    },
+    {
+      "command": "8-59/10 * * * * python sync_data/sync_data.py --group 5"
     }
   ]
 }
